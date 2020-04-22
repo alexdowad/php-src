@@ -71,10 +71,11 @@ memory_limit=256M
         printf("[011] Failed to change max_allowed_packet");
     }
 
-    if (!mysqli_query($link, "CREATE TABLE test(col_blob LONGBLOB) ENGINE=" . $engine))
+    $table_name = 'test__mysqli_insert_packet_overflow';
+    if (!mysqli_query($link, "CREATE TABLE {$table_name}(col_blob LONGBLOB) ENGINE=" . $engine))
         printf("[012] [%d] %s\n", mysqli_errno($link), mysqli_error($link));
 
-    $query_prefix = "INSERT INTO test(col_blob) VALUES ('";
+    $query_prefix = "INSERT INTO {$table_name}(col_blob) VALUES ('";
     $query_postfix = "')";
     $query_len = strlen($query_prefix) + strlen($query_postfix);
     $com_query_len = 2;
@@ -86,7 +87,7 @@ memory_limit=256M
     if (!mysqli_query($link, $query))
         printf("[013] max_allowed_packet = %d, strlen(query) = %d, [%d] %s\n", $max_allowed_packet, strlen($query), mysqli_errno($link), mysqli_error($link));
 
-    if (!$res = mysqli_query($link, "SELECT col_blob FROM test"))
+    if (!$res = mysqli_query($link, "SELECT col_blob FROM {$table_name}"))
         printf("[014] [%d] %s\n", mysqli_errno($link), mysqli_error($link));
 
     if (!$row = mysqli_fetch_assoc($res)) {
