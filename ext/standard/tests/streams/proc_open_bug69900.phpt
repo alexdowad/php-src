@@ -6,7 +6,7 @@ Bug #69900 Commandline input/output weird behaviour with STDIO
 error_reporting(E_ALL);
 
 $fl = __DIR__ . DIRECTORY_SEPARATOR . "test69900.php";
-$max_ms = 10;
+$max_ms = 15;
 
 $test_content = '<?php
 
