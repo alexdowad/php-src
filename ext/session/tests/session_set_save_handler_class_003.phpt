@@ -78,3 +78,4 @@ array(2) {
   string(5) "hello"
 }
 string(3) "hai"
+*** Session file was empty in PS_READ_FUNC(files)

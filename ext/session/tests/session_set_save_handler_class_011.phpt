@@ -61,6 +61,7 @@ ob_end_flush();
 *** Testing session_set_save_handler() : shutdown failure ***
 (#1) constructor called
 done
+*** Session file was empty in PS_READ_FUNC(files)
 (#1) destructor called
 (#1) destroyed, cannot write
 (#1) destroyed, cannot write

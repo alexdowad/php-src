@@ -41,4 +41,4 @@ string(5) "/blah"
 Warning: session_destroy(): Trying to destroy uninitialized session in %s on line %d
 bool(false)
 string(5) "/blah"
-Done
+Done*** Couldn't open file in PS_READ_FUNC(files)

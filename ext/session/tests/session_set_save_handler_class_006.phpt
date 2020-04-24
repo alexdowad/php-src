@@ -44,6 +44,7 @@ ob_end_flush();
 ?>
 --EXPECTF--
 *** Testing session_set_save_handler() : using objects in close ***
+*** Session file was empty in PS_READ_FUNC(files)
 object(MySession7_Foo)#%d (%d) {
   ["state"]=>
   string(2) "ok"

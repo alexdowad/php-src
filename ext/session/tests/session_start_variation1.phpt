@@ -40,4 +40,4 @@ bool(true)
 
 Notice: session_start(): A session had already been started - ignoring in %s on line 17
 bool(true)
-Done
+Done*** Session file was empty in PS_READ_FUNC(files)

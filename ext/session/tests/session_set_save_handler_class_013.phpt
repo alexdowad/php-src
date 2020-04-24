@@ -60,3 +60,4 @@ Stack trace:
 #2 [internal function]: session_write_close()
 #3 {main}
   thrown in %s on line %d
+*** Session file was empty in PS_READ_FUNC(files)

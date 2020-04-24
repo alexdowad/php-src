@@ -55,4 +55,5 @@ string(35) "XYZ%s"
 string(0) ""
 string(35) "XYZ%s"
 bool(true)
-Done
+Done*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)

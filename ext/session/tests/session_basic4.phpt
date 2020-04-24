@@ -63,3 +63,5 @@ echo '
 <a href="/?PHPSESSID=test2&testvar1=testvalue1&testvar2=testvalue2">
 <form action="" method="post"><input type="hidden" name="testvar1" value="testvalue1" /><input type="hidden" name="testvar2" value="testvalue2" /><input type="hidden" name="PHPSESSID" value="test2" />
 </form>
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)

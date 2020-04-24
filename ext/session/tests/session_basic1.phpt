@@ -70,3 +70,6 @@ string(6) "testid"
 string(6) "testid"
 bool(true)
 bool(true)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)

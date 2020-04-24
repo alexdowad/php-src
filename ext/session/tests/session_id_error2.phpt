@@ -39,4 +39,4 @@ Warning: session_id(): Cannot change session id when session is active in %s on 
 bool(false)
 bool(true)
 string(0) ""
-Done
+Done*** Session file was empty in PS_READ_FUNC(files)

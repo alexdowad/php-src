@@ -43,4 +43,5 @@ bool(true)
 Warning: session_regenerate_id(): Cannot regenerate session id - session is not active in %s on line %d
 bool(false)
 string(0) ""
-Done
+Done*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)

@@ -62,4 +62,5 @@ ob_end_flush();
 (#1) writing %s = foo|s:3:"bar";
 (#1) closing %s
 done
+*** Session file was empty in PS_READ_FUNC(files)
 (#1) destructor called

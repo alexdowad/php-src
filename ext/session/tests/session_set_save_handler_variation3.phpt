@@ -35,3 +35,4 @@ Warning: session_save_path(): Cannot change save path when session is active in 
 Warning: session_set_save_handler(): Cannot change save handler when session is active in %s on line 17
 bool(false)
 bool(true)
+*** Session file was empty in PS_READ_FUNC(files)

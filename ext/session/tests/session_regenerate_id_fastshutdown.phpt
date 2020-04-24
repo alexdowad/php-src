@@ -12,3 +12,5 @@ var_dump(session_regenerate_id());
 ?>
 --EXPECT--
 bool(true)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)

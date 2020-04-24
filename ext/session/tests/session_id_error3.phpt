@@ -75,4 +75,9 @@ string(0) ""
 string(0) ""
 string(0) ""
 string(19) "¬``@~:{>?><,./[]+--"
-Done
+Done*** Couldn't open file in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Couldn't open file in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)

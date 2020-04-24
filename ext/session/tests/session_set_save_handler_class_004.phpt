@@ -45,3 +45,4 @@ array(1) {
   ["foo"]=>
   string(5) "hello"
 }
+*** Session file was empty in PS_READ_FUNC(files)

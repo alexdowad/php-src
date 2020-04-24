@@ -47,4 +47,4 @@ bool(true)
 string(4) "blah"
 bool(true)
 string(3) "foo"
-Done
+Done*** Session file was empty in PS_READ_FUNC(files)

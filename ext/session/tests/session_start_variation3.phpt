@@ -45,4 +45,8 @@ bool(true)
 
 Warning: session_destroy(): Trying to destroy uninitialized session in %s on line 23
 bool(false)
-Done
+Done*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)

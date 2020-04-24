@@ -22,3 +22,4 @@ var_dump(session_status() == PHP_SESSION_ACTIVE);
 bool(true)
 bool(true)
 bool(true)
+*** Session file was empty in PS_READ_FUNC(files)

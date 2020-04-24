@@ -114,3 +114,4 @@ array(1) {
 Update Timestamp %s
 Close %s
 int(10)
+*** Session file was empty in PS_READ_FUNC(files)

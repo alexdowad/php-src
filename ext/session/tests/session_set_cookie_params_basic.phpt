@@ -33,4 +33,4 @@ Warning: session_set_cookie_params(): Cannot change session cookie parameters wh
 bool(false)
 bool(true)
 bool(true)
-Done
+Done*** Session file was empty in PS_READ_FUNC(files)

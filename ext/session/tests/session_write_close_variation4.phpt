@@ -53,4 +53,7 @@ bool(true)
 string(4) "test"
 bool(true)
 bool(true)
-Done
+Done*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)
+*** Session file was empty in PS_READ_FUNC(files)

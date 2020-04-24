@@ -50,3 +50,4 @@ array(1) {
   int(123)
 }
 Done
+*** Session file was empty in PS_READ_FUNC(files)
