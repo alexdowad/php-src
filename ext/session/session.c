@@ -99,7 +99,6 @@ zend_class_entry *php_session_update_timestamp_iface_entry;
 
 #define APPLY_TRANS_SID (PS(use_trans_sid) && !PS(use_only_cookies))
 
-static int php_session_send_cookie(void);
 static int php_session_abort(void);
 
 /* Initialized in MINIT, readonly otherwise. */
