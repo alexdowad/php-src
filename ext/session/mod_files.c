@@ -235,6 +235,7 @@ static int ps_files_write(ps_files *data, zend_string *key, zend_string *val)
        data->lastkey and reopen when it is needed. */
 	ps_files_open(data, ZSTR_VAL(key));
 	if (data->fd < 0) {
+		printf("*** Couldn't open session file in ps_files_write\n");
 		return FAILURE;
 	}
 
@@ -478,16 +479,19 @@ PS_READ_FUNC(files)
 
 	ps_files_open(data, ZSTR_VAL(key));
 	if (data->fd < 0) {
+		printf("*** Couldn't open file in PS_READ_FUNC(files)\n");
 		return FAILURE;
 	}
 
 	if (zend_fstat(data->fd, &sbuf)) {
+		printf("*** fstat returned error in PS_READ_FUNC(files)\n");
 		return FAILURE;
 	}
 
 	data->st_size = sbuf.st_size;
 
 	if (sbuf.st_size == 0) {
+		printf("*** Session file was empty in PS_READ_FUNC(files)\n");
 		*val = ZSTR_EMPTY_ALLOC();
 		return SUCCESS;
 	}
