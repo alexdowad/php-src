@@ -834,7 +834,7 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache) /
 		/* This flag is regularly checked while running user functions, but not internal
 		 * So see whether we timed out while the function was running... */
 		if (EG(timed_out)) {
-			zend_timeout(0);
+			zend_timeout();
 		}
 	}
 
@@ -1110,7 +1110,7 @@ ZEND_API int zend_eval_string_ex(const char *str, zval *retval_ptr, const char *
 
 static void zend_set_timeout_ex(zend_long seconds, int reset_signals);
 
-ZEND_API ZEND_NORETURN void ZEND_FASTCALL zend_timeout(int dummy) /* {{{ */
+ZEND_API ZEND_NORETURN void ZEND_FASTCALL zend_timeout(void) /* {{{ */
 {
 #if defined(PHP_WIN32)
 # ifndef ZTS
