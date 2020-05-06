@@ -830,6 +830,12 @@ int zend_call_function(zend_fcall_info *fci, zend_fcall_info_cache *fci_cache) /
 			/* We must re-initialize function again */
 			fci_cache->function_handler = NULL;
 		}
+
+		/* This flag is regularly checked while running user functions, but not internal
+		 * So see whether we timed out while the function was running... */
+		if (EG(timed_out)) {
+			zend_timeout(0);
+		}
 	}
 
 	zend_vm_stack_free_call_frame(call);
