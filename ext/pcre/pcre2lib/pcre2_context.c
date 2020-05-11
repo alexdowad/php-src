@@ -196,7 +196,7 @@ when no context is supplied to the convert function. */
 
 const pcre2_convert_context PRIV(default_convert_context) = {
   { default_malloc, default_free, NULL },    /* Default memory handling */
-#ifdef _WIN32
+#ifdef WIN32
   CHAR_BACKSLASH,                            /* Default path separator */
   CHAR_GRAVE_ACCENT                          /* Default escape character */
 #else  /* Not Windows */

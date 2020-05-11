@@ -26,7 +26,7 @@
 #include "zend_call_graph.h"
 #include "zend_func_info.h"
 #include "zend_inference.h"
-#ifdef _WIN32
+#ifdef WIN32
 #include "win32/ioutil.h"
 #endif
 

@@ -130,7 +130,7 @@ recv_once:
 			/* There's something to read. Read what's available and proceed
 			disregarding whether len could be exhausted or not.*/
 			int can_read = recv(sock, p, i, MSG_PEEK);
-#ifndef _WIN32
+#ifndef WIN32
 			if (can_read == -1 && errno == EINTR) {
 				continue;
 			}
@@ -138,7 +138,7 @@ recv_once:
 			i = can_read;
 		}
 
-#ifdef _WIN32
+#ifdef WIN32
 		got_now = recv(sock, p, i, 0);
 #else
 		do {
@@ -343,7 +343,7 @@ PHPDBG_API int phpdbg_create_listenable_socket(const char *addr, unsigned short 
 
 PHPDBG_API void phpdbg_close_socket(int sock) {
 	if (sock >= 0) {
-#ifdef _WIN32
+#ifdef WIN32
 		closesocket(sock);
 #else
 		shutdown(sock, SHUT_RDWR);

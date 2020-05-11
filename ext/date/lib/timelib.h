@@ -51,7 +51,7 @@ typedef unsigned long int uint32_t;
 #  endif
 # endif
 
-#ifdef _WIN32
+#ifdef WIN32
 # if _MSC_VER >= 1600
 # include <stdint.h>
 # endif

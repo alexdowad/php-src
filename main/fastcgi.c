@@ -27,7 +27,7 @@
 #define MAXFQDNLEN 255
 #endif
 
-#ifdef _WIN32
+#ifdef WIN32
 
 #include <windows.h>
 
@@ -410,7 +410,7 @@ static void fcgi_hash_apply(fcgi_hash *h, fcgi_apply_func func, void *arg)
 	}
 }
 
-#ifdef _WIN32
+#ifdef WIN32
 
 static DWORD WINAPI fcgi_shutdown_thread(LPVOID arg)
 {
@@ -482,7 +482,7 @@ void __attribute__((weak)) fcgi_log(int type, const char *format, ...) {
 int fcgi_init(void)
 {
 	if (!is_initialized) {
-#ifndef _WIN32
+#ifndef WIN32
 		sa_t sa;
 		socklen_t len = sizeof(sa);
 #endif
@@ -490,7 +490,7 @@ int fcgi_init(void)
 		fcgi_set_mgmt_var("FCGI_MPXS_CONNS", sizeof("FCGI_MPXS_CONNS")-1, "0", sizeof("0")-1);
 
 		is_initialized = 1;
-#ifdef _WIN32
+#ifdef WIN32
 # if 0
 		/* TODO: Support for TCP sockets */
 		WSADATA wsaData;
@@ -565,7 +565,7 @@ void fcgi_shutdown(void)
 	}
 }
 
-#ifdef _WIN32
+#ifdef WIN32
 /* Do some black magic with the NT security API.
  * We prepare a DACL (Discretionary Access Control List) so that
  * we, the creator, are allowed all access, while "Everyone Else"
@@ -656,7 +656,7 @@ int fcgi_listen(const char *path, int backlog)
 	sa_t      sa;
 	socklen_t sock_len;
 #ifdef SO_REUSEADDR
-# ifdef _WIN32
+# ifdef WIN32
 	BOOL reuse = 1;
 # else
 	int reuse = 1;
@@ -708,7 +708,7 @@ int fcgi_listen(const char *path, int backlog)
 			}
 		}
 	} else {
-#ifdef _WIN32
+#ifdef WIN32
 		SECURITY_DESCRIPTOR  sd;
 		SECURITY_ATTRIBUTES  saw;
 		PACL                 acl;
@@ -816,7 +816,7 @@ int fcgi_listen(const char *path, int backlog)
 	}
 	is_fastcgi = 1;
 
-#ifdef _WIN32
+#ifdef WIN32
 	if (tcp) {
 		listen_socket = _open_osfhandle((intptr_t)listen_socket, 0);
 	}
@@ -901,7 +901,7 @@ fcgi_request *fcgi_init_request(int listen_socket, void(*on_accept)(), void(*on_
 	req->hook.on_read = on_read ? on_read : fcgi_hook_dummy;
 	req->hook.on_close = on_close ? on_close : fcgi_hook_dummy;
 
-#ifdef _WIN32
+#ifdef WIN32
 	req->tcp = !GetNamedPipeInfo((HANDLE)_get_osfhandle(req->listen_socket), NULL, NULL, NULL, NULL);
 #endif
 
@@ -921,11 +921,11 @@ static inline ssize_t safe_write(fcgi_request *req, const void *buf, size_t coun
 	size_t n = 0;
 
 	do {
-#ifdef _WIN32
+#ifdef WIN32
 		size_t tmp;
 #endif
 		errno = 0;
-#ifdef _WIN32
+#ifdef WIN32
 		tmp = count - n;
 
 		if (!req->tcp) {
@@ -958,11 +958,11 @@ static inline ssize_t safe_read(fcgi_request *req, const void *buf, size_t count
 	size_t n = 0;
 
 	do {
-#ifdef _WIN32
+#ifdef WIN32
 		size_t tmp;
 #endif
 		errno = 0;
-#ifdef _WIN32
+#ifdef WIN32
 		tmp = count - n;
 
 		if (!req->tcp) {
@@ -1094,7 +1094,7 @@ static int fcgi_read_request(fcgi_request *req)
 		req->keep = (b->flags & FCGI_KEEP_CONN);
 #ifdef TCP_NODELAY
 		if (req->keep && req->tcp && !req->nodelay) {
-# ifdef _WIN32
+# ifdef WIN32
 			BOOL on = 1;
 # else
 			int on = 1;
@@ -1271,14 +1271,14 @@ void fcgi_close(fcgi_request *req, int force, int destroy)
 		req->has_env = 0;
 	}
 
-#ifdef _WIN32
+#ifdef WIN32
 	if (is_impersonate && !req->tcp) {
 		RevertToSelf();
 	}
 #endif
 
 	if ((force || !req->keep) && req->fd >= 0) {
-#ifdef _WIN32
+#ifdef WIN32
 		if (!req->tcp) {
 			HANDLE pipe = (HANDLE)_get_osfhandle(req->fd);
 
@@ -1360,7 +1360,7 @@ static int fcgi_is_allowed() {
 
 int fcgi_accept_request(fcgi_request *req)
 {
-#ifdef _WIN32
+#ifdef WIN32
 	HANDLE pipe;
 	OVERLAPPED ov;
 #endif
@@ -1373,7 +1373,7 @@ int fcgi_accept_request(fcgi_request *req)
 				}
 
 				req->hook.on_accept();
-#ifdef _WIN32
+#ifdef WIN32
 				if (!req->tcp) {
 					pipe = (HANDLE)_get_osfhandle(req->listen_socket);
 					FCGI_LOCK(req->listen_socket);
@@ -1416,7 +1416,7 @@ int fcgi_accept_request(fcgi_request *req)
 					}
 				}
 
-#ifdef _WIN32
+#ifdef WIN32
 				if (req->fd < 0 && (in_shutdown || errno != EINTR)) {
 #else
 				if (req->fd < 0 && (in_shutdown || (errno != EINTR && errno != ECONNABORTED))) {
@@ -1424,7 +1424,7 @@ int fcgi_accept_request(fcgi_request *req)
 					return -1;
 				}
 
-#ifdef _WIN32
+#ifdef WIN32
 				break;
 #else
 				if (req->fd >= 0) {
@@ -1472,7 +1472,7 @@ int fcgi_accept_request(fcgi_request *req)
 		}
 		req->hook.on_read();
 		if (fcgi_read_request(req)) {
-#ifdef _WIN32
+#ifdef WIN32
 			if (is_impersonate && !req->tcp) {
 				pipe = (HANDLE)_get_osfhandle(req->fd);
 				if (!ImpersonateNamedPipeClient(pipe)) {
@@ -1715,7 +1715,7 @@ void fcgi_loadenv(fcgi_request *req, fcgi_apply_func func, zval *array)
 	fcgi_hash_apply(&req->env, func, array);
 }
 
-#ifdef _WIN32
+#ifdef WIN32
 void fcgi_impersonate(void)
 {
 	char *os_name;

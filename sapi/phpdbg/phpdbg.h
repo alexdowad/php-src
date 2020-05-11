@@ -44,7 +44,7 @@
 #include "zend_ini_scanner.h"
 #include "zend_stream.h"
 #include "zend_signal.h"
-#if !defined(_WIN32) && !defined(ZEND_SIGNALS)
+#if !defined(WIN32) && !defined(ZEND_SIGNALS)
 #	include <signal.h>
 #elif defined(WIN32)
 #	include "win32/signal.h"
@@ -52,7 +52,7 @@
 #include "SAPI.h"
 #include <fcntl.h>
 #include <sys/types.h>
-#if defined(_WIN32) && !defined(__MINGW32__)
+#if defined(WIN32) && !defined(__MINGW32__)
 #	include <windows.h>
 #	include "config.w32.h"
 #	undef  strcasecmp
@@ -92,7 +92,7 @@
 #endif
 
 /* {{{ remote console headers */
-#ifndef _WIN32
+#ifndef WIN32
 #	include <sys/socket.h>
 #	include <sys/un.h>
 #	include <sys/select.h>
@@ -205,7 +205,7 @@ int phpdbg_do_parse(phpdbg_param_t *stack, char *input);
 
 #define PHPDBG_PRESERVE_FLAGS_MASK    (PHPDBG_SHOW_REFCOUNTS | PHPDBG_IS_STEPONEVAL | PHPDBG_IS_BP_ENABLED | PHPDBG_STEP_OPCODE | PHPDBG_IS_QUIET | PHPDBG_IS_COLOURED | PHPDBG_IS_REMOTE | PHPDBG_WRITE_XML | PHPDBG_IS_DISCONNECTED | PHPDBG_HAS_PAGINATION)
 
-#ifndef _WIN32
+#ifndef WIN32
 #	define PHPDBG_DEFAULT_FLAGS (PHPDBG_IS_QUIET | PHPDBG_IS_COLOURED | PHPDBG_IS_BP_ENABLED | PHPDBG_HAS_PAGINATION)
 #else
 #	define PHPDBG_DEFAULT_FLAGS (PHPDBG_IS_QUIET | PHPDBG_IS_BP_ENABLED | PHPDBG_HAS_PAGINATION)
@@ -249,7 +249,7 @@ ZEND_BEGIN_MODULE_GLOBALS(phpdbg)
 	phpdbg_lexer_data lexer;                     /* lexer data */
 	phpdbg_param_t *parser_stack;                /* param stack during lexer / parser phase */
 
-#ifndef _WIN32
+#ifndef WIN32
 	struct sigaction old_sigsegv_signal;         /* segv signal handler */
 #endif
 	phpdbg_btree watchpoint_tree;                /* tree with watchpoints */

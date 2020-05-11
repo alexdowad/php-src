@@ -2427,7 +2427,7 @@ static int php_openssl_sockop_set_option(php_stream *stream, int option, int val
 
 				if (value == -1) {
 					if (sslsock->s.timeout.tv_sec == -1) {
-#ifdef _WIN32
+#ifdef WIN32
 						tv.tv_sec = (long)FG(default_socket_timeout);
 #else
 						tv.tv_sec = (time_t)FG(default_socket_timeout);
@@ -2650,7 +2650,7 @@ php_stream *php_openssl_ssl_socket_factory(const char *proto, size_t protolen,
 
 	sslsock->s.is_blocked = 1;
 	/* this timeout is used by standard stream funcs, therefor it should use the default value */
-#ifdef _WIN32
+#ifdef WIN32
 	sslsock->s.timeout.tv_sec = (long)FG(default_socket_timeout);
 #else
 	sslsock->s.timeout.tv_sec = (time_t)FG(default_socket_timeout);

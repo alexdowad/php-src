@@ -31,7 +31,7 @@ ZEND_EXTERN_MODULE_GLOBALS(phpdbg)
 const phpdbg_command_t phpdbg_set_commands[] = {
 	PHPDBG_SET_COMMAND_D(prompt,       "usage: set prompt [<string>]",            'p', set_prompt,       NULL, "|s", 0),
 	PHPDBG_SET_COMMAND_D(pagination,   "usage: set pagination [<on|off>]",        'P', set_pagination,   NULL, "|b", PHPDBG_ASYNC_SAFE),
-#ifndef _WIN32
+#ifndef WIN32
 	PHPDBG_SET_COMMAND_D(color,        "usage: set color  <element> <color>",     'c', set_color,        NULL, "ss", PHPDBG_ASYNC_SAFE),
 	PHPDBG_SET_COMMAND_D(colors,       "usage: set colors [<on|off>]",            'C', set_colors,       NULL, "|b", PHPDBG_ASYNC_SAFE),
 #endif
@@ -139,7 +139,7 @@ PHPDBG_SET(breaks) /* {{{ */
 	return SUCCESS;
 } /* }}} */
 
-#ifndef _WIN32
+#ifndef WIN32
 PHPDBG_SET(color) /* {{{ */
 {
 	const phpdbg_color_t *color = phpdbg_get_color(param->next->str, param->next->len);

@@ -45,7 +45,7 @@ static zend_always_inline int zend_ulong_ntz(zend_ulong num)
 	return __builtin_ctzl(num);
 #elif (defined(__GNUC__) || __has_builtin(__builtin_ctzll)) && defined(PHP_HAVE_BUILTIN_CTZLL)
 	return __builtin_ctzll(num);
-#elif defined(_WIN32)
+#elif defined(WIN32)
 	unsigned long index;
 
 #if defined(_WIN64)

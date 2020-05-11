@@ -27,7 +27,7 @@ extern "C" {
 
 
 #include <sys/types.h>
-#if defined(_WIN32) && !defined(__MINGW32__)
+#if defined(WIN32) && !defined(__MINGW32__)
 # include <windows.h>
 # include "config.w32.h"
 #else

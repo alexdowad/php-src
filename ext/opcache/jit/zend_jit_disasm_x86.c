@@ -34,7 +34,7 @@ static void zend_jit_disasm_add_symbol(const char *name,
                                        uint64_t    addr,
                                        uint64_t    size);
 
-#ifndef _WIN32
+#ifndef WIN32
 # include "jit/zend_elf.c"
 #endif
 
@@ -44,7 +44,7 @@ static void zend_jit_disasm_add_symbol(const char *name,
 # define _GNU_SOURCE
 #endif
 
-#ifndef _WIN32
+#ifndef WIN32
 #include <dlfcn.h>
 #endif
 
@@ -219,7 +219,7 @@ static const char* zend_jit_disasm_resolver(struct ud *ud,
                                             uint64_t   addr,
                                             int64_t   *offset)
 {
-#ifndef _WIN32
+#ifndef WIN32
 	((void)ud);
 	const char *name;
 	void *a = (void*)(zend_uintptr_t)(addr);
@@ -456,7 +456,7 @@ static int zend_jit_disasm_init(void)
 	REGISTER_HELPER(zend_jit_check_constant);
 #undef  REGISTER_HELPER
 
-#ifndef _WIN32
+#ifndef WIN32
 	zend_elf_load_symbols();
 #endif
 

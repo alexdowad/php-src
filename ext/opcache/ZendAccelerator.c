@@ -2681,7 +2681,7 @@ static void accel_gen_system_id(void)
 }
 
 #ifdef HAVE_HUGE_CODE_PAGES
-# ifndef _WIN32
+# ifndef WIN32
 #  include <sys/mman.h>
 #  ifndef MAP_ANON
 #   ifdef MAP_ANONYMOUS
@@ -2941,7 +2941,7 @@ static int accel_post_startup(void)
 		    ZCG(accel_directives).jit_buffer_size) {
 			size_t page_size;
 
-# ifdef _WIN32
+# ifdef WIN32
 			SYSTEM_INFO system_info;
 			GetSystemInfo(&system_info);
 			page_size = system_info.dwPageSize;

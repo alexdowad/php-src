@@ -175,7 +175,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compi
 
 	compiler->local_size = local_size;
 
-#ifdef _WIN32
+#ifdef WIN32
 	if (local_size > 0) {
 		if (local_size <= 4 * 4096) {
 			if (local_size > 4096)
@@ -219,7 +219,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compi
 		FAIL_IF(emit_non_cum_binary(compiler, BINARY_OPCODE(SUB),
 			SLJIT_SP, 0, SLJIT_SP, 0, SLJIT_IMM, local_size + sizeof(sljit_sw)));
 
-#if defined _WIN32 && !(defined SLJIT_X86_32_FASTCALL && SLJIT_X86_32_FASTCALL)
+#if defined(WIN32) && !(defined SLJIT_X86_32_FASTCALL && SLJIT_X86_32_FASTCALL)
 		if (compiler->local_size > 1024)
 			FAIL_IF(emit_cum_binary(compiler, BINARY_OPCODE(ADD),
 				TMP_REG1, 0, TMP_REG1, 0, SLJIT_IMM, sizeof(sljit_sw)));

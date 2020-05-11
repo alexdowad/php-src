@@ -79,7 +79,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#ifndef _WIN32
+#ifndef WIN32
 # include <sys/mman.h>
 # ifndef MAP_ANON
 #  ifdef MAP_ANONYMOUS
@@ -393,7 +393,7 @@ static ZEND_COLD ZEND_NORETURN void zend_mm_safe_error(zend_mm_heap *heap,
 	exit(1);
 }
 
-#ifdef _WIN32
+#ifdef WIN32
 void
 stderr_last_error(char *msg)
 {
@@ -418,7 +418,7 @@ stderr_last_error(char *msg)
 #ifndef HAVE_MREMAP
 static void *zend_mm_mmap_fixed(void *addr, size_t size)
 {
-#ifdef _WIN32
+#ifdef WIN32
 	return VirtualAlloc(addr, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 #else
 	int flags = MAP_PRIVATE | MAP_ANON;
@@ -448,7 +448,7 @@ static void *zend_mm_mmap_fixed(void *addr, size_t size)
 
 static void *zend_mm_mmap(size_t size)
 {
-#ifdef _WIN32
+#ifdef WIN32
 	void *ptr = VirtualAlloc(NULL, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
 	if (ptr == NULL) {
@@ -484,7 +484,7 @@ static void *zend_mm_mmap(size_t size)
 
 static void zend_mm_munmap(void *addr, size_t size)
 {
-#ifdef _WIN32
+#ifdef WIN32
 	if (VirtualFree(addr, 0, MEM_RELEASE) == 0) {
 #if ZEND_MM_ERROR
 		stderr_last_error("VirtualFree() failed");
@@ -510,7 +510,7 @@ static zend_always_inline int zend_mm_bitset_nts(zend_mm_bitset bitset)
 	return __builtin_ctzl(~bitset);
 #elif (defined(__GNUC__) || __has_builtin(__builtin_ctzll)) && defined(PHP_HAVE_BUILTIN_CTZLL)
 	return __builtin_ctzll(~bitset);
-#elif defined(_WIN32)
+#elif defined(WIN32)
 	unsigned long index;
 
 #if defined(_WIN64)
@@ -680,7 +680,7 @@ static void *zend_mm_chunk_alloc_int(size_t size, size_t alignment)
 		/* chunk has to be aligned */
 		zend_mm_munmap(ptr, size);
 		ptr = zend_mm_mmap(size + alignment - REAL_PAGE_SIZE);
-#ifdef _WIN32
+#ifdef WIN32
 		offset = ZEND_MM_ALIGNED_OFFSET(ptr, alignment);
 		zend_mm_munmap(ptr, size + alignment - REAL_PAGE_SIZE);
 		ptr = zend_mm_mmap_fixed((void*)((char*)ptr + (alignment - offset)), size);
@@ -745,7 +745,7 @@ static int zend_mm_chunk_truncate(zend_mm_heap *heap, void *addr, size_t old_siz
 		}
 	}
 #endif
-#ifndef _WIN32
+#ifndef WIN32
 	zend_mm_munmap((char*)addr + new_size, old_size - new_size);
 	return 1;
 #else
@@ -773,7 +773,7 @@ static int zend_mm_chunk_extend(zend_mm_heap *heap, void *addr, size_t old_size,
 	/* Sanity check: The mapping shouldn't have moved. */
 	ZEND_ASSERT(ptr == addr);
 	return 1;
-#elif !defined(_WIN32)
+#elif !defined(WIN32)
 	return (zend_mm_mmap_fixed((char*)addr + old_size, new_size - old_size) != NULL);
 #else
 	return 0;
@@ -1126,7 +1126,7 @@ static zend_always_inline int zend_mm_small_size_to_bit(int size)
 {
 #if (defined(__GNUC__) || __has_builtin(__builtin_clz))  && defined(PHP_HAVE_BUILTIN_CLZ)
 	return (__builtin_clz(size) ^ 0x1f) + 1;
-#elif defined(_WIN32)
+#elif defined(WIN32)
 	unsigned long index;
 
 	if (!BitScanReverse(&index, (unsigned long)size)) {
@@ -1846,7 +1846,7 @@ static zend_mm_heap *zend_mm_init(void)
 
 	if (UNEXPECTED(chunk == NULL)) {
 #if ZEND_MM_ERROR
-#ifdef _WIN32
+#ifdef WIN32
 		stderr_last_error("Can't initialize heap");
 #else
 		fprintf(stderr, "\nCan't initialize heap: [%d] %s\n", errno, strerror(errno));
@@ -2796,7 +2796,7 @@ ZEND_API void start_memory_manager(void)
 #else
 	alloc_globals_ctor(&alloc_globals);
 #endif
-#ifndef _WIN32
+#ifndef WIN32
 #  if defined(_SC_PAGESIZE)
 	REAL_PAGE_SIZE = sysconf(_SC_PAGESIZE);
 #  elif defined(_SC_PAGE_SIZE)
@@ -2914,7 +2914,7 @@ ZEND_API zend_mm_heap *zend_mm_startup_ex(const zend_mm_handlers *handlers, void
 	chunk = (zend_mm_chunk*)handlers->chunk_alloc(&tmp_storage, ZEND_MM_CHUNK_SIZE, ZEND_MM_CHUNK_SIZE);
 	if (UNEXPECTED(chunk == NULL)) {
 #if ZEND_MM_ERROR
-#ifdef _WIN32
+#ifdef WIN32
 		stderr_last_error("Can't initialize heap");
 #else
 		fprintf(stderr, "\nCan't initialize heap: [%d] %s\n", errno, strerror(errno));
@@ -2961,7 +2961,7 @@ ZEND_API zend_mm_heap *zend_mm_startup_ex(const zend_mm_handlers *handlers, void
 	if (!storage) {
 		handlers->chunk_free(&tmp_storage, chunk, ZEND_MM_CHUNK_SIZE);
 #if ZEND_MM_ERROR
-#ifdef _WIN32
+#ifdef WIN32
 		stderr_last_error("Can't initialize heap");
 #else
 		fprintf(stderr, "\nCan't initialize heap: [%d] %s\n", errno, strerror(errno));

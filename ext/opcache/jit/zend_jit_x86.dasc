@@ -7613,7 +7613,7 @@ static int zend_jit_push_call_frame(dasm_State **Dst, const zend_op *opline, con
 		if (func) {
 			|	mov FCARG1d, used_stack
 		}
-#ifdef _WIN32
+#ifdef WIN32
 		if (0) {
 #else
 		if (func && func->type == ZEND_INTERNAL_FUNCTION) {
@@ -7637,7 +7637,7 @@ static int zend_jit_push_call_frame(dasm_State **Dst, const zend_op *opline, con
 	|	// ZEND_SET_CALL_INFO(call, 0, call_info);
 	|	mov dword EX:RX->This.u1.type_info, (IS_UNDEF | ZEND_CALL_NESTED_FUNCTION)
 	|	// call->func = func;
-#ifdef _WIN32
+#ifdef WIN32
 	if (0) {
 #else
 	if (func && func->type == ZEND_INTERNAL_FUNCTION) {
@@ -7854,7 +7854,7 @@ static int zend_jit_init_fcall(dasm_State **Dst, const zend_op *opline, uint32_t
 	if (!func
 	 && trace
 	 && trace->op == ZEND_JIT_TRACE_INIT_CALL) {
-#ifdef _WIN32
+#ifdef WIN32
 		/* ASLR */
 		if (trace->func->type != ZEND_INTERNAL_FUNCTION) {
 			func = (zend_function*)trace->func;
@@ -7864,7 +7864,7 @@ static int zend_jit_init_fcall(dasm_State **Dst, const zend_op *opline, uint32_t
 #endif
 	}
 
-#ifdef _WIN32
+#ifdef WIN32
 	if (0) {
 #else
 	if (opline->opcode == ZEND_INIT_FCALL

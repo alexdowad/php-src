@@ -21,7 +21,7 @@
 
 #include "phpdbg_cmd.h"
 
-#ifdef _WIN32
+#ifdef WIN32
 #	include "phpdbg_win.h"
 #endif
 
@@ -118,7 +118,7 @@ typedef struct {
 void phpdbg_setup_watchpoints(void);
 void phpdbg_destroy_watchpoints(void);
 
-#ifndef _WIN32
+#ifndef WIN32
 int phpdbg_watchpoint_segfault_handler(siginfo_t *info, void *context);
 #else
 int phpdbg_watchpoint_segfault_handler(void *addr);

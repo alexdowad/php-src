@@ -24,7 +24,7 @@
 #include "phpdbg_eol.h"
 #include "ext/standard/html.h"
 
-#ifdef _WIN32
+#ifdef WIN32
 #	include "win32/time.h"
 #endif
 

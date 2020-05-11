@@ -33,7 +33,7 @@
 # include <sys/time.h>
 #endif
 
-#ifdef _WIN32
+#ifdef WIN32
 # ifdef HAVE_WINSOCK2_H
 #  include <winsock2.h>
 # endif

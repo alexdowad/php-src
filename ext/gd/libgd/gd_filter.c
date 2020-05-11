@@ -2,7 +2,7 @@
 
 #include "gd_intern.h"
 
-#ifdef _WIN32
+#ifdef WIN32
 # include <windows.h>
 #else
 # include <unistd.h>
@@ -20,7 +20,7 @@
 /* Begin filters function */
 #define GET_PIXEL_FUNCTION(src)(src->trueColor?gdImageGetTrueColorPixel:gdImageGetPixel)
 
-#ifdef _WIN32
+#ifdef WIN32
 # define GD_SCATTER_SEED() (unsigned int)(time(0) * GetCurrentProcessId())
 #else
 # define GD_SCATTER_SEED() (unsigned int)(time(0) * getpid())

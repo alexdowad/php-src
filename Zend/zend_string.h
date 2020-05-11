@@ -369,7 +369,7 @@ static zend_always_inline zend_ulong zend_inline_hash_func(const char *str, size
 {
 	zend_ulong hash = Z_UL(5381);
 
-#if defined(_WIN32) || defined(__i386__) || defined(__x86_64__) || defined(__aarch64__)
+#if defined(WIN32) || defined(__i386__) || defined(__x86_64__) || defined(__aarch64__)
 	/* Version with multiplication works better on modern CPU */
 	for (; len >= 8; len -= 8, str += 8) {
 # if defined(__aarch64__) && !defined(WORDS_BIGENDIAN)

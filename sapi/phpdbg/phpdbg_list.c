@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
-#ifndef _WIN32
+#ifndef WIN32
 #	include <sys/mman.h>
 #	include <unistd.h>
 #endif

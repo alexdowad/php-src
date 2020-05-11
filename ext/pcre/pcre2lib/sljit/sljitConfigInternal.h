@@ -114,7 +114,7 @@
 
 #if (defined SLJIT_CONFIG_AUTO && SLJIT_CONFIG_AUTO)
 
-#ifndef _WIN32
+#ifndef WIN32
 
 #if defined(__i386__) || defined(__i386)
 #define SLJIT_CONFIG_X86_32 1
@@ -147,7 +147,7 @@
 #define SLJIT_CONFIG_UNSUPPORTED 1
 #endif
 
-#else /* _WIN32 */
+#else /* WIN32 */
 
 #if defined(_M_X64) || defined(__x86_64__)
 #define SLJIT_CONFIG_X86_64 1
@@ -163,7 +163,7 @@
 #define SLJIT_CONFIG_X86_32 1
 #endif
 
-#endif /* !_WIN32 */
+#endif /* !WIN32 */
 #endif /* SLJIT_CONFIG_AUTO */
 
 #if (defined SLJIT_CONFIG_UNSUPPORTED && SLJIT_CONFIG_UNSUPPORTED)
@@ -334,7 +334,7 @@
 	sparc_cache_flush((from), (to))
 #define SLJIT_CACHE_FLUSH_OWN_IMPL 1
 
-#elif defined _WIN32
+#elif defined(WIN32)
 
 #define SLJIT_CACHE_FLUSH(from, to) \
 	FlushInstructionCache(GetCurrentProcess(), (char*)(from), (char*)(to) - (char*)(from))
@@ -385,7 +385,7 @@ typedef int sljit_sw;
 #else
 #define SLJIT_64BIT_ARCHITECTURE 1
 #define SLJIT_WORD_SHIFT 3
-#ifdef _WIN32
+#ifdef WIN32
 #ifdef __GNUC__
 /* These types do not require windows.h */
 typedef unsigned long long sljit_uw;
@@ -394,10 +394,10 @@ typedef long long sljit_sw;
 typedef unsigned __int64 sljit_uw;
 typedef __int64 sljit_sw;
 #endif
-#else /* !_WIN32 */
+#else /* !WIN32 */
 typedef unsigned long int sljit_uw;
 typedef long int sljit_sw;
-#endif /* _WIN32 */
+#endif /* WIN32 */
 #endif
 
 typedef sljit_uw sljit_p;

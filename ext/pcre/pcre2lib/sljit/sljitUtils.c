@@ -60,7 +60,7 @@ SLJIT_API_FUNC_ATTRIBUTE void SLJIT_FUNC sljit_release_lock(void)
 
 #endif /* SLJIT_UTIL_GLOBAL_LOCK */
 
-#elif defined(_WIN32) /* SLJIT_SINGLE_THREADED */
+#elif defined(WIN32) /* SLJIT_SINGLE_THREADED */
 
 #include "windows.h"
 
@@ -104,7 +104,7 @@ SLJIT_API_FUNC_ATTRIBUTE void SLJIT_FUNC sljit_release_lock(void)
 
 #endif /* SLJIT_UTIL_GLOBAL_LOCK */
 
-#else /* _WIN32 */
+#else /* WIN32 */
 
 #if (defined SLJIT_EXECUTABLE_ALLOCATOR && SLJIT_EXECUTABLE_ALLOCATOR)
 
@@ -142,7 +142,7 @@ SLJIT_API_FUNC_ATTRIBUTE void SLJIT_FUNC sljit_release_lock(void)
 
 #endif /* SLJIT_UTIL_GLOBAL_LOCK */
 
-#endif /* _WIN32 */
+#endif /* WIN32 */
 
 /* ------------------------------------------------------------------------ */
 /*  Stack                                                                   */
@@ -150,7 +150,7 @@ SLJIT_API_FUNC_ATTRIBUTE void SLJIT_FUNC sljit_release_lock(void)
 
 #if (defined SLJIT_UTIL_STACK && SLJIT_UTIL_STACK) || (defined SLJIT_EXECUTABLE_ALLOCATOR && SLJIT_EXECUTABLE_ALLOCATOR)
 
-#ifdef _WIN32
+#ifdef WIN32
 #include "windows.h"
 #else
 /* Provides mmap function. */
@@ -213,7 +213,7 @@ SLJIT_API_FUNC_ATTRIBUTE struct sljit_stack* SLJIT_FUNC sljit_allocate_stack(slj
 {
 	struct sljit_stack *stack;
 	void *ptr;
-#ifdef _WIN32
+#ifdef WIN32
 	SYSTEM_INFO si;
 #endif
 
@@ -221,7 +221,7 @@ SLJIT_API_FUNC_ATTRIBUTE struct sljit_stack* SLJIT_FUNC sljit_allocate_stack(slj
 	if (start_size > max_size || start_size < 1)
 		return NULL;
 
-#ifdef _WIN32
+#ifdef WIN32
 	if (!sljit_page_align) {
 		GetSystemInfo(&si);
 		sljit_page_align = si.dwPageSize - 1;
@@ -243,7 +243,7 @@ SLJIT_API_FUNC_ATTRIBUTE struct sljit_stack* SLJIT_FUNC sljit_allocate_stack(slj
 	/* Align max_size. */
 	max_size = (max_size + sljit_page_align) & ~sljit_page_align;
 
-#ifdef _WIN32
+#ifdef WIN32
 	ptr = VirtualAlloc(NULL, max_size, MEM_RESERVE, PAGE_READWRITE);
 	if (!ptr) {
 		SLJIT_FREE(stack, allocator_data);
@@ -287,7 +287,7 @@ SLJIT_API_FUNC_ATTRIBUTE struct sljit_stack* SLJIT_FUNC sljit_allocate_stack(slj
 SLJIT_API_FUNC_ATTRIBUTE void SLJIT_FUNC sljit_free_stack(struct sljit_stack *stack, void *allocator_data)
 {
 	SLJIT_UNUSED_ARG(allocator_data);
-#ifdef _WIN32
+#ifdef WIN32
 	VirtualFree((void*)stack->min_start, 0, MEM_RELEASE);
 #else
 	munmap((void*)stack->min_start, stack->end - stack->min_start);
@@ -303,7 +303,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_u8 *SLJIT_FUNC sljit_stack_resize(struct sljit_st
 	if ((new_start < stack->min_start) || (new_start >= stack->end))
 		return NULL;
 
-#ifdef _WIN32
+#ifdef WIN32
 	aligned_new_start = (sljit_uw)new_start & ~sljit_page_align;
 	aligned_old_start = ((sljit_uw)stack->start) & ~sljit_page_align;
 	if (aligned_new_start != aligned_old_start) {

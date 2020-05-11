@@ -5268,7 +5268,7 @@ static void zend_ffi_finalize_type(zend_ffi_dcl *dcl) /* {{{ */
 				dcl->type = (zend_ffi_type*)&zend_ffi_type_double;
 				break;
 			case ZEND_FFI_DCL_LONG|ZEND_FFI_DCL_DOUBLE:
-#ifdef _WIN32
+#ifdef WIN32
 				dcl->type = (zend_ffi_type*)&zend_ffi_type_double;
 #else
 				dcl->type = (zend_ffi_type*)&zend_ffi_type_long_double;
@@ -7116,7 +7116,7 @@ void zend_ffi_expr_sizeof_val(zend_ffi_val *val) /* {{{ */
 		val->u64 = zend_ffi_type_double.size;
 	} else if (val->kind == ZEND_FFI_VAL_LONG_DOUBLE) {
 		val->kind = ZEND_FFI_VAL_UINT32;
-#ifdef _WIN32
+#ifdef WIN32
 		val->u64 = zend_ffi_type_double.size;
 #else
 		val->u64 = zend_ffi_type_long_double.size;

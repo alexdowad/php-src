@@ -42,8 +42,8 @@ This file is public domain and comes with NO WARRANTY of any kind */
 
 
 #ifndef _WIN64
-#ifndef _WIN32
-#define _WIN32				/* Compatible with old source */
+#ifndef WIN32
+#define WIN32				/* Compatible with old source */
 #endif
 #ifndef __WIN32__
 #define __WIN32__

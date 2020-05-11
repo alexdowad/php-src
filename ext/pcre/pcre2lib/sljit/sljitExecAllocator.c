@@ -79,7 +79,7 @@
        as it only uses local variables
 */
 
-#ifdef _WIN32
+#ifdef WIN32
 
 static SLJIT_INLINE void* alloc_chunk(sljit_uw size)
 {

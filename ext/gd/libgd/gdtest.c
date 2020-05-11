@@ -1,5 +1,5 @@
 #include <stdio.h>
-#ifdef _WIN32
+#ifdef WIN32
 #include <process.h>
 int
 unlink (const char *filename)

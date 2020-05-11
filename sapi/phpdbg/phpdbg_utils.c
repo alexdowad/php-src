@@ -334,7 +334,7 @@ int phpdbg_rebuild_symtable(void) {
 PHPDBG_API int phpdbg_get_terminal_width(void) /* {{{ */
 {
 	int columns;
-#ifdef _WIN32
+#ifdef WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
@@ -352,7 +352,7 @@ PHPDBG_API int phpdbg_get_terminal_width(void) /* {{{ */
 PHPDBG_API int phpdbg_get_terminal_height(void) /* {{{ */
 {
 	int lines;
-#ifdef _WIN32
+#ifdef WIN32
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
@@ -368,7 +368,7 @@ PHPDBG_API int phpdbg_get_terminal_height(void) /* {{{ */
 } /* }}} */
 
 PHPDBG_API void phpdbg_set_async_io(int fd) {
-#if !defined(_WIN32) && defined(FASYNC)
+#if !defined(WIN32) && defined(FASYNC)
 	int flags;
 	fcntl(STDIN_FILENO, F_SETOWN, getpid());
 	flags = fcntl(STDIN_FILENO, F_GETFL);

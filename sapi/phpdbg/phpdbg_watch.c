@@ -106,7 +106,7 @@
 #include "phpdbg_watch.h"
 #include "phpdbg_utils.h"
 #include "phpdbg_prompt.h"
-#ifndef _WIN32
+#ifndef WIN32
 # include <unistd.h>
 # include <sys/mman.h>
 #endif
@@ -250,14 +250,14 @@ static inline void phpdbg_deactivate_watchpoint(phpdbg_watchpoint_t *watch) {
 }
 
 /* Note that consecutive pages need to be merged in order to avoid watchpoints spanning page boundaries to have part of their data in the one page, part in the other page */
-#ifdef _WIN32
+#ifdef WIN32
 int phpdbg_watchpoint_segfault_handler(void *addr) {
 #else
 int phpdbg_watchpoint_segfault_handler(siginfo_t *info, void *context) {
 #endif
 
 	void *page = phpdbg_get_page_boundary(
-#ifdef _WIN32
+#ifdef WIN32
 		addr
 #else
 		info->si_addr

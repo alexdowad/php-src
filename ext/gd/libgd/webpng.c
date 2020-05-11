@@ -6,7 +6,7 @@
 #include <stdlib.h>		/* for atoi() */
 #include <string.h>
 
-#ifdef _WIN32
+#ifdef WIN32
 #include <process.h>
 int
 getpid ()

@@ -1059,7 +1059,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compi
 {
 	sljit_s32 args, size, i, tmp;
 	sljit_ins push = 0;
-#ifdef _WIN32
+#ifdef WIN32
 	sljit_uw imm;
 #endif
 
@@ -1083,7 +1083,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compi
 	local_size = ((size + local_size + 7) & ~7) - size;
 	compiler->local_size = local_size;
 
-#ifdef _WIN32
+#ifdef WIN32
 	if (local_size >= 256) {
 		if (local_size > 4096)
 			imm = get_imm(4096);
@@ -1111,7 +1111,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compi
 	if (args >= 3)
 		FAIL_IF(push_inst16(compiler, MOV | SET_REGS44(SLJIT_S2, SLJIT_R2)));
 
-#ifdef _WIN32
+#ifdef WIN32
 	if (local_size >= 256) {
 		if (local_size > 4096) {
 			imm = get_imm(4096);
@@ -1223,7 +1223,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_return(struct sljit_compiler *comp
 extern "C" {
 #endif
 
-#ifdef _WIN32
+#ifdef WIN32
 extern unsigned long long __rt_udiv(unsigned int denominator, unsigned int numerator);
 extern long long __rt_sdiv(int denominator, int numerator);
 #elif defined(__GNUC__)
@@ -1301,7 +1301,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_op0(struct sljit_compiler *compile
 			}
 		}
 
-#ifdef _WIN32
+#ifdef WIN32
 		FAIL_IF(push_inst16(compiler, MOV | SET_REGS44(TMP_REG1, SLJIT_R0)));
 		FAIL_IF(push_inst16(compiler, MOV | SET_REGS44(SLJIT_R0, SLJIT_R1)));
 		FAIL_IF(push_inst16(compiler, MOV | SET_REGS44(SLJIT_R1, TMP_REG1)));

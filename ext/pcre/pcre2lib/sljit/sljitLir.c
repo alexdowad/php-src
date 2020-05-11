@@ -26,12 +26,12 @@
 
 #include "sljitLir.h"
 
-#ifdef _WIN32
+#ifdef WIN32
 
 /* For SLJIT_CACHE_FLUSH, which can expand to FlushInstructionCache. */
 #include <windows.h>
 
-#endif /* _WIN32 */
+#endif /* WIN32 */
 
 #if !(defined SLJIT_STD_MACROS_DEFINED && SLJIT_STD_MACROS_DEFINED)
 

@@ -934,7 +934,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compi
 	FAIL_IF(push_inst(compiler, STP_PRE | RT(TMP_FP) | RT2(TMP_LR)
 		| RN(SLJIT_SP) | ((-(saved_regs_size >> 3) & 0x7f) << 15)));
 
-#ifdef _WIN32
+#ifdef WIN32
 	if (local_size >= 4096)
 		FAIL_IF(push_inst(compiler, SUBI | RD(TMP_REG1) | RN(SLJIT_SP) | (1 << 10) | (1 << 22)));
 	else if (local_size > 256)
@@ -979,7 +979,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compi
 	if (args >= 3)
 		FAIL_IF(push_inst(compiler, ORR | RD(SLJIT_S2) | RN(TMP_ZERO) | RM(SLJIT_R2)));
 
-#ifdef _WIN32
+#ifdef WIN32
 	if (local_size >= 4096) {
 		if (local_size < 4 * 4096) {
 			/* No need for a loop. */
@@ -1025,7 +1025,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compi
 	else if (local_size > 0)
 		FAIL_IF(push_inst(compiler, LDR_PRE | RT(TMP_ZERO) | RN(SLJIT_SP) | ((-local_size & 0x1ff) << 12)));
 
-#else /* !_WIN32 */
+#else /* !WIN32 */
 
 	/* The local_size does not include saved registers size. */
 	if (local_size > 0xfff) {
@@ -1035,7 +1035,7 @@ SLJIT_API_FUNC_ATTRIBUTE sljit_s32 sljit_emit_enter(struct sljit_compiler *compi
 	if (local_size != 0)
 		FAIL_IF(push_inst(compiler, SUBI | RD(SLJIT_SP) | RN(SLJIT_SP) | (local_size << 10)));
 
-#endif /* _WIN32 */
+#endif /* WIN32 */
 
 	return SLJIT_SUCCESS;
 }

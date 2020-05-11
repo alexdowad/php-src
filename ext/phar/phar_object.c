@@ -1695,7 +1695,7 @@ after_open_fp:
 		if (php_stream_stat(fp, &ssb) != -1) {
 			data->internal_file->flags = ssb.sb.st_mode & PHAR_ENT_PERM_MASK ;
 		} else {
-#ifndef _WIN32
+#ifndef WIN32
 			mode_t mask;
 			mask = umask(0);
 			umask(mask);
@@ -3701,7 +3701,7 @@ static void phar_add_file(phar_archive_data **pphar, char *filename, size_t file
 		if (contents_file != NULL && php_stream_stat(contents_file, &ssb) != -1) {
 			data->internal_file->flags = ssb.sb.st_mode & PHAR_ENT_PERM_MASK ;
 		} else {
-#ifndef _WIN32
+#ifndef WIN32
 			mode_t mask;
 			mask = umask(0);
 			umask(mask);

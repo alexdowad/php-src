@@ -5012,7 +5012,7 @@ EOF
 # define PATH_SEPARATOR ':'
 #endif
 
-#if defined (_WIN32) || defined (__MSDOS__) || defined (__DJGPP__) || \
+#if defined(WIN32) || defined(__MSDOS__) || defined(__DJGPP__) || \
   defined (__OS2__)
 # define HAVE_DOS_BASED_FILE_SYSTEM
 # ifndef DIR_SEPARATOR_2

@@ -172,7 +172,7 @@ typedef uint32_t zend_regset;
 	(ZEND_REGSET(ZREG_RBX) | ZEND_REGSET(ZREG_RBP))
 #endif
 
-#ifndef _WIN32
+#ifndef WIN32
 #define ZEND_REGSET_FIRST(set) ((zend_reg)__builtin_ctz(set))
 #define ZEND_REGSET_LAST(set)  ((zend_reg)(__builtin_clz(set)^31)))
 #else

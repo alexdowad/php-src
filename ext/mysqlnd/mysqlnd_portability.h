@@ -28,15 +28,15 @@ This file is public domain and comes with NO WARRANTY of any kind */
 #undef WIN
 #undef WIN32
 #undef _WIN
-#undef _WIN32
+#undef WIN32
 #undef _WIN64
 #undef __WIN__
 #undef __WIN32__
 #endif /* __CYGWIN__ */
 
-#if defined(_WIN32) || defined(_WIN64) || defined(__WIN32__) || defined(WIN32)
+#if defined(WIN32) || defined(_WIN64) || defined(__WIN32__) || defined(WIN32)
 #  include "ext/mysqlnd/config-win.h"
-#endif /* _WIN32... */
+#endif /* WIN32... */
 
 #if __STDC_VERSION__ < 199901L && !defined(atoll)
   /* "inline" is a keyword */

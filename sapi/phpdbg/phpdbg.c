@@ -33,7 +33,7 @@
 #include "ext/standard/basic_functions.h"
 
 /* {{{ remote console headers */
-#ifndef _WIN32
+#ifndef WIN32
 #	include <sys/socket.h>
 #	include <sys/select.h>
 #	include <sys/time.h>
@@ -1051,7 +1051,7 @@ const opt_struct OPTIONS[] = { /* {{{ */
 	{'E', 0, "step-through-eval"},
 	{'s', 1, "script from stdin"},
 	{'S', 1, "sapi-name"},
-#ifndef _WIN32
+#ifndef WIN32
 	{'l', 1, "listen"},
 	{'a', 1, "address-or-any"},
 #endif
@@ -1178,7 +1178,7 @@ static int phpdbg_remote_init(const char* address, unsigned short port, int serv
 		phpdbg_rlog(fileno(stderr), "connection established from %s", buffer);
 	}
 
-#ifndef _WIN32
+#ifndef WIN32
 	dup2(*socket, fileno(stdout));
 	dup2(*socket, fileno(stdin));
 
@@ -1191,7 +1191,7 @@ static int phpdbg_remote_init(const char* address, unsigned short port, int serv
 	return SUCCESS;
 }
 
-#ifndef _WIN32
+#ifndef WIN32
 /* This function *strictly* assumes that SIGIO is *only* used on the remote connection stream */
 void phpdbg_sigio_handler(int sig, siginfo_t *info, void *context) /* {{{ */
 {
@@ -1362,7 +1362,7 @@ int main(int argc, char **argv) /* {{{ */
 	php_stream_wrapper_ops wops;
 
 
-#ifndef _WIN32
+#ifndef WIN32
 	struct sigaction sigio_struct;
 	struct sigaction signal_struct;
 	signal_struct.sa_sigaction = phpdbg_signal_handler;
@@ -1523,7 +1523,7 @@ phpdbg_main:
 				show_banner = 0;
 			break;
 
-#ifndef _WIN32
+#ifndef WIN32
 			/* if you pass a listen port, we will read and write on listen port */
 			case 'l': /* set listen ports */
 				if (sscanf(php_optarg, "%d", &listen) != 1) {
@@ -1646,7 +1646,7 @@ phpdbg_main:
 
 	if (phpdbg->startup(phpdbg) == SUCCESS) {
 		zend_mm_heap *mm_heap;
-#ifdef _WIN32
+#ifdef WIN32
     EXCEPTION_POINTERS *xp;
     __try {
 #endif
@@ -1699,13 +1699,13 @@ phpdbg_main:
 				exit(0);
 			}
 
-#ifndef _WIN32
+#ifndef WIN32
 			zend_sigaction(SIGIO, &sigio_struct, NULL);
 #endif
 
 			/* set remote flag to stop service shutting down upon quit */
 			remote = 1;
-#ifndef _WIN32
+#ifndef WIN32
 		} else {
 
 			zend_signal(SIGHUP, phpdbg_sighup_handler);
@@ -1768,7 +1768,7 @@ phpdbg_main:
 
 		if (php_request_startup() == FAILURE) {
 			PUTS("Could not startup");
-#ifndef _WIN32
+#ifndef WIN32
 			if (address) {
 				free(address);
 			}
@@ -1776,18 +1776,18 @@ phpdbg_main:
 			return 1;
 		}
 
-#ifndef _WIN32
+#ifndef WIN32
 		zend_try { zend_sigaction(SIGSEGV, &signal_struct, &PHPDBG_G(old_sigsegv_signal)); } zend_end_try();
 		zend_try { zend_sigaction(SIGBUS, &signal_struct, &PHPDBG_G(old_sigsegv_signal)); } zend_end_try();
 #endif
 
 		/* do not install sigint handlers for remote consoles */
 		/* sending SIGINT then provides a decent way of shutting down the server */
-#ifndef _WIN32
+#ifndef WIN32
 		if (listen < 0) {
 #endif
 			zend_try { zend_signal(SIGINT, phpdbg_sigint_handler); } zend_end_try();
-#ifndef _WIN32
+#ifndef WIN32
 		}
 
 		/* setup io here */
@@ -1820,7 +1820,7 @@ phpdbg_main:
 		PHPDBG_G(io)[PHPDBG_STDERR].ptr = stderr;
 		PHPDBG_G(io)[PHPDBG_STDERR].fd = fileno(stderr);
 
-#ifndef _WIN32
+#ifndef WIN32
 		PHPDBG_G(php_stdiop_write) = php_stream_stdio_ops.write;
 		php_stream_stdio_ops.write = phpdbg_stdiop_write;
 #endif
@@ -1937,7 +1937,7 @@ phpdbg_main:
 		phpdbg_fully_started = 1;
 
 /* #ifndef for making compiler shutting up */
-#ifndef _WIN32
+#ifndef WIN32
 phpdbg_interact:
 #endif
 		/* phpdbg main() */
@@ -1982,7 +1982,7 @@ phpdbg_interact:
 					cleaning = 0;
 				}
 
-#ifndef _WIN32
+#ifndef WIN32
 				if (!cleaning) {
 					/* remote client disconnected */
 					if ((PHPDBG_G(flags) & PHPDBG_IS_DISCONNECTED)) {
@@ -2009,7 +2009,7 @@ phpdbg_interact:
 		} while (!(PHPDBG_G(flags) & PHPDBG_IS_STOPPING));
 
 
-#ifndef _WIN32
+#ifndef WIN32
 phpdbg_out:
 		if ((PHPDBG_G(flags) & PHPDBG_IS_DISCONNECTED)) {
 			PHPDBG_G(flags) &= ~PHPDBG_IS_DISCONNECTED;
@@ -2017,7 +2017,7 @@ phpdbg_out:
 		}
 #endif
 
-#ifdef _WIN32
+#ifdef WIN32
 	} __except(phpdbg_exception_handler_win32(xp = GetExceptionInformation())) {
 		phpdbg_error("segfault", "", "Access violation (Segmentation fault) encountered\ntrying to abort cleanly...");
 	}
@@ -2125,7 +2125,7 @@ phpdbg_out:
 			Z_PTR_P(zv) = (void*)PHPDBG_G(orig_url_wrap_php);
 		}
 
-#ifndef _WIN32
+#ifndef WIN32
 		/* force override (no zend_signals) to prevent crashes due to signal recursion in SIGSEGV/SIGBUS handlers */
 		signal(SIGSEGV, SIG_DFL);
 		signal(SIGBUS, SIG_DFL);
@@ -2171,7 +2171,7 @@ free_and_return:
 		zend_string_free(backup_phpdbg_compile);
 	}
 
-#ifndef _WIN32
+#ifndef WIN32
 	if (address) {
 		free(address);
 	}

@@ -37,7 +37,7 @@
 #endif
 
 #ifndef MAXPATHLEN
-# if _WIN32
+# ifdef WIN32
 #  include "win32/ioutil.h"
 #  define MAXPATHLEN PHP_WIN32_IOUTIL_MAXPATHLEN
 # elif PATH_MAX
