@@ -45,7 +45,7 @@ extern zend_module_entry dom_module_entry;
 #if defined(LIBXML_XPTR_ENABLED)
 #include <libxml/xpointer.h>
 #endif
-#ifdef PHP_WIN32
+#ifdef WIN32
 #ifndef DOM_EXPORTS
 #define DOM_EXPORTS
 #endif

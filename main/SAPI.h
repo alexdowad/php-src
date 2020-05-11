@@ -27,7 +27,7 @@
 #define SAPI_OPTION_NO_CHDIR 1
 #define SAPI_POST_BLOCK_SIZE 0x4000
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #	ifdef SAPI_EXPORTS
 #		define SAPI_API __declspec(dllexport)
 #	else

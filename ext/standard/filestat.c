@@ -51,7 +51,7 @@
 #endif
 
 #if HAVE_PWD_H
-# ifdef PHP_WIN32
+# ifdef WIN32
 #  include "win32/pwd.h"
 # else
 #  include <pwd.h>
@@ -59,7 +59,7 @@
 #endif
 
 #if HAVE_GRP_H
-# ifdef PHP_WIN32
+# ifdef WIN32
 #  include "win32/grp.h"
 # else
 #  include <grp.h>
@@ -67,14 +67,14 @@
 #endif
 
 #if HAVE_UTIME
-# ifdef PHP_WIN32
+# ifdef WIN32
 #  include <sys/utime.h>
 # else
 #  include <utime.h>
 # endif
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/winutil.h"
 #endif
 
@@ -293,7 +293,7 @@ PHP_FUNCTION(disk_free_space)
 }
 /* }}} */
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 PHPAPI int php_get_gid_by_name(const char *name, gid_t *gid)
 {
 #if defined(ZTS) && defined(HAVE_GETGRNAM_R) && defined(_SC_GETGR_R_SIZE_MAX)
@@ -429,7 +429,7 @@ PHP_FUNCTION(lchgrp)
 #endif
 /* }}} */
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 PHPAPI uid_t php_get_uid_by_name(const char *name, uid_t *uid)
 {
 #if defined(ZTS) && defined(_SC_GETPW_R_SIZE_MAX) && defined(HAVE_GETPWNAM_R)
@@ -883,7 +883,7 @@ PHPAPI void php_stat(const char *filename, size_t filename_length, int type, zva
 		case S_IFDIR: RETURN_STRING("dir");
 		case S_IFBLK: RETURN_STRING("block");
 		case S_IFREG: RETURN_STRING("file");
-#if defined(S_IFSOCK) && !defined(PHP_WIN32)
+#if defined(S_IFSOCK) && !defined(WIN32)
 		case S_IFSOCK: RETURN_STRING("socket");
 #endif
 		}
@@ -1102,7 +1102,7 @@ PHP_FUNCTION(realpath_cache_get)
 			add_assoc_bool_ex(&entry, "is_dir", sizeof("is_dir") - 1, bucket->is_dir);
 			add_assoc_stringl_ex(&entry, "realpath", sizeof("realpath") - 1, bucket->realpath, bucket->realpath_len);
 			add_assoc_long_ex(&entry, "expires", sizeof("expires") - 1, bucket->expires);
-#ifdef PHP_WIN32
+#ifdef WIN32
 			add_assoc_bool_ex(&entry, "is_rvalid", sizeof("is_rvalid") - 1, bucket->is_rvalid);
 			add_assoc_bool_ex(&entry, "is_wvalid", sizeof("is_wvalid") - 1, bucket->is_wvalid);
 			add_assoc_bool_ex(&entry, "is_readable", sizeof("is_readable") - 1, bucket->is_readable);

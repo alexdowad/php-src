@@ -32,7 +32,7 @@ extern zend_module_entry xmlreader_module_entry;
 
 /* If xmlreader and dom both are compiled statically,
    no DLL import should be used in xmlreader for dom symbols. */
-#ifdef PHP_WIN32
+#ifdef WIN32
 # if defined(HAVE_DOM) && !defined(COMPILE_DL_DOM) && !defined(COMPILE_DL_XMLREADER)
 #  define DOM_LOCAL_DEFINES 1
 # endif

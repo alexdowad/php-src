@@ -3,7 +3,7 @@
 
 #include <php.h>
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 # include <netinet/in.h>
 # include <sys/socket.h>
 #else

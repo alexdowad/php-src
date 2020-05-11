@@ -692,7 +692,7 @@ mysqlnd_xor_string(char * dst, const size_t dst_len, const char * xor_str, const
 	}
 }
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
@@ -1003,7 +1003,7 @@ void php_mysqlnd_scramble_sha2(zend_uchar * const buffer, const zend_uchar * con
 }
 /* }}} */
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 
 /* {{{ mysqlnd_caching_sha2_public_encrypt */
 static size_t

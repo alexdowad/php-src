@@ -31,7 +31,7 @@
 
 #include <stdio.h>
 #include "php.h"
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/time.h"
 #include "win32/signal.h"
 #include "win32/console.h"
@@ -55,7 +55,7 @@
 #include "fopen_wrappers.h"
 #include "ext/standard/php_standard.h"
 #include "cli.h"
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include <io.h>
 #include <fcntl.h>
 #include "win32/php_registry.h"
@@ -79,13 +79,13 @@
 #include "ps_title.h"
 #include "php_cli_process_title.h"
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 # define php_select(m, r, w, e, t)	select(m, r, w, e, t)
 #else
 # include "win32/select.h"
 #endif
 
-#if defined(PHP_WIN32) && defined(HAVE_OPENSSL)
+#if defined(WIN32) && defined(HAVE_OPENSSL)
 # include "openssl/applink.c"
 #endif
 
@@ -93,7 +93,7 @@ PHPAPI extern char *php_ini_opened_path;
 PHPAPI extern char *php_ini_scanned_path;
 PHPAPI extern char *php_ini_scanned_files;
 
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 #if defined(ZTS)
 ZEND_TSRMLS_CACHE_DEFINE()
 #endif
@@ -354,7 +354,7 @@ static void sapi_cli_register_variables(zval *track_vars_array) /* {{{ */
 static void sapi_cli_log_message(char *message, int syslog_type_int) /* {{{ */
 {
 	fprintf(stderr, "%s\n", message);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	fflush(stderr);
 #endif
 }
@@ -594,7 +594,7 @@ static int cli_seek_file_begin(zend_file_handle *file_handle, char *script_file)
 /* }}} */
 
 /*{{{ php_cli_win32_ctrl_handler */
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 BOOL WINAPI php_cli_win32_ctrl_handler(DWORD sig)
 {
 	(void)php_win32_cp_cli_do_restore(orig_cp);
@@ -856,7 +856,7 @@ static int do_cli(int argc, char **argv) /* {{{ */
 			goto err;
 		}
 
-#if defined(PHP_WIN32) && !defined(PHP_CLI_WIN32_NO_CONSOLE) && (HAVE_LIBREADLINE || HAVE_LIBEDIT) && !defined(COMPILE_DL_READLINE)
+#if defined(WIN32) && !defined(PHP_CLI_WIN32_NO_CONSOLE) && (HAVE_LIBREADLINE || HAVE_LIBEDIT) && !defined(COMPILE_DL_READLINE)
 		if (!interactive) {
 		/* The -a option was not passed. If there is no file, it could
 		 	still make sense to run interactively. The presence of a file
@@ -1145,7 +1145,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 int main(int argc, char *argv[])
 #endif
 {
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 # ifdef PHP_CLI_WIN32_NO_CONSOLE
 	int argc = __argc;
 	char **argv = __argv;
@@ -1173,14 +1173,14 @@ int main(int argc, char *argv[])
 	 */
 	argv = save_ps_args(argc, argv);
 
-#if defined(PHP_WIN32) && !defined(PHP_CLI_WIN32_NO_CONSOLE)
+#if defined(WIN32) && !defined(PHP_CLI_WIN32_NO_CONSOLE)
 	php_win32_console_fileno_set_vt100(STDOUT_FILENO, TRUE);
 	php_win32_console_fileno_set_vt100(STDERR_FILENO, TRUE);
 #endif
 
 	cli_sapi_module.additional_functions = additional_functions;
 
-#if defined(PHP_WIN32) && defined(_DEBUG) && defined(PHP_WIN32_DEBUG_HEAP)
+#if defined(WIN32) && defined(_DEBUG) && defined(PHP_WIN32_DEBUG_HEAP)
 	{
 		int tmp_flag;
 		_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
@@ -1208,14 +1208,14 @@ int main(int argc, char *argv[])
 
 #ifdef ZTS
 	php_tsrm_startup();
-# ifdef PHP_WIN32
+# ifdef WIN32
 	ZEND_TSRMLS_CACHE_UPDATE();
 # endif
 #endif
 
 	zend_signal_startup();
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	_fmode = _O_BINARY;			/*sets default for file streams to binary */
 	setmode(_fileno(stdin), O_BINARY);		/* make the stdio mode be binary */
 	setmode(_fileno(stdout), O_BINARY);		/* make the stdio mode be binary */
@@ -1325,7 +1325,7 @@ exit_loop:
 	}
 	module_started = 1;
 
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 	php_win32_cp_cli_setup();
 	orig_cp = (php_win32_cp_get_orig())->id;
 	/* Ignore the delivered argv and argc, read from W API. This place
@@ -1371,7 +1371,7 @@ out:
 	tsrm_shutdown();
 #endif
 
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 	(void)php_win32_cp_cli_restore();
 
 	if (using_wide_argv) {

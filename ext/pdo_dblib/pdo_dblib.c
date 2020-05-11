@@ -49,7 +49,7 @@ zend_module_entry pdo_dblib_module_entry = {
 	pdo_dblib_deps,
 #if PDO_DBLIB_IS_MSSQL
 	"pdo_mssql",
-#elif defined(PHP_WIN32)
+#elif defined(WIN32)
 	"pdo_sybase",
 #else
 	"pdo_dblib",
@@ -230,7 +230,7 @@ PHP_MINFO_FUNCTION(pdo_dblib)
 	php_info_print_table_header(2, "PDO Driver for "
 #if PDO_DBLIB_IS_MSSQL
 		"MSSQL"
-#elif defined(PHP_WIN32)
+#elif defined(WIN32)
 		"FreeTDS/Sybase/MSSQL"
 #else
 		"FreeTDS/Sybase"

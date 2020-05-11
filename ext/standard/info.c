@@ -36,7 +36,7 @@
 #include "url.h"
 #include "php_string.h"
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include "winver.h"
 #endif
 
@@ -255,7 +255,7 @@ PHPAPI ZEND_COLD zend_string *php_info_html_esc(char *string)
 }
 /* }}} */
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 /* {{{  */
 
 char* php_get_windows_name()
@@ -641,7 +641,7 @@ PHPAPI zend_string *php_get_uname(char mode)
 {
 	char *php_uname;
 	char tmp_uname[256];
-#ifdef PHP_WIN32
+#ifdef WIN32
 	DWORD dwBuild=0;
 	DWORD dwVersion = GetVersion();
 	DWORD dwWindowsMajorVersion =  (DWORD)(LOBYTE(LOWORD(dwVersion)));

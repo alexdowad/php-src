@@ -24,7 +24,7 @@
 #include "php.h"
 #include <stdio.h>
 #include <fcntl.h>
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/time.h"
 #include "win32/signal.h"
 #include "win32/php_win32_globals.h"
@@ -53,7 +53,7 @@
 #include "ext/date/php_date.h"
 #include "php_variables.h"
 #include "ext/standard/credits.h"
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include <io.h>
 #include "win32/php_registry.h"
 #include "ext/standard/flock_compat.h"
@@ -384,7 +384,7 @@ static void php_disable_classes(void)
 static void php_binary_init(void)
 {
 	char *binary_location = NULL;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	binary_location = (char *)malloc(MAXPATHLEN);
 	if (binary_location && GetModuleFileName(0, binary_location, MAXPATHLEN) == 0) {
 		free(binary_location);
@@ -572,7 +572,7 @@ static PHP_INI_MH(OnUpdateDefaultCharset)
 		php_internal_encoding_changed();
 	}
 	if (new_value) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		php_win32_cp_do_update(ZSTR_VAL(new_value));
 #endif
 	}
@@ -589,7 +589,7 @@ static PHP_INI_MH(OnUpdateInternalEncoding)
 		php_internal_encoding_changed();
 	}
 	if (new_value) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		php_win32_cp_do_update(ZSTR_VAL(new_value));
 #endif
 	}
@@ -606,7 +606,7 @@ static PHP_INI_MH(OnUpdateInputEncoding)
 		php_internal_encoding_changed();
 	}
 	if (new_value) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		php_win32_cp_do_update(NULL);
 #endif
 	}
@@ -623,7 +623,7 @@ static PHP_INI_MH(OnUpdateOutputEncoding)
 		php_internal_encoding_changed();
 	}
 	if (new_value) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		php_win32_cp_do_update(NULL);
 #endif
 	}
@@ -686,7 +686,7 @@ PHP_INI_MH(OnChangeBrowscap);
  */
 
  /* Windows use the internal mail */
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 # define DEFAULT_SENDMAIL_PATH NULL
 #else
 # define DEFAULT_SENDMAIL_PATH PHP_PROG_SENDMAIL " -t -i"
@@ -783,7 +783,7 @@ PHP_INI_BEGIN()
 	STD_PHP_INI_ENTRY("user_ini.filename",		".user.ini",	PHP_INI_SYSTEM,		OnUpdateString,		user_ini_filename,	php_core_globals,		core_globals)
 	STD_PHP_INI_ENTRY("user_ini.cache_ttl",		"300",			PHP_INI_SYSTEM,		OnUpdateLong,		user_ini_cache_ttl,	php_core_globals,		core_globals)
 	STD_PHP_INI_ENTRY("hard_timeout",			"2",			PHP_INI_SYSTEM,		OnUpdateLong,		hard_timeout,		zend_executor_globals,	executor_globals)
-#ifdef PHP_WIN32
+#ifdef WIN32
 	STD_PHP_INI_BOOLEAN("windows.show_crt_warning",		"0",		PHP_INI_ALL,		OnUpdateBool,			windows_show_crt_warning,			php_core_globals,	core_globals)
 #endif
 	STD_PHP_INI_ENTRY("syslog.facility",		"LOG_USER",		PHP_INI_SYSTEM,		OnSetFacility,		syslog_facility,	php_core_globals,		core_globals)
@@ -859,7 +859,7 @@ PHPAPI ZEND_COLD void php_log_err_with_severity(char *log_message, int syslog_ty
 			error_time_str = php_format_date("d-M-Y H:i:s e", 13, error_time, 1);
 #endif
 			len = spprintf(&tmp, 0, "[%s] %s%s", ZSTR_VAL(error_time_str), log_message, PHP_EOL);
-#ifdef PHP_WIN32
+#ifdef WIN32
 			php_flock(fd, 2);
 			/* XXX should eventually write in a loop if len > UINT_MAX */
 			php_ignore_value(write(fd, tmp, (unsigned)len));
@@ -1166,7 +1166,7 @@ PHPAPI ZEND_COLD void php_error_docref2(const char *docref, const char *param1, 
 }
 /* }}} */
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 PHPAPI ZEND_COLD void php_win32_docref2_from_error(DWORD error, const char *param1, const char *param2) {
 	char *buf = php_win32_error_to_msg(error);
 	size_t buf_len;
@@ -1316,7 +1316,7 @@ static ZEND_COLD void php_error_cb(int orig_type, const char *error_filename, co
 
 		if (!module_initialized || PG(log_errors)) {
 			char *log_buffer;
-#ifdef PHP_WIN32
+#ifdef WIN32
 			if (type == E_CORE_ERROR || type == E_CORE_WARNING) {
 				syslog(LOG_ALERT, "PHP %s: %s (%s)", error_type_str, buffer, GetCommandLine());
 			}
@@ -1347,7 +1347,7 @@ static ZEND_COLD void php_error_cb(int orig_type, const char *error_filename, co
 						PG(display_errors) == PHP_DISPLAY_ERRORS_STDERR
 					) {
 						fprintf(stderr, "%s: %s in %s on line %" PRIu32 "\n", error_type_str, buffer, error_filename, error_lineno);
-#ifdef PHP_WIN32
+#ifdef WIN32
 						fflush(stderr);
 #endif
 					} else {
@@ -1437,7 +1437,7 @@ PHPAPI char *php_get_current_user(void)
 	if (!pstat) {
 		return "";
 	} else {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		char *name = php_win32_get_username();
 		int len;
 
@@ -1644,7 +1644,7 @@ static ZEND_COLD void php_message_handler_for_zend(zend_long message, const void
 
 					snprintf(memory_leak_buf, 512, "Last leak repeated %lu time%s\n", leak_count, (leak_count>1?"s":""));
 				}
-#	if defined(PHP_WIN32)
+#	if defined(WIN32)
 				if (IsDebuggerPresent()) {
 					OutputDebugString(memory_leak_buf);
 				} else {
@@ -1662,7 +1662,7 @@ static ZEND_COLD void php_message_handler_for_zend(zend_long message, const void
 				char memory_leak_buf[512];
 
 				snprintf(memory_leak_buf, 512, "=== Total %d memory leaks detected ===\n", *((uint32_t *) data));
-#	if defined(PHP_WIN32)
+#	if defined(WIN32)
 				if (IsDebuggerPresent()) {
 					OutputDebugString(memory_leak_buf);
 				} else {
@@ -1689,7 +1689,7 @@ static ZEND_COLD void php_message_handler_for_zend(zend_long message, const void
 				} else {
 					snprintf(memory_leak_buf, sizeof(memory_leak_buf), "[null]  Script:  '%s'\n", SAFE_FILENAME(SG(request_info).path_translated));
 				}
-#	if defined(PHP_WIN32)
+#	if defined(WIN32)
 				if (IsDebuggerPresent()) {
 					OutputDebugString(memory_leak_buf);
 				} else {
@@ -1737,7 +1737,7 @@ int php_request_startup(void)
 	DTRACE_REQUEST_STARTUP(SAFE_FILENAME(SG(request_info).path_translated), SAFE_FILENAME(SG(request_info).request_uri), (char *)SAFE_FILENAME(SG(request_info).request_method));
 #endif /* HAVE_DTRACE */
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # if defined(ZTS)
 	_configthreadlocale(_ENABLE_PER_THREAD_LOCALE);
 # endif
@@ -1918,7 +1918,7 @@ void php_request_shutdown(void *dummy)
 	zend_signal_deactivate();
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (PG(com_initialized)) {
 		CoUninitialize();
 		PG(com_initialized) = 0;
@@ -1935,7 +1935,7 @@ void php_request_shutdown(void *dummy)
  */
 PHPAPI void php_com_initialize(void)
 {
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (!PG(com_initialized)) {
 		if (CoInitialize(NULL) == S_OK) {
 			PG(com_initialized) = 1;
@@ -2023,7 +2023,7 @@ static int php_register_extensions_bc(zend_module_entry *ptr, int count)
 }
 /* }}} */
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 static _invalid_parameter_handler old_invalid_parameter_handler;
 
 void dummy_invalid_parameter_handler(
@@ -2066,7 +2066,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	char *php_os;
 	zend_module_entry *module;
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	WORD wVersionRequested = MAKEWORD(2, 0);
 	WSADATA wsaData;
 
@@ -2088,7 +2088,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	(void)ts_resource(0);
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (!php_win32_init_random_bytes()) {
 		fprintf(stderr, "\ncrypt algorithm provider initialization failed\n");
 		return FAILURE;
@@ -2110,7 +2110,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 
 #ifdef ZTS
 	ts_allocate_fast_id(&core_globals_id, &core_globals_offset, sizeof(php_core_globals), (ts_allocate_ctor) core_globals_ctor, (ts_allocate_dtor) core_globals_dtor);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	ts_allocate_id(&php_win32_core_globals_id, sizeof(php_win32_core_globals), (ts_allocate_ctor) php_win32_core_globals_ctor, (ts_allocate_dtor) php_win32_core_globals_dtor);
 #endif
 #else
@@ -2139,7 +2139,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	tzset();
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # if PHP_LINKER_MAJOR == 14
 	/* Extend for other CRT if needed. */
 	char *img_err;
@@ -2182,7 +2182,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	REGISTER_MAIN_STRINGL_CONSTANT("PHP_EXTENSION_DIR", PHP_EXTENSION_DIR, sizeof(PHP_EXTENSION_DIR)-1, CONST_PERSISTENT | CONST_CS);
 	REGISTER_MAIN_STRINGL_CONSTANT("PHP_PREFIX", PHP_PREFIX, sizeof(PHP_PREFIX)-1, CONST_PERSISTENT | CONST_CS);
 	REGISTER_MAIN_STRINGL_CONSTANT("PHP_BINDIR", PHP_BINDIR, sizeof(PHP_BINDIR)-1, CONST_PERSISTENT | CONST_CS);
-#ifndef PHP_WIN32
+#ifndef WIN32
 	REGISTER_MAIN_STRINGL_CONSTANT("PHP_MANDIR", PHP_MANDIR, sizeof(PHP_MANDIR)-1, CONST_PERSISTENT | CONST_CS);
 #endif
 	REGISTER_MAIN_STRINGL_CONSTANT("PHP_LIBDIR", PHP_LIBDIR, sizeof(PHP_LIBDIR)-1, CONST_PERSISTENT | CONST_CS);
@@ -2203,7 +2203,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	REGISTER_MAIN_DOUBLE_CONSTANT("PHP_FLOAT_MAX", DBL_MAX, CONST_PERSISTENT | CONST_CS);
 	REGISTER_MAIN_DOUBLE_CONSTANT("PHP_FLOAT_MIN", DBL_MIN, CONST_PERSISTENT | CONST_CS);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	REGISTER_MAIN_LONG_CONSTANT("PHP_WINDOWS_VERSION_MAJOR",      EG(windows_version_info).dwMajorVersion, CONST_PERSISTENT | CONST_CS);
 	REGISTER_MAIN_LONG_CONSTANT("PHP_WINDOWS_VERSION_MINOR",      EG(windows_version_info).dwMinorVersion, CONST_PERSISTENT | CONST_CS);
 	REGISTER_MAIN_LONG_CONSTANT("PHP_WINDOWS_VERSION_BUILD",      EG(windows_version_info).dwBuildNumber, CONST_PERSISTENT | CONST_CS);
@@ -2433,7 +2433,7 @@ void php_module_shutdown(void)
 	zend_rc_debug = 0;
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	(void)php_win32_shutdown_random_bytes();
 	php_win32_signal_ctrl_handler_shutdown();
 #endif
@@ -2442,7 +2442,7 @@ void php_module_shutdown(void)
 
 	zend_shutdown();
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	/*close winsock */
 	WSACleanup();
 #endif
@@ -2484,7 +2484,7 @@ void php_module_shutdown(void)
 	ts_free_id(core_globals_id);
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (old_invalid_parameter_handler == NULL) {
 		_set_invalid_parameter_handler(old_invalid_parameter_handler);
 	}
@@ -2516,7 +2516,7 @@ PHPAPI int php_execute_script(zend_file_handle *primary_file)
 	zend_try {
 		char realfile[MAXPATHLEN];
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if(primary_file->filename) {
 			UpdateIniFromRegistry((char*)primary_file->filename);
 		}
@@ -2562,7 +2562,7 @@ PHPAPI int php_execute_script(zend_file_handle *primary_file)
 			append_file_p = NULL;
 		}
 		if (PG(max_input_time) != -1) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 			zend_unset_timeout();
 #endif
 			zend_set_timeout(INI_INT("max_execution_time"), 0);
@@ -2618,7 +2618,7 @@ PHPAPI int php_execute_simple_script(zend_file_handle *primary_file, zval *ret)
 	old_cwd[0] = '\0';
 
 	zend_try {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if(primary_file->filename) {
 			UpdateIniFromRegistry((char*)primary_file->filename);
 		}

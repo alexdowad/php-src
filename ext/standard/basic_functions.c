@@ -34,7 +34,7 @@
 #include "ext/standard/php_uuencode.h"
 #include "ext/standard/php_mt_rand.h"
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/php_win32_globals.h"
 #include "win32/time.h"
 #include "win32/ioutil.h"
@@ -55,12 +55,12 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #include <time.h>
 #include <stdio.h>
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 #include <sys/types.h>
 #include <sys/stat.h>
 #endif
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 # include <netdb.h>
 #else
 #include "win32/inet.h"
@@ -85,7 +85,7 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 # include <sys/loadavg.h>
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include "win32/unistd.h"
 #endif
 
@@ -148,7 +148,7 @@ static void php_putenv_destructor(zval *zv) /* {{{ */
 	putenv_entry *pe = Z_PTR_P(zv);
 
 	if (pe->previous_value) {
-# if defined(PHP_WIN32)
+# if defined(WIN32)
 		/* MSVCRT has a bug in putenv() when setting a variable that
 		 * is already set; if the SetEnvironmentVariable() API call
 		 * fails, the Crt will double free() a string.
@@ -156,13 +156,13 @@ static void php_putenv_destructor(zval *zv) /* {{{ */
 		SetEnvironmentVariable(pe->key, "bugbug");
 # endif
 		putenv(pe->previous_value);
-# if defined(PHP_WIN32)
+# if defined(WIN32)
 		efree(pe->previous_value);
 # endif
 	} else {
 # if HAVE_UNSETENV
 		unsetenv(pe->key);
-# elif defined(PHP_WIN32)
+# elif defined(WIN32)
 		SetEnvironmentVariable(pe->key, NULL);
 # ifndef ZTS
 		_putenv_s(pe->key, "");
@@ -275,12 +275,12 @@ PHP_MINIT_FUNCTION(basic) /* {{{ */
 {
 #ifdef ZTS
 	ts_allocate_id(&basic_globals_id, sizeof(php_basic_globals), (ts_allocate_ctor) basic_globals_ctor, (ts_allocate_dtor) basic_globals_dtor);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	ts_allocate_id(&php_win32_core_globals_id, sizeof(php_win32_core_globals), (ts_allocate_ctor)php_win32_core_globals_ctor, (ts_allocate_dtor)php_win32_core_globals_dtor );
 #endif
 #else
 	basic_globals_ctor(&basic_globals);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	php_win32_core_globals_ctor(&the_php_win32_core_globals);
 #endif
 #endif
@@ -397,10 +397,8 @@ PHP_MINIT_FUNCTION(basic) /* {{{ */
 	php_register_url_stream_wrapper("http", &php_stream_http_wrapper);
 	php_register_url_stream_wrapper("ftp", &php_stream_ftp_wrapper);
 
-#if defined(PHP_WIN32) || HAVE_DNS_SEARCH_FUNC
-# if defined(PHP_WIN32) || HAVE_FULL_DNS_FUNCS
+#if defined(WIN32) || (HAVE_DNS_SEARCH_FUNC && HAVE_FULL_DNS_FUNCS)
 	BASIC_MINIT_SUBMODULE(dns)
-# endif
 #endif
 
 	BASIC_MINIT_SUBMODULE(random)
@@ -418,12 +416,12 @@ PHP_MSHUTDOWN_FUNCTION(basic) /* {{{ */
 #endif
 #ifdef ZTS
 	ts_free_id(basic_globals_id);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	ts_free_id(php_win32_core_globals_id);
 #endif
 #else
 	basic_globals_dtor(&basic_globals);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	php_win32_core_globals_dtor(&the_php_win32_core_globals);
 #endif
 #endif
@@ -528,14 +526,14 @@ PHP_RSHUTDOWN_FUNCTION(basic) /* {{{ */
 
 	PHP_RSHUTDOWN(filestat)(SHUTDOWN_FUNC_ARGS_PASSTHRU);
 #ifdef HAVE_SYSLOG_H
-#ifdef PHP_WIN32
+#ifdef WIN32
 	BASIC_RSHUTDOWN_SUBMODULE(syslog)(SHUTDOWN_FUNC_ARGS_PASSTHRU);
 #endif
 #endif
 	BASIC_RSHUTDOWN_SUBMODULE(assert)
 	BASIC_RSHUTDOWN_SUBMODULE(url_scanner_ex)
 	BASIC_RSHUTDOWN_SUBMODULE(streams)
-#ifdef PHP_WIN32
+#ifdef WIN32
 	BASIC_RSHUTDOWN_SUBMODULE(win32_core_globals)
 #endif
 
@@ -763,7 +761,7 @@ PHP_FUNCTION(getenv)
 			return;
 		}
 	}
-#ifdef PHP_WIN32
+#ifdef WIN32
 	{
 		wchar_t dummybuf;
 		DWORD size;
@@ -838,7 +836,7 @@ PHP_FUNCTION(putenv)
 	size_t setting_len;
 	char *p, **env;
 	putenv_entry pe;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	char *value = NULL;
 	int equals = 0;
 	int error_code;
@@ -857,13 +855,13 @@ PHP_FUNCTION(putenv)
 	pe.key = estrndup(setting, setting_len);
 	if ((p = strchr(pe.key, '='))) {	/* nullify the '=' if there is one */
 		*p = '\0';
-#ifdef PHP_WIN32
+#ifdef WIN32
 		equals = 1;
 #endif
 	}
 
 	pe.key_len = strlen(pe.key);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (equals) {
 		if (pe.key_len < setting_len - 1) {
 			value = p + 1;
@@ -881,7 +879,7 @@ PHP_FUNCTION(putenv)
 	pe.previous_value = NULL;
 	for (env = environ; env != NULL && *env != NULL; env++) {
 		if (!strncmp(*env, pe.key, pe.key_len) && (*env)[pe.key_len] == '=') {	/* found it */
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 			/* must copy previous value because MSVCRT's putenv can free the string without notice */
 			pe.previous_value = estrdup(*env);
 #else
@@ -897,7 +895,7 @@ PHP_FUNCTION(putenv)
 	}
 	if (!p || putenv(pe.putenv_string) == 0) { /* success */
 #else
-# ifndef PHP_WIN32
+# ifndef WIN32
 	if (putenv(pe.putenv_string) == 0) { /* success */
 # else
 		wchar_t *keyw, *valw = NULL;
@@ -936,7 +934,7 @@ PHP_FUNCTION(putenv)
 		}
 #endif
 		tsrm_env_unlock();
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 		free(keyw);
 		free(valw);
 #endif
@@ -944,7 +942,7 @@ PHP_FUNCTION(putenv)
 	} else {
 		efree(pe.putenv_string);
 		efree(pe.key);
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 		free(keyw);
 		free(valw);
 #endif
@@ -2353,7 +2351,7 @@ PHP_FUNCTION(getservbyname)
 
 /* empty string behaves like NULL on windows implementation of
    getservbyname. Let be portable instead. */
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (proto_len == 0) {
 		RETURN_FALSE;
 	}
@@ -2563,7 +2561,7 @@ PHP_FUNCTION(move_uploaded_file)
 	size_t path_len, new_path_len;
 	zend_bool successful = 0;
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 	int oldmask; int ret;
 #endif
 
@@ -2586,7 +2584,7 @@ PHP_FUNCTION(move_uploaded_file)
 
 	if (VCWD_RENAME(path, new_path) == 0) {
 		successful = 1;
-#ifndef PHP_WIN32
+#ifndef WIN32
 		oldmask = umask(077);
 		umask(oldmask);
 

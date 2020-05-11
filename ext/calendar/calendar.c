@@ -29,7 +29,7 @@
 
 #include <stdio.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 /* This conflicts with a define in winnls.h, but that header is needed
    to have GetACP(). */
 #undef CAL_GREGORIAN

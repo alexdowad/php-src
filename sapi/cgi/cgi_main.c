@@ -28,7 +28,7 @@
 
 #include <stdio.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include "win32/time.h"
 # include "win32/signal.h"
 # include "win32/winutil.h"
@@ -65,7 +65,7 @@
 #include "ext/standard/php_standard.h"
 #include "ext/standard/url.h"
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include <io.h>
 # include <fcntl.h>
 # include "win32/php_registry.h"
@@ -84,7 +84,7 @@ int __riscosify_control = __RISCOSIFY_STRICT_UNIX_SPECS;
 
 #include "fastcgi.h"
 
-#if defined(PHP_WIN32) && defined(HAVE_OPENSSL)
+#if defined(WIN32) && defined(HAVE_OPENSSL)
 # include "openssl/applink.c"
 #endif
 
@@ -92,7 +92,7 @@ int __riscosify_control = __RISCOSIFY_STRICT_UNIX_SPECS;
 # include "valgrind/callgrind.h"
 #endif
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 /* XXX this will need to change later when threaded fastcgi is implemented.  shane */
 struct sigaction act, old_term, old_quit, old_int;
 #endif
@@ -111,7 +111,7 @@ static int children = 0;
  */
 static int parent = 1;
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 /* Did parent received exit signals SIG_TERM/SIG_INT/SIG_QUIT */
 static int exit_signal = 0;
 
@@ -167,7 +167,7 @@ typedef struct _php_cgi_globals_struct {
 	zend_bool force_redirect;
 	zend_bool discard_path;
 	zend_bool fcgi_logging;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	zend_bool impersonate;
 #endif
 } php_cgi_globals_struct;
@@ -198,7 +198,7 @@ static void user_config_cache_entry_dtor(zval *el)
 #ifdef ZTS
 static int php_cgi_globals_id;
 #define CGIG(v) ZEND_TSRMG(php_cgi_globals_id, php_cgi_globals_struct *, v)
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 ZEND_TSRMLS_CACHE_DEFINE()
 #endif
 #else
@@ -206,7 +206,7 @@ static php_cgi_globals_struct php_cgi_globals;
 #define CGIG(v) (php_cgi_globals.v)
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #define TRANSLATE_SLASHES(path) \
 	{ \
 		char *tmp = path; \
@@ -219,7 +219,7 @@ static php_cgi_globals_struct php_cgi_globals;
 #define TRANSLATE_SLASHES(path)
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #define WIN32_MAX_SPAWN_CHILDREN 64
 HANDLE kid_cgi_ps[WIN32_MAX_SPAWN_CHILDREN];
 int kids, cleaning_up = 0;
@@ -480,7 +480,7 @@ static size_t sapi_cgi_read_post(char *buffer, size_t count_bytes)
 
 	count_bytes = MIN(count_bytes, remaining_bytes);
 	while (read_bytes < count_bytes) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		size_t diff = count_bytes - read_bytes;
 		unsigned int to_read = (diff > UINT_MAX) ? UINT_MAX : (unsigned int)diff;
 
@@ -519,7 +519,7 @@ static size_t sapi_fcgi_read_post(char *buffer, size_t count_bytes)
 	return read_bytes;
 }
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 /* The result needs to be freed! See sapi_getenv(). */
 static char *cgi_getenv_win32(const char *name, size_t name_len)
 {
@@ -555,7 +555,7 @@ static char *cgi_getenv_win32(const char *name, size_t name_len)
 
 static char *sapi_cgi_getenv(char *name, size_t name_len)
 {
-#ifndef PHP_WIN32
+#ifndef WIN32
 	return getenv(name);
 #else
 	return cgi_getenv_win32(name, name_len);
@@ -571,7 +571,7 @@ static char *sapi_fcgi_getenv(char *name, size_t name_len)
 	fcgi_request *request = (fcgi_request*) SG(server_context);
 	char *ret = fcgi_getenv(request, name, (int)name_len);
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 	if (ret) return ret;
 	/*  if cgi, or fastcgi and not found in fcgi env
 		check the regular environment */
@@ -823,7 +823,7 @@ static void php_cgi_ini_activate_user_config(char *path, size_t path_len, const 
 		  if it is inside the docroot, we scan the tree up to the docroot
 			to find more user.ini, if not we only scan the current path.
 		  */
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if (strnicmp(s1, s2, s_len) == 0) {
 #else
 		if (strncmp(s1, s2, s_len) == 0) {
@@ -922,14 +922,14 @@ static int sapi_cgi_activate(void)
 				if (doc_root_len > 0 && IS_SLASH(doc_root[doc_root_len - 1])) {
 					--doc_root_len;
 				}
-#ifdef PHP_WIN32
+#ifdef WIN32
 				/* paths on windows should be case-insensitive */
 				doc_root = estrndup(doc_root, doc_root_len);
 				zend_str_tolower(doc_root, doc_root_len);
 #endif
 				php_cgi_ini_activate_user_config(path, path_len, doc_root, doc_root_len);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 				efree(doc_root);
 #endif
 			}
@@ -1197,7 +1197,7 @@ static void init_request_info(fcgi_request *request)
 		char *env_path_info = CGI_GETENV("PATH_INFO");
 		char *env_script_name = CGI_GETENV("SCRIPT_NAME");
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 		/* Hack for buggy IIS that sets incorrect PATH_INFO */
 		char *env_server_software = CGI_GETENV("SERVER_SOFTWARE");
 
@@ -1260,7 +1260,7 @@ static void init_request_info(fcgi_request *request)
 			if (script_path_translated &&
 				(script_path_translated_len = strlen(script_path_translated)) > 0 &&
 				(script_path_translated[script_path_translated_len-1] == '/' ||
-#ifdef PHP_WIN32
+#ifdef WIN32
 				script_path_translated[script_path_translated_len-1] == '\\' ||
 #endif
 				(real_path = tsrm_realpath(script_path_translated, NULL)) == NULL)
@@ -1457,7 +1457,7 @@ static void init_request_info(fcgi_request *request)
 }
 /* }}} */
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 /**
  * Clean up child processes upon exit
  */
@@ -1516,7 +1516,7 @@ PHP_INI_BEGIN()
 	STD_PHP_INI_ENTRY("cgi.fix_pathinfo",        "1",  PHP_INI_SYSTEM, OnUpdateBool,   fix_pathinfo, php_cgi_globals_struct, php_cgi_globals)
 	STD_PHP_INI_ENTRY("cgi.discard_path",        "0",  PHP_INI_SYSTEM, OnUpdateBool,   discard_path, php_cgi_globals_struct, php_cgi_globals)
 	STD_PHP_INI_ENTRY("fastcgi.logging",         "1",  PHP_INI_SYSTEM, OnUpdateBool,   fcgi_logging, php_cgi_globals_struct, php_cgi_globals)
-#ifdef PHP_WIN32
+#ifdef WIN32
 	STD_PHP_INI_ENTRY("fastcgi.impersonate",     "0",  PHP_INI_SYSTEM, OnUpdateBool,   impersonate, php_cgi_globals_struct, php_cgi_globals)
 #endif
 PHP_INI_END()
@@ -1525,7 +1525,7 @@ PHP_INI_END()
  */
 static void php_cgi_globals_ctor(php_cgi_globals_struct *php_cgi_globals)
 {
-#if defined(ZTS) && defined(PHP_WIN32)
+#if defined(ZTS) && defined(WIN32)
 	ZEND_TSRMLS_CACHE_UPDATE();
 #endif
 	php_cgi_globals->rfc2616_headers = 0;
@@ -1536,7 +1536,7 @@ static void php_cgi_globals_ctor(php_cgi_globals_struct *php_cgi_globals)
 	php_cgi_globals->fix_pathinfo = 1;
 	php_cgi_globals->discard_path = 0;
 	php_cgi_globals->fcgi_logging = 1;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	php_cgi_globals->impersonate = 0;
 #endif
 	zend_hash_init(&php_cgi_globals->user_config_cache, 8, NULL, user_config_cache_entry_dtor, 1);
@@ -1765,7 +1765,7 @@ int main(int argc, char *argv[])
 #else
 	time_t start, end;
 #endif
-#ifndef PHP_WIN32
+#ifndef WIN32
 	int status = 0;
 #endif
 	char *query_string;
@@ -1783,7 +1783,7 @@ int main(int argc, char *argv[])
 
 #ifdef ZTS
 	php_tsrm_startup();
-# ifdef PHP_WIN32
+# ifdef WIN32
 	ZEND_TSRMLS_CACHE_UPDATE();
 # endif
 #endif
@@ -1800,7 +1800,7 @@ int main(int argc, char *argv[])
 	fastcgi = fcgi_is_fastcgi();
 	cgi_sapi_module.php_ini_path_override = NULL;
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	_fmode = _O_BINARY; /* sets default for file streams to binary */
 	setmode(_fileno(stdin),  O_BINARY);	/* make the stdio mode be binary */
 	setmode(_fileno(stdout), O_BINARY);	/* make the stdio mode be binary */
@@ -2008,7 +2008,7 @@ consult the installation file that came with this distribution, or visit \n\
 			/* This is the number of concurrent requests, equals FCGI_MAX_CONNS */
 			fcgi_set_mgmt_var("FCGI_MAX_REQS",  sizeof("FCGI_MAX_REQS")-1,  children_str, strlen(children_str));
 		} else {
-#ifdef PHP_WIN32
+#ifdef WIN32
 			/* If this env var is set, the process was invoked as a child. Let
 				it show the original PHP_FCGI_CHILDREN value, while don't care
 				otherwise. */
@@ -2028,7 +2028,7 @@ consult the installation file that came with this distribution, or visit \n\
 			fcgi_set_mgmt_var("FCGI_MAX_REQS",  sizeof("FCGI_MAX_REQS")-1,  "1", sizeof("1")-1);
 		}
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 		if (children) {
 			int running = 0;
 			pid_t pid;
@@ -2300,7 +2300,7 @@ parent_loop_end:
 
 		/* start of FAST CGI loop */
 		/* Initialise FastCGI request structure */
-#ifdef PHP_WIN32
+#ifdef WIN32
 		/* attempt to set security impersonation for fastcgi
 		 * will only happen on NT based OS, others will ignore it. */
 		if (fastcgi && CGIG(impersonate)) {
@@ -2695,7 +2695,7 @@ parent_out:
 	tsrm_shutdown();
 #endif
 
-#if defined(PHP_WIN32) && ZEND_DEBUG && 0
+#if defined(WIN32) && ZEND_DEBUG && 0
 	_CrtDumpMemoryLeaks();
 #endif
 

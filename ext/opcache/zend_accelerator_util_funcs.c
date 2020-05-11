@@ -651,7 +651,7 @@ static zend_always_inline void fast_memcpy(void *dest, const void *src, size_t s
 	const __m256 *end  = (const __m256*)((const char*)src + size);
 
 	do {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		_mm_prefetch((const char *)(dqsrc + 2), _MM_HINT_NTA);
 #else
 		_mm_prefetch(dqsrc + 2, _MM_HINT_NTA);
@@ -726,7 +726,7 @@ static zend_always_inline void fast_memcpy(void *dest, const void *src, size_t s
 	const __m128i *end  = (const __m128i*)((const char*)src + size);
 
 	do {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		_mm_prefetch((const char *)(dqsrc + 4), _MM_HINT_NTA);
 #else
 		_mm_prefetch(dqsrc + 4, _MM_HINT_NTA);

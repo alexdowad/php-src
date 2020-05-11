@@ -14,7 +14,7 @@
    +----------------------------------------------------------------------+
  */
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 typedef HANDLE php_file_descriptor_t;
 typedef DWORD php_process_id_t;
 # define PHP_INVALID_FD INVALID_HANDLE_VALUE
@@ -30,14 +30,14 @@ typedef pid_t php_process_id_t;
  * */
 typedef struct _php_process_env {
 	char *envp;
-#ifndef PHP_WIN32
+#ifndef WIN32
 	char **envarray;
 #endif
 } php_process_env_t;
 
 struct php_process_handle {
 	php_process_id_t	child;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	HANDLE childHandle;
 #endif
 	int npipes;

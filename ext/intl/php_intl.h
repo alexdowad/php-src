@@ -33,7 +33,7 @@
 extern zend_module_entry intl_module_entry;
 #define phpext_intl_ptr &intl_module_entry
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #define PHP_INTL_API __declspec(dllexport)
 #else
 #define PHP_INTL_API

@@ -536,7 +536,7 @@ static int firebird_handle_get_attribute(pdo_dbh_t *dbh, zend_long attr, zval *v
 			return 1;
 
 		case PDO_ATTR_CLIENT_VERSION: {
-#if defined(__GNUC__) || defined(PHP_WIN32)
+#if defined(__GNUC__) || defined(WIN32)
 			info_func_t info_func = NULL;
 #ifdef __GNUC__
 			info_func = (info_func_t)dlsym(RTLD_DEFAULT, "isc_get_client_version");

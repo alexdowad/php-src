@@ -35,7 +35,7 @@
   php_embed_shutdown(); \
 }
 
-#ifndef PHP_WIN32
+#ifndef WIN32
     #define EMBED_SAPI_API SAPI_API
 #else
     #define EMBED_SAPI_API

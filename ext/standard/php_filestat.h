@@ -20,7 +20,7 @@
 PHP_RINIT_FUNCTION(filestat);
 PHP_RSHUTDOWN_FUNCTION(filestat);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #define S_IRUSR S_IREAD
 #define S_IWUSR S_IWRITE
 #define S_IXUSR S_IEXEC

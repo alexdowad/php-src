@@ -48,7 +48,7 @@
 
 #include <limits.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include "win32/nice.h"
 #endif
 
@@ -68,7 +68,7 @@ PHP_MINIT_FUNCTION(exec)
 	}
 #elif defined(ARG_MAX)
 	cmd_max_len = ARG_MAX;
-#elif defined(PHP_WIN32)
+#elif defined(WIN32)
 	/* Executed commands will run through cmd.exe. As long as it's the case,
 		it's just the constant limit.*/
 	cmd_max_len = 8192;
@@ -127,7 +127,7 @@ PHPAPI int php_exec(int type, char *cmd, zval *array, zval *return_value)
 	sig_handler = signal (SIGCHLD, SIG_DFL);
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	fp = VCWD_POPEN(cmd, "rb");
 #else
 	fp = VCWD_POPEN(cmd, "r");
@@ -288,7 +288,7 @@ PHPAPI zend_string *php_escape_shell_cmd(char *str)
 	size_t l = strlen(str);
 	uint64_t estimate = (2 * (uint64_t)l) + 1;
 	zend_string *cmd;
-#ifndef PHP_WIN32
+#ifndef WIN32
 	char *p = NULL;
 #endif
 
@@ -314,7 +314,7 @@ PHPAPI zend_string *php_escape_shell_cmd(char *str)
 		}
 
 		switch (str[x]) {
-#ifndef PHP_WIN32
+#ifndef WIN32
 			case '"':
 			case '\'':
 				if (!p && (p = memchr(str + x + 1, str[x], l - x - 1))) {
@@ -356,7 +356,7 @@ PHPAPI zend_string *php_escape_shell_cmd(char *str)
 			case '\\':
 			case '\x0A': /* excluding these two */
 			case '\xFF':
-#ifdef PHP_WIN32
+#ifdef WIN32
 				ZSTR_VAL(cmd)[y++] = '^';
 #else
 				ZSTR_VAL(cmd)[y++] = '\\';
@@ -404,7 +404,7 @@ PHPAPI zend_string *php_escape_shell_arg(char *str)
 
 	cmd = zend_string_safe_alloc(4, l, 2, 0); /* worst case */
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	ZSTR_VAL(cmd)[y++] = '"';
 #else
 	ZSTR_VAL(cmd)[y++] = '\'';
@@ -424,7 +424,7 @@ PHPAPI zend_string *php_escape_shell_arg(char *str)
 		}
 
 		switch (str[x]) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		case '"':
 		case '%':
 		case '!':
@@ -441,7 +441,7 @@ PHPAPI zend_string *php_escape_shell_arg(char *str)
 			ZSTR_VAL(cmd)[y++] = str[x];
 		}
 	}
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (y > 0 && '\\' == ZSTR_VAL(cmd)[y - 1]) {
 		int k = 0, n = y - 1;
 		for (; n >= 0 && '\\' == ZSTR_VAL(cmd)[n]; n--, k++);
@@ -538,7 +538,7 @@ PHP_FUNCTION(shell_exec)
 		RETURN_FALSE;
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if ((in=VCWD_POPEN(command, "rt"))==NULL) {
 #else
 	if ((in=VCWD_POPEN(command, "r"))==NULL) {
@@ -571,7 +571,7 @@ PHP_FUNCTION(proc_nice)
 	errno = 0;
 	php_ignore_value(nice(pri));
 	if (errno) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		char *err = php_win_err();
 		php_error_docref(NULL, E_WARNING, "%s", err);
 		php_win_err_free(err);

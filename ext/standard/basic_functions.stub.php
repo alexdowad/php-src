@@ -423,7 +423,7 @@ function gethostbyname(string $hostname): string {}
 
 function gethostbynamel(string $hostname): array|false {}
 
-#if defined(PHP_WIN32) || HAVE_DNS_SEARCH_FUNC
+#if defined(WIN32) || HAVE_DNS_SEARCH_FUNC
 function dns_check_record(string $hostname, string $type = "MX"): bool {}
 
 /** @alias dns_check_record */
@@ -1034,7 +1034,7 @@ function levenshtein(string $str1, string $str2, $cost_ins = UNKNOWN, int $cost_
 
 /* link.c */
 
-#if defined(HAVE_SYMLINK) || defined(PHP_WIN32)
+#if defined(HAVE_SYMLINK) || defined(WIN32)
 function readlink(string $path): string|false {}
 
 function linkinfo(string $path): int|false {}
@@ -1358,7 +1358,7 @@ function stream_is_local($stream): bool {}
 /** @param resource $stream */
 function stream_isatty($stream): bool {}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 /** @param resource $stream */
 function sapi_windows_vt100_support($stream, bool $enable): bool {}
 #endif
@@ -1366,7 +1366,7 @@ function sapi_windows_vt100_support($stream, bool $enable): bool {}
 /** @param resource $stream */
 function stream_set_chunk_size($stream, int $size): int {}
 
-#if HAVE_SYS_TIME_H || defined(PHP_WIN32)
+#if HAVE_SYS_TIME_H || defined(WIN32)
 /** @param resource $socket */
 function stream_set_timeout($socket, int $seconds, int $microseconds = 0): bool {}
 
@@ -1533,7 +1533,7 @@ function version_compare(string $version1, string $version2, string $operator = 
 
 /* win32/codepage.c */
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 function sapi_windows_cp_set(int $cp): bool {}
 
 function sapi_windows_cp_get(string $kind = UNKNOWN): int {}

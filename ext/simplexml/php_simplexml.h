@@ -67,7 +67,7 @@ typedef struct {
 	zend_object zo;
 } php_sxe_object;
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #	ifdef PHP_SIMPLEXML_EXPORTS
 #		define PHP_SXE_API __declspec(dllexport)
 #	else

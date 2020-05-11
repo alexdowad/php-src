@@ -718,7 +718,7 @@ PHP_FUNCTION(ftp_get)
 		resumepos = 0;
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	mode = FTPTYPE_IMAGE;
 #endif
 
@@ -783,7 +783,7 @@ PHP_FUNCTION(ftp_nb_get)
 	if (!ftp->autoseek && resumepos == PHP_FTP_AUTORESUME) {
 		resumepos = 0;
 	}
-#ifdef PHP_WIN32
+#ifdef WIN32
 	mode = FTPTYPE_IMAGE;
 #endif
 	if (ftp->autoseek && resumepos) {

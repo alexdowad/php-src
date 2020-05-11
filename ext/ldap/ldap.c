@@ -35,7 +35,7 @@
 #include "php_ldap.h"
 #include "ldap_arginfo.h"
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include <string.h>
 #include "config.w32.h"
 #define strdup _strdup

@@ -609,7 +609,7 @@ cleanup:
 const pdo_driver_t pdo_dblib_driver = {
 #if PDO_DBLIB_IS_MSSQL
 	PDO_DRIVER_HEADER(mssql),
-#elif defined(PHP_WIN32)
+#elif defined(WIN32)
 #define PDO_DBLIB_IS_SYBASE
 	PDO_DRIVER_HEADER(sybase),
 #else

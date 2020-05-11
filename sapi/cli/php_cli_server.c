@@ -20,7 +20,7 @@
 #include <fcntl.h>
 #include <assert.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include <process.h>
 # include <io.h>
 # include "win32/time.h"
@@ -67,7 +67,7 @@
 
 #include "php_getopt.h"
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 # define php_select(m, r, w, e, t)	select(m, r, w, e, t)
 # define SOCK_EINVAL EINVAL
 # define SOCK_EAGAIN EAGAIN
@@ -238,7 +238,7 @@ static const char php_cli_server_css[] = "<style>\n" \
 										"</style>\n";
 /* }}} */
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 int php_cli_server_get_system_time(char *buf) {
 	struct _timeb system_time;
 	errno_t err;
@@ -845,7 +845,7 @@ static void php_cli_server_poller_remove(php_cli_server_poller *poller, int mode
 	if (mode & POLLOUT) {
 		PHP_SAFE_FD_CLR(fd, &poller->wfds);
 	}
-#ifndef PHP_WIN32
+#ifndef WIN32
 	if (fd == poller->max_fd) {
 		while (fd > 0) {
 			fd--;
@@ -868,7 +868,7 @@ static int php_cli_server_poller_poll(php_cli_server_poller *poller, struct time
 static int php_cli_server_poller_iter_on_active(php_cli_server_poller *poller, void *opaque, int(*callback)(void *, php_socket_t fd, int events)) /* {{{ */
 {
 	int retval = SUCCESS;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	struct socket_entry {
 		SOCKET fd;
 		int events;
@@ -1052,7 +1052,7 @@ static int php_cli_server_content_sender_send(php_cli_server_content_sender *sen
 	size_t _nbytes_sent_total = 0;
 
 	for (chunk = sender->buffer.first; chunk; chunk = next) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		int nbytes_sent;
 #else
 		ssize_t nbytes_sent;
@@ -1061,7 +1061,7 @@ static int php_cli_server_content_sender_send(php_cli_server_content_sender *sen
 
 		switch (chunk->type) {
 		case PHP_CLI_SERVER_CHUNK_HEAP:
-#ifdef PHP_WIN32
+#ifdef WIN32
 			nbytes_sent = send(fd, chunk->data.heap.p, (int)chunk->data.heap.len, 0);
 #else
 			nbytes_sent = send(fd, chunk->data.heap.p, chunk->data.heap.len, 0);
@@ -1069,7 +1069,7 @@ static int php_cli_server_content_sender_send(php_cli_server_content_sender *sen
 			if (nbytes_sent < 0) {
 				*nbytes_sent_total = _nbytes_sent_total;
 				return php_socket_errno();
-#ifdef PHP_WIN32
+#ifdef WIN32
 			} else if (nbytes_sent == chunk->data.heap.len) {
 #else
 			} else if (nbytes_sent == (ssize_t)chunk->data.heap.len) {
@@ -1088,7 +1088,7 @@ static int php_cli_server_content_sender_send(php_cli_server_content_sender *sen
 			break;
 
 		case PHP_CLI_SERVER_CHUNK_IMMORTAL:
-#ifdef PHP_WIN32
+#ifdef WIN32
 			nbytes_sent = send(fd, chunk->data.immortal.p, (int)chunk->data.immortal.len, 0);
 #else
 			nbytes_sent = send(fd, chunk->data.immortal.p, chunk->data.immortal.len, 0);
@@ -1096,7 +1096,7 @@ static int php_cli_server_content_sender_send(php_cli_server_content_sender *sen
 			if (nbytes_sent < 0) {
 				*nbytes_sent_total = _nbytes_sent_total;
 				return php_socket_errno();
-#ifdef PHP_WIN32
+#ifdef WIN32
 			} else if (nbytes_sent == chunk->data.immortal.len) {
 #else
 			} else if (nbytes_sent == (ssize_t)chunk->data.immortal.len) {
@@ -1121,14 +1121,14 @@ static int php_cli_server_content_sender_send(php_cli_server_content_sender *sen
 
 static int php_cli_server_content_sender_pull(php_cli_server_content_sender *sender, int fd, size_t *nbytes_read) /* {{{ */
 {
-#ifdef PHP_WIN32
+#ifdef WIN32
 	int _nbytes_read;
 #else
 	ssize_t _nbytes_read;
 #endif
 	php_cli_server_chunk *chunk = php_cli_server_chunk_heap_new_self_contained(131072);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	_nbytes_read = read(fd, chunk->data.heap.p, (unsigned int)chunk->data.heap.len);
 #else
 	_nbytes_read = read(fd, chunk->data.heap.p, chunk->data.heap.len);
@@ -1447,7 +1447,7 @@ static void php_cli_server_request_translate_vpath(php_cli_server_request *reque
 		}
 	}
 	memmove(p, request->vpath, request->vpath_len);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	q = p + request->vpath_len;
 	do {
 		if (*q == '/') {
@@ -1495,7 +1495,7 @@ static void php_cli_server_request_translate_vpath(php_cli_server_request *reque
 	}
 	if (prev_path) {
 		request->path_info_len = prev_path_len;
-#ifdef PHP_WIN32
+#ifdef WIN32
 		while (prev_path_len--) {
 			if (prev_path[prev_path_len] == '\\') {
 				prev_path[prev_path_len] = '/';
@@ -1515,7 +1515,7 @@ static void php_cli_server_request_translate_vpath(php_cli_server_request *reque
 		request->path_translated = buf;
 		request->path_translated_len = q - buf;
 	}
-#ifdef PHP_WIN32
+#ifdef WIN32
 	{
 		uint32_t i = 0;
 		for (;i<request->vpath_len;i++) {
@@ -1544,7 +1544,7 @@ static void normalize_vpath(char **retval, size_t *retval_len, const char *vpath
 
 	decoded_vpath_end = decoded_vpath + php_raw_url_decode(decoded_vpath, (int)vpath_len);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	{
 		char *p = decoded_vpath;
 
@@ -1854,13 +1854,13 @@ static int php_cli_server_client_read_request(php_cli_server_client *client, cha
 static size_t php_cli_server_client_send_through(php_cli_server_client *client, const char *str, size_t str_len) /* {{{ */
 {
 	struct timeval tv = { 10, 0 };
-#ifdef PHP_WIN32
+#ifdef WIN32
 	int nbytes_left = (int)str_len;
 #else
 	ssize_t nbytes_left = (ssize_t)str_len;
 #endif
 	do {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		int nbytes_sent;
 #else
 		ssize_t nbytes_sent;
@@ -2090,7 +2090,7 @@ static int php_cli_server_begin_send_static(php_cli_server *server, php_cli_serv
 		return php_cli_server_send_error_page(server, client, 400);
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	/* The win32 namespace will cut off trailing dots and spaces. Since the
 	   VCWD functionality isn't used here, a sophisticated functionality
 	   would have to be reimplemented to know ahead there are no files
@@ -2637,7 +2637,7 @@ int do_cli_server(int argc, char **argv) /* {{{ */
 	const char *server_bind_address = NULL;
 	extern const opt_struct OPTIONS[];
 	const char *document_root = NULL;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	char document_root_tmp[MAXPATHLEN];
 	size_t k;
 #endif
@@ -2650,7 +2650,7 @@ int do_cli_server(int argc, char **argv) /* {{{ */
 				server_bind_address = php_optarg;
 				break;
 			case 't':
-#ifndef PHP_WIN32
+#ifndef WIN32
 				document_root = php_optarg;
 #else
 				k = strlen(php_optarg);

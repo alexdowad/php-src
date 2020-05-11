@@ -34,7 +34,7 @@
 
 #define PHP_SOAP_VERSION PHP_VERSION
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 # define TRUE 1
 # define FALSE 0
 # define stricmp strcasecmp

@@ -24,7 +24,7 @@
 #include <sys/file.h>
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include <io.h>
 #include "config.w32.h"
 #endif
@@ -67,7 +67,7 @@ PHPAPI int php_flock(int fd, int operation)
 	return ret;
 }
 /* }}} */
-#elif defined(PHP_WIN32) /* {{{ */
+#elif defined(WIN32) /* {{{ */
 /*
  * Program:   Unix compatibility routines
  *
@@ -161,7 +161,7 @@ PHPAPI int php_flock(int fd, int operation)
 }
 #endif
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 #if !(HAVE_INET_ATON)
 /* {{{ inet_aton
  * Check whether "cp" is a valid ascii representation

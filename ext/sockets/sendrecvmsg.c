@@ -28,7 +28,7 @@
 #define DEFAULT_BUFF_SIZE 8192
 #define MAX_ARRAY_KEY_SIZE 128
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "windows_common.h"
 #include <Mswsock.h>
 #define IPV6_RECVPKTINFO	IPV6_PKTINFO
@@ -330,7 +330,7 @@ int php_do_setsockopt_ipv6_rfc3542(php_socket *php_sock, int level, int optname,
 	switch (optname) {
 #ifdef IPV6_PKTINFO
 	case IPV6_PKTINFO:
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if (Z_TYPE_P(arg4) == IS_ARRAY) {
 			php_error_docref(NULL, E_WARNING, "Windows does not "
 					"support sticky IPV6_PKTINFO");

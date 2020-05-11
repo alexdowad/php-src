@@ -21,7 +21,7 @@
 
 #include "php.h"
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include "win32/winutil.h"
 # include "win32/time.h"
 #else

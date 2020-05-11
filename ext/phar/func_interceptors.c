@@ -742,7 +742,7 @@ statme_baby:
 			if (data) {
 				sb.st_ino = data->inode;
 			}
-#ifndef PHP_WIN32
+#ifndef WIN32
 			sb.st_blksize = -1;
 			sb.st_blocks = -1;
 #endif

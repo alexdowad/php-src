@@ -28,7 +28,7 @@
  * The following code is adopted from the PostgreSQL's ps_status(.h/.c).
  */
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "config.w32.h"
 #include <windows.h>
 #include <process.h>
@@ -94,7 +94,7 @@ extern char** environ;
 #define PS_USE_CHANGE_ARGV
 #elif defined(__linux__) || defined(_AIX) || defined(__sgi) || (defined(sun) && !defined(BSD)) || defined(ultrix) || defined(__osf__) || defined(DARWIN)
 #define PS_USE_CLOBBER_ARGV
-#elif defined(PHP_WIN32)
+#elif defined(WIN32)
 #define PS_USE_WIN32
 #else
 #define PS_USE_NONE

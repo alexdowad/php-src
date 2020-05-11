@@ -37,7 +37,7 @@
 #define php_sprintf sprintf
 
 /* Operating system family definition */
-#ifdef PHP_WIN32
+#ifdef WIN32
 # define PHP_OS_FAMILY			"Windows"
 #elif defined(BSD) || defined(__DragonFly__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 # define PHP_OS_FAMILY			"BSD"
@@ -55,7 +55,7 @@
 #undef PHP_DEBUG
 #define PHP_DEBUG ZEND_DEBUG
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #	include "tsrm_win32.h"
 #	ifdef PHP_EXPORTS
 #		define PHPAPI __declspec(dllexport)
@@ -76,7 +76,7 @@
 #endif
 
 /* Windows specific defines */
-#ifdef PHP_WIN32
+#ifdef WIN32
 # define PHP_PROG_SENDMAIL		"Built in mailer"
 # define WIN32_LEAN_AND_MEAN
 # define NOOPENFILE
@@ -194,7 +194,7 @@ END_EXTERN_C()
 #endif
 
 #ifndef HAVE_SOCKLEN_T
-# ifdef PHP_WIN32
+# ifdef WIN32
 typedef int socklen_t;
 # else
 typedef unsigned int socklen_t;
@@ -227,7 +227,7 @@ typedef unsigned int socklen_t;
 #include <string.h>
 
 #if HAVE_PWD_H
-# ifdef PHP_WIN32
+# ifdef WIN32
 #include "win32/param.h"
 # else
 #include <pwd.h>
@@ -278,7 +278,7 @@ END_EXTERN_C()
 #define STR_PRINT(str)	((str)?(str):"")
 
 #ifndef MAXPATHLEN
-# ifdef PHP_WIN32
+# ifdef WIN32
 #  include "win32/ioutil.h"
 #  define MAXPATHLEN PHP_WIN32_IOUTIL_MAXPATHLEN
 # elif PATH_MAX
@@ -293,10 +293,10 @@ END_EXTERN_C()
 #define php_ignore_value(x) ZEND_IGNORE_VALUE(x)
 
 /* global variables */
-#if !defined(PHP_WIN32)
+#ifndef WIN32
 #define php_sleep sleep
 extern char **environ;
-#endif	/* !defined(PHP_WIN32) */
+#endif	/* !defined(WIN32) */
 
 #ifdef PHP_PWRITE_64
 ssize_t pwrite(int, void *, size_t, off64_t);
@@ -342,7 +342,7 @@ PHPAPI ZEND_COLD void php_error_docref1(const char *docref, const char *param1, 
 	PHP_ATTRIBUTE_FORMAT(printf, 4, 5);
 PHPAPI ZEND_COLD void php_error_docref2(const char *docref, const char *param1, const char *param2, int type, const char *format, ...)
 	PHP_ATTRIBUTE_FORMAT(printf, 5, 6);
-#ifdef PHP_WIN32
+#ifdef WIN32
 PHPAPI ZEND_COLD void php_win32_docref2_from_error(DWORD error, const char *param1, const char *param2);
 #endif
 END_EXTERN_C()

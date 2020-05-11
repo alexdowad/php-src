@@ -19,7 +19,7 @@
 
 #include <php.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include "win32/inet.h"
 #else
 # undef closesocket
@@ -32,7 +32,7 @@
 #define shutdown(s,n)	/* nothing */
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # ifdef EWOULDBLOCK
 #  undef EWOULDBLOCK
 # endif
@@ -43,13 +43,13 @@
 # define EINPROGRESS	WSAEWOULDBLOCK
 # define fsync _commit
 # define ftruncate(a, b) chsize(a, b)
-#endif /* defined(PHP_WIN32) */
+#endif /* defined(WIN32) */
 
 #ifndef EWOULDBLOCK
 # define EWOULDBLOCK EAGAIN
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #define php_socket_errno() WSAGetLastError()
 #else
 #define php_socket_errno() errno
@@ -89,13 +89,13 @@ END_EXTERN_C()
 
 #include <stddef.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 typedef SOCKET php_socket_t;
 #else
 typedef int php_socket_t;
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # define SOCK_ERR INVALID_SOCKET
 # define SOCK_CONN_ERR SOCKET_ERROR
 # define SOCK_RECV_ERR SOCKET_ERROR
@@ -204,7 +204,7 @@ static inline int php_pollfd_for_ms(php_socket_t fd, int events, int timeout)
 /* emit warning and suggestion for unsafe select(2) usage */
 PHPAPI void _php_emit_fd_setsize_warning(int max_fd);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 /* it is safe to FD_SET too many fd's under win32; the macro will simply ignore
  * descriptors that go beyond the default FD_SETSIZE */
 # define PHP_SAFE_FD_SET(fd, set)	FD_SET(fd, set)

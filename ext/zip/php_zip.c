@@ -43,7 +43,7 @@ static PHP_NAMED_FUNCTION(zif_zip_entry_open);
 static PHP_NAMED_FUNCTION(zif_zip_entry_close);
 
 #ifdef HAVE_GLOB
-#ifndef PHP_WIN32
+#ifndef WIN32
 #include <glob.h>
 #else
 #include "win32/glob.h"
@@ -621,7 +621,7 @@ int php_zip_glob(char *pattern, int pattern_len, zend_long flags, zval *return_v
 		if (!result) {
 			cwd[0] = '\0';
 		}
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if (IS_SLASH(*pattern)) {
 			cwd[2] = '\0';
 		}
@@ -715,7 +715,7 @@ int php_zip_pcre(zend_string *regexp, char *path, int path_len, zval *return_val
 		if (!result) {
 			cwd[0] = '\0';
 		}
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if (IS_SLASH(*path)) {
 			cwd[2] = '\0';
 		}

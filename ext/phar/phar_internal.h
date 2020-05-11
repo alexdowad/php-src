@@ -473,7 +473,7 @@ extern zend_string *(*phar_save_resolve_path)(const char *filename, size_t filen
 
 BEGIN_EXTERN_C()
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 static inline void phar_unixify_path_separators(char *path, size_t path_len)
 {
 	char *s;

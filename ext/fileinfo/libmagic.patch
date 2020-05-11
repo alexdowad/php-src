@@ -26,7 +26,7 @@ diff -u libmagic.orig/apprentice.c libmagic/apprentice.c
 +#endif
 +#endif
 +
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +#include "win32/unistd.h"
 +#define strtoull _strtoui64
 +#else
@@ -701,7 +701,7 @@ diff -u libmagic.orig/apprentice.c libmagic/apprentice.c
  	}
 -	map->type = MAP_TYPE_USER;	/* unspecified */
 +
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +	/* Don't bother on windows with php_stream_open_wrapper,
 +	return to give apprentice_load() a chance. */
 +	if (php_stream_stat_path_ex((char *)fn, 0, &st, NULL) == SUCCESS) {
@@ -723,7 +723,7 @@ diff -u libmagic.orig/apprentice.c libmagic/apprentice.c
 +	}
  
 -	if (fstat(fd, &st) == -1) {
-+#ifndef PHP_WIN32
++#ifndef WIN32
 +	if (php_stream_stat(stream, &st) < 0) {
  		file_error(ms, errno, "cannot stat `%s'", dbname);
  		goto error;
@@ -946,7 +946,7 @@ diff -u libmagic.orig/apprentice.c libmagic/apprentice.c
 -			return NULL;
 -		if (access(buf, R_OK) != -1) {
 +		spprintf(&buf, MAXPATHLEN, "%.*s.mime%s", CAST(int, q - fn), fn, ext);
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +		if (VCWD_ACCESS(buf, R_OK) == 0) {
 +#else
 +		if (VCWD_ACCESS(buf, R_OK) != -1) {
@@ -1010,7 +1010,7 @@ diff -u libmagic.orig/buffer.c libmagic/buffer.c
  #endif	/* lint */
  
  #include "magic.h"
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +#include "win32/unistd.h"
 +#else
  #include <unistd.h>
@@ -1068,7 +1068,7 @@ diff -u libmagic.orig/cdf.c libmagic/cdf.c
  #endif
  #include <stdlib.h>
 +
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +#include "win32/unistd.h"
 +#else
  #include <unistd.h>
@@ -1347,7 +1347,7 @@ diff -u libmagic.orig/cdf.h libmagic/cdf.h
  #define _H_CDF_
  
 -#ifdef WIN32
-+#ifdef PHP_WIN32
++#ifdef WIN32
  #include <winsock2.h>
 -#define timespec timeval
 -#define tv_nsec tv_usec
@@ -1407,7 +1407,7 @@ diff -u libmagic.orig/compress.c libmagic/compress.c
  typedef void (*sig_t)(int);
  #endif /* HAVE_SIG_T */
 -#if !defined(__MINGW32__) && !defined(WIN32)
-+#ifndef PHP_WIN32
++#ifndef WIN32
  #include <sys/ioctl.h>
  #endif
  #ifdef HAVE_SYS_WAIT_H
@@ -1550,7 +1550,7 @@ diff -u libmagic.orig/der.c libmagic/der.c
  #include "magic.h"
  #include "der.h"
  #else
-+#ifndef PHP_WIN32
++#ifndef WIN32
  #include <sys/mman.h>
 +#endif
  #include <sys/stat.h>
@@ -1654,7 +1654,7 @@ diff -u libmagic.orig/file.h libmagic/file.h
 +#include "config.h"
  
 -#ifdef WIN32
-+#ifdef PHP_WIN32
++#ifdef WIN32
    #ifdef _WIN64
      #define SIZE_T_FORMAT "I64"
    #else
@@ -1688,7 +1688,7 @@ diff -u libmagic.orig/file.h libmagic/file.h
 +
  #include <sys/types.h>
 -#ifndef WIN32
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +#include "win32/param.h"
 +#else
  #include <sys/param.h>
@@ -1699,7 +1699,7 @@ diff -u libmagic.orig/file.h libmagic/file.h
  #endif
  
 -#if defined(__EMX__) || defined (WIN32)
-+#if defined(__EMX__) || defined(PHP_WIN32)
++#if defined(__EMX__) || defined(WIN32)
  #define PATHSEP	';'
  #else
  #define PATHSEP	':'
@@ -1903,7 +1903,7 @@ diff -u libmagic.orig/file.h libmagic/file.h
  #define FILE_RCSID(id)
  #endif
 +
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +#ifdef _WIN64
 +#define FINFO_LSEEK_FUNC _lseeki64
 +#else
@@ -1945,7 +1945,7 @@ diff -u libmagic.orig/fsmagic.c libmagic/fsmagic.c
 -	return 1;
 -}
 +
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +
 +# undef S_IFIFO
  #endif
@@ -2044,7 +2044,7 @@ diff -u libmagic.orig/fsmagic.c libmagic/fsmagic.c
 -		} else {
 -#ifdef HAVE_STRUCT_STAT_ST_RDEV
 -# ifdef dv_unit
-+#ifndef PHP_WIN32
++#ifndef WIN32
 +# ifdef S_IFCHR
 +		case S_IFCHR:
 +			/*
@@ -2601,7 +2601,7 @@ diff -u libmagic.orig/magic.c libmagic/magic.c
  #include "magic.h"
  
  #include <stdlib.h>
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +#include "win32/unistd.h"
 +#else
  #include <unistd.h>
@@ -2611,7 +2611,7 @@ diff -u libmagic.orig/magic.c libmagic/magic.c
 -#include <sys/mman.h>
 +#include "config.h"
 +
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +#include <shlwapi.h>
  #endif
  #include <limits.h>	/* for PIPE_BUF */
@@ -2622,7 +2622,7 @@ diff -u libmagic.orig/magic.c libmagic/magic.c
  
 -private void close_and_restore(const struct magic_set *, const char *, int,
 -    const struct stat *);
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +# undef S_IFLNK
 +# undef S_IFIFO
 +#endif
@@ -3139,7 +3139,7 @@ diff -u libmagic.orig/readcdf.c libmagic/readcdf.c
  
  #include <assert.h>
  #include <stdlib.h>
-+#ifdef PHP_WIN32
++#ifdef WIN32
 +#include "win32/unistd.h"
 +#else
  #include <unistd.h>

@@ -76,7 +76,7 @@ MYSQLND_METHOD(mysqlnd_debug, log)(MYSQLND_DEBUG * self,
 	}
 	if (flags & MYSQLND_DEBUG_DUMP_TIME) {
 		/* The following from FF's DBUG library, which is in the public domain */
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 		/* FIXME This doesn't give microseconds as in Unix case, and the resolution is
 		in system ticks, 10 ms intervals. See my_getsystime.c for high res */
 		SYSTEMTIME loc_t;
@@ -173,7 +173,7 @@ MYSQLND_METHOD(mysqlnd_debug, log_va)(MYSQLND_DEBUG *self,
 	}
 	if (flags & MYSQLND_DEBUG_DUMP_TIME) {
 		/* The following from FF's DBUG library, which is in the public domain */
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 		/* FIXME This doesn't give microseconds as in Unix case, and the resolution is
 		in system ticks, 10 ms intervals. See my_getsystime.c for high res */
 		SYSTEMTIME loc_t;
@@ -521,7 +521,7 @@ MYSQLND_METHOD(mysqlnd_debug, set_mode)(MYSQLND_DEBUG * self, const char * const
 				}
 				if (i + 1 < mode_len && mode[i+1] == ',') {
 					unsigned int j = i + 2;
-#ifdef PHP_WIN32
+#ifdef WIN32
 					if (i+4 < mode_len && mode[i+3] == ':' && (mode[i+4] == '\\' || mode[i+5] == '/')) {
 						j = i + 5;
 					}

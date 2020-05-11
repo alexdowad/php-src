@@ -1608,7 +1608,7 @@ php_mysqlnd_rowp_read_text_protocol_aux(MYSQLND_ROW_BUFFER * row_buffer, zval * 
 				if (perm_bind.pack_len < SIZEOF_ZEND_LONG) {
 					/* direct conversion */
 					int64_t v =
-#ifndef PHP_WIN32
+#ifndef WIN32
 						atoll((char *) p);
 #else
 						_atoi64((char *) p);
@@ -1616,7 +1616,7 @@ php_mysqlnd_rowp_read_text_protocol_aux(MYSQLND_ROW_BUFFER * row_buffer, zval * 
 					ZVAL_LONG(current_field, (zend_long) v); /* the cast is safe */
 				} else {
 					uint64_t v =
-#ifndef PHP_WIN32
+#ifndef WIN32
 						(uint64_t) atoll((char *) p);
 #else
 						(uint64_t) _atoi64((char *) p);

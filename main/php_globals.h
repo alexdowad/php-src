@@ -142,7 +142,7 @@ struct _php_core_globals {
 	char *disable_functions;
 	char *disable_classes;
 	zend_bool allow_url_include;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	zend_bool com_initialized;
 #endif
 	zend_long max_input_nesting_level;
@@ -159,7 +159,7 @@ struct _php_core_globals {
 
 	zend_bool in_error_log;
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	zend_bool windows_show_crt_warning;
 #endif
 

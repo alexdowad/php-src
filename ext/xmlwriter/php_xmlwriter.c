@@ -122,7 +122,7 @@ static char *_xmlwriter_get_valid_file_path(char *source, char *resolved_path, i
 				return NULL;
 			}
 			isFileUri = 1;
-#ifdef PHP_WIN32
+#ifdef WIN32
 			source += 8;
 #else
 			source += 7;
@@ -134,7 +134,7 @@ static char *_xmlwriter_get_valid_file_path(char *source, char *resolved_path, i
 			}
 
 			isFileUri = 1;
-#ifdef PHP_WIN32
+#ifdef WIN32
 			source += 17;
 #else
 			source += 16;

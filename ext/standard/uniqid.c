@@ -25,7 +25,7 @@
 #include <errno.h>
 
 #include <stdio.h>
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/time.h"
 #else
 #include <sys/time.h>

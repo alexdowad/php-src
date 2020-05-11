@@ -187,20 +187,16 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_socket_addrinfo_explain, 0, 1, I
 	ZEND_ARG_INFO(0, addr)
 ZEND_END_ARG_INFO()
 
-#if defined(PHP_WIN32)
+#ifdef WIN32
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_socket_wsaprotocol_info_export, 0, 2, MAY_BE_STRING|MAY_BE_FALSE)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_TYPE_INFO(0, target_pid, IS_LONG, 0)
 ZEND_END_ARG_INFO()
-#endif
 
-#if defined(PHP_WIN32)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_socket_wsaprotocol_info_import, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO(0, info_id, IS_STRING, 0)
 ZEND_END_ARG_INFO()
-#endif
 
-#if defined(PHP_WIN32)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_socket_wsaprotocol_info_release, 0, 1, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, info_id, IS_STRING, 0)
 ZEND_END_ARG_INFO()
@@ -245,13 +241,13 @@ ZEND_FUNCTION(socket_addrinfo_lookup);
 ZEND_FUNCTION(socket_addrinfo_connect);
 ZEND_FUNCTION(socket_addrinfo_bind);
 ZEND_FUNCTION(socket_addrinfo_explain);
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 ZEND_FUNCTION(socket_wsaprotocol_info_export);
 #endif
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 ZEND_FUNCTION(socket_wsaprotocol_info_import);
 #endif
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 ZEND_FUNCTION(socket_wsaprotocol_info_release);
 #endif
 
@@ -297,13 +293,13 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(socket_addrinfo_connect, arginfo_socket_addrinfo_connect)
 	ZEND_FE(socket_addrinfo_bind, arginfo_socket_addrinfo_bind)
 	ZEND_FE(socket_addrinfo_explain, arginfo_socket_addrinfo_explain)
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 	ZEND_FE(socket_wsaprotocol_info_export, arginfo_socket_wsaprotocol_info_export)
 #endif
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 	ZEND_FE(socket_wsaprotocol_info_import, arginfo_socket_wsaprotocol_info_import)
 #endif
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 	ZEND_FE(socket_wsaprotocol_info_release, arginfo_socket_wsaprotocol_info_release)
 #endif
 	ZEND_FE_END

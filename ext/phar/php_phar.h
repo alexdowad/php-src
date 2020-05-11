@@ -26,7 +26,7 @@
 extern zend_module_entry phar_module_entry;
 #define phpext_phar_ptr &phar_module_entry
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #define PHP_PHAR_API __declspec(dllexport)
 #else
 #define PHP_PHAR_API PHPAPI

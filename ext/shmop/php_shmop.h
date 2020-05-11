@@ -28,7 +28,7 @@ extern zend_module_entry shmop_module_entry;
 PHP_MINIT_FUNCTION(shmop);
 PHP_MINFO_FUNCTION(shmop);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include "win32/ipc.h"
 #endif
 

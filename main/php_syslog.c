@@ -32,7 +32,7 @@
 #define syslog std_syslog
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 PHPAPI void php_syslog(int priority, const char *format, ...) /* {{{ */
 {
 	va_list args;

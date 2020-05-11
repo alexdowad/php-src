@@ -31,7 +31,7 @@ extern zend_module_entry odbc_module_entry;
 #include "php_version.h"
 #define PHP_ODBC_VERSION PHP_VERSION
 
-#if defined(HAVE_DBMAKER) || defined(PHP_WIN32) || defined(HAVE_IBMDB2) || defined(HAVE_UNIXODBC) || defined(HAVE_IODBC)
+#if defined(HAVE_DBMAKER) || defined(WIN32) || defined(HAVE_IBMDB2) || defined(HAVE_UNIXODBC) || defined(HAVE_IODBC)
 # define PHP_ODBC_HAVE_FETCH_HASH 1
 #endif
 
@@ -42,7 +42,7 @@ PHP_RINIT_FUNCTION(odbc);
 PHP_RSHUTDOWN_FUNCTION(odbc);
 PHP_MINFO_FUNCTION(odbc);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # define PHP_ODBC_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
 # define PHP_ODBC_API __attribute__ ((visibility("default")))

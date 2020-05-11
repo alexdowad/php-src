@@ -48,11 +48,11 @@
 #	include <arpa/inet.h>
 #endif /* }}} */
 
-#if defined(PHP_WIN32) && defined(HAVE_OPENSSL)
+#if defined(WIN32) && defined(HAVE_OPENSSL)
 # include "openssl/applink.c"
 #endif
 
-#if defined(PHP_WIN32) && defined(ZTS)
+#if defined(WIN32) && defined(ZTS)
 ZEND_TSRMLS_CACHE_DEFINE()
 #endif
 
@@ -170,7 +170,7 @@ static inline void php_phpdbg_globals_ctor(zend_phpdbg_globals *pg) /* {{{ */
 
 	pg->oplog_list = NULL;
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	pg->sigio_watcher_thread = INVALID_HANDLE_VALUE;
 	memset(&pg->swd, 0, sizeof(struct win32_sigio_watcher_data));
 #endif
@@ -1305,7 +1305,7 @@ php_stream *phpdbg_stream_url_wrap_php(php_stream_wrapper *wrapper, const char *
 
 	if (!strncasecmp(path, "stdin", 6) && PHPDBG_G(stdin_file)) {
 		php_stream *stream = php_stream_fopen_from_fd(dup(fileno(PHPDBG_G(stdin_file))), "r", NULL);
-#ifdef PHP_WIN32
+#ifdef WIN32
 		zval *blocking_pipes = php_stream_context_get_option(context, "pipe", "blocking");
 		if (blocking_pipes) {
 			convert_to_long(blocking_pipes);
@@ -1375,7 +1375,7 @@ int main(int argc, char **argv) /* {{{ */
 	address = strdup("127.0.0.1");
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	_fmode = _O_BINARY;                 /* sets default for file streams to binary */
 	setmode(_fileno(stdin), O_BINARY);  /* make the stdio mode be binary */
 	setmode(_fileno(stdout), O_BINARY); /* make the stdio mode be binary */
@@ -1385,7 +1385,7 @@ int main(int argc, char **argv) /* {{{ */
 phpdbg_main:
 #ifdef ZTS
 	php_tsrm_startup();
-# ifdef PHP_WIN32
+# ifdef WIN32
 	ZEND_TSRMLS_CACHE_UPDATE();
 # endif
 #endif

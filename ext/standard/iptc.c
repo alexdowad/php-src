@@ -34,7 +34,7 @@
 #include <sys/stat.h>
 
 #include <stdint.h>
-#ifndef PHP_WIN32
+#ifndef WIN32
 # include <inttypes.h>
 #endif
 

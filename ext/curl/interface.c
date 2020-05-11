@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include <winsock2.h>
 #include <sys/types.h>
 #endif
@@ -98,7 +98,7 @@ static void _php_curl_close(zend_resource *rsrc);
 		v ? zend_string_copy(v) : ZSTR_EMPTY_ALLOC());
 #define CAAZ(s, v) add_assoc_zval_ex(return_value, s, sizeof(s) -1 , (zval *) v);
 
-#if defined(PHP_WIN32) || defined(__GNUC__)
+#if defined(WIN32) || defined(__GNUC__)
 # define php_curl_ret(__ret) RETVAL_FALSE; return __ret;
 #else
 # define php_curl_ret(__ret) RETVAL_FALSE; return;
@@ -136,7 +136,7 @@ static int php_curl_option_url(php_curl *ch, const char *url, const size_t len) 
 		curl_easy_setopt(ch->cp, CURLOPT_PROTOCOLS, CURLPROTO_ALL & ~CURLPROTO_FILE);
 	}
 
-#if LIBCURL_VERSION_NUM > 0x073800 && defined(PHP_WIN32)
+#if LIBCURL_VERSION_NUM > 0x073800 && defined(WIN32)
 	if (len > sizeof("file://") - 1 && '/' != url[sizeof("file://") - 1] && !strncmp("file://", url, sizeof("file://") - 1) && len < MAXPATHLEN - 2) {
 		char _tmp[MAXPATHLEN] = {0};
 

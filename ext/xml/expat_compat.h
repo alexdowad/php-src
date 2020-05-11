@@ -17,13 +17,13 @@
 #ifndef PHP_EXPAT_COMPAT_H
 #define PHP_EXPAT_COMPAT_H
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "config.w32.h"
 #else
 #include <php_config.h>
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # define PHP_XML_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
 # define PHP_XML_API __attribute__ ((visibility("default")))

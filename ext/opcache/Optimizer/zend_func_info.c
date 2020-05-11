@@ -188,7 +188,7 @@ static const func_info_t func_infos[] = {
 	F1("rawurlencode",                 MAY_BE_STRING),
 	F1("rawurldecode",                 MAY_BE_STRING),
 	F1("http_build_query",             MAY_BE_FALSE | MAY_BE_STRING),
-#if defined(HAVE_SYMLINK) || defined(PHP_WIN32)
+#if defined(HAVE_SYMLINK) || defined(WIN32)
 	F1("readlink",                     MAY_BE_FALSE | MAY_BE_STRING),
 #endif
 	F1("exec",                         MAY_BE_FALSE | MAY_BE_STRING),
@@ -280,10 +280,8 @@ static const func_info_t func_infos[] = {
 #ifdef HAVE_GETHOSTNAME
 	F1("gethostname",                  MAY_BE_FALSE | MAY_BE_STRING),
 #endif
-#if defined(PHP_WIN32) || HAVE_DNS_SEARCH_FUNC
-# if defined(PHP_WIN32) || HAVE_FULL_DNS_FUNCS
+#if defined(WIN32) || (HAVE_DNS_SEARCH_FUNC && HAVE_FULL_DNS_FUNCS)
 	F1("dns_get_record",               MAY_BE_FALSE | MAY_BE_ARRAY | MAY_BE_ARRAY_KEY_LONG | MAY_BE_ARRAY_OF_ARRAY),
-# endif
 #endif
 	F1("popen",                        MAY_BE_FALSE | MAY_BE_RESOURCE),
 	F1("fgetc",                        MAY_BE_FALSE | MAY_BE_STRING),
@@ -830,7 +828,7 @@ static const func_info_t func_infos[] = {
 	/* ext/gd */
 	F1("gd_info",								MAY_BE_ARRAY | MAY_BE_ARRAY_KEY_STRING | MAY_BE_ARRAY_OF_STRING | MAY_BE_ARRAY_OF_FALSE | MAY_BE_ARRAY_OF_TRUE),
 	F1("imagecreatetruecolor",					MAY_BE_FALSE | MAY_BE_OBJECT),
-#ifdef PHP_WIN32
+#ifdef WIN32
 	F1("imagegrabwindow",						MAY_BE_FALSE | MAY_BE_OBJECT),
 	F1("imagegrabscreen",						MAY_BE_FALSE | MAY_BE_OBJECT),
 #endif

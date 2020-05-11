@@ -37,7 +37,7 @@
 #endif
 
 /* This symbol is defined in ext/standard/config.m4.
- * Essentially, it is set if you HAVE_FORK || PHP_WIN32
+ * Essentially, it is set if you HAVE_FORK || WIN32
  * Other platforms may modify that configure check and add suitable #ifdefs
  * around the alternate code.
  * */
@@ -59,7 +59,7 @@ static php_process_env_t _php_array_to_envp(zval *environment)
 	zval *element;
 	php_process_env_t env;
 	zend_string *key, *str;
-#ifndef PHP_WIN32
+#ifndef WIN32
 	char **ep;
 #endif
 	char *p;
@@ -75,7 +75,7 @@ static php_process_env_t _php_array_to_envp(zval *environment)
 	cnt = zend_hash_num_elements(Z_ARRVAL_P(environment));
 
 	if (cnt < 1) {
-#ifndef PHP_WIN32
+#ifndef WIN32
 		env.envarray = (char **) ecalloc(1, sizeof(char *));
 #endif
 		env.envp = (char *) ecalloc(4, 1);
@@ -104,13 +104,13 @@ static php_process_env_t _php_array_to_envp(zval *environment)
 		}
 	} ZEND_HASH_FOREACH_END();
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 	ep = env.envarray = (char **) ecalloc(cnt + 1, sizeof(char *));
 #endif
 	p = env.envp = (char *) ecalloc(sizeenv + 4, 1);
 
 	ZEND_HASH_FOREACH_STR_KEY_PTR(env_hash, key, str) {
-#ifndef PHP_WIN32
+#ifndef WIN32
 		*ep = p;
 		++ep;
 #endif
@@ -139,7 +139,7 @@ static php_process_env_t _php_array_to_envp(zval *environment)
 /* {{{ _php_free_envp */
 static void _php_free_envp(php_process_env_t env)
 {
-#ifndef PHP_WIN32
+#ifndef WIN32
 	if (env.envarray) {
 		efree(env.envarray);
 	}
@@ -154,7 +154,7 @@ static void _php_free_envp(php_process_env_t env)
 static void proc_open_rsrc_dtor(zend_resource *rsrc)
 {
 	struct php_process_handle *proc = (struct php_process_handle*)rsrc->ptr;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	DWORD wstatus;
 #elif HAVE_SYS_WAIT_H
 	int wstatus;
@@ -171,7 +171,7 @@ static void proc_open_rsrc_dtor(zend_resource *rsrc)
 		}
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (FG(pclose_wait)) {
 		WaitForSingleObject(proc->childHandle, INFINITE);
 	}
@@ -237,7 +237,7 @@ PHP_FUNCTION(proc_terminate)
 		RETURN_THROWS();
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (TerminateProcess(proc->childHandle, 255)) {
 		RETURN_TRUE;
 	} else {
@@ -281,7 +281,7 @@ PHP_FUNCTION(proc_get_status)
 {
 	zval *zproc;
 	struct php_process_handle *proc;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	DWORD wstatus;
 #elif HAVE_SYS_WAIT_H
 	int wstatus;
@@ -303,7 +303,7 @@ PHP_FUNCTION(proc_get_status)
 	add_assoc_string(return_value, "command", proc->command);
 	add_assoc_long(return_value, "pid", (zend_long) proc->child);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 
 	GetExitCodeProcess(proc->childHandle, &wstatus);
 
@@ -345,7 +345,7 @@ PHP_FUNCTION(proc_get_status)
 /* }}} */
 
 /* {{{ handy definitions for portability/readability */
-#ifdef PHP_WIN32
+#ifdef WIN32
 
 /* we use this to allow child processes to inherit handles */
 SECURITY_ATTRIBUTES php_proc_open_security = {
@@ -401,7 +401,7 @@ static zend_string *get_valid_arg_string(zval *zv, int elem_num) {
 	return str;
 }
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 static void append_backslashes(smart_string *str, size_t num_bs)
 {
 	for (size_t i = 0; i < num_bs; i++) {
@@ -574,7 +574,7 @@ static zend_string* get_string_parameter(zval *array, int index, char *param_nam
 
 static int set_proc_descriptor_to_blackhole(struct php_proc_open_descriptor_item *desc)
 {
-#ifdef PHP_WIN32
+#ifdef WIN32
 	desc->childend = CreateFileA(
 		"nul", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
 		NULL, OPEN_EXISTING, 0, NULL);
@@ -613,7 +613,7 @@ static int set_proc_descriptor_to_pipe(struct php_proc_open_descriptor_item *des
 		desc->mode_flags = O_RDONLY;
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	/* don't let the child inherit the parent side of the pipe */
 	desc->parentend = dup_handle(desc->parentend, FALSE, TRUE);
 
@@ -640,7 +640,7 @@ static int set_proc_descriptor_to_file(struct php_proc_open_descriptor_item *des
 		return FAILURE;
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	desc->childend = dup_fd_as_handle((int)fd);
 	_close((int)fd);
 
@@ -657,7 +657,7 @@ static int set_proc_descriptor_to_file(struct php_proc_open_descriptor_item *des
 
 static int dup_proc_descriptor(php_file_descriptor_t from, php_file_descriptor_t *to, zend_ulong nindex)
 {
-#ifdef PHP_WIN32
+#ifdef WIN32
 	*to = dup_handle(from, TRUE, FALSE);
 	if (*to == NULL) {
 		php_error_docref(NULL, E_WARNING, "Failed to dup() for descriptor " ZEND_LONG_FMT, nindex);
@@ -693,7 +693,7 @@ static int redirect_proc_descriptor(struct php_proc_open_descriptor_item *desc, 
 
 		/* Support referring to a stdin/stdout/stderr pipe adopted from the parent,
 		 * which happens whenever an explicit override is not provided. */
-#ifndef PHP_WIN32
+#ifndef WIN32
 		redirect_to = target;
 #else
 		switch (target) {
@@ -849,7 +849,7 @@ PHP_FUNCTION(proc_open)
 	zend_string *str_index;
 	zend_ulong nindex;
 	struct php_proc_open_descriptor_item *descriptors = NULL;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	PROCESS_INFORMATION pi;
 	HANDLE childHandle;
 	STARTUPINFOW si;
@@ -894,7 +894,7 @@ PHP_FUNCTION(proc_open)
 			RETURN_THROWS();
 		}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 		bypass_shell = 1;
 		command = create_win_command_from_args(Z_ARRVAL_P(command_zv));
 		if (!command) {
@@ -910,7 +910,7 @@ PHP_FUNCTION(proc_open)
 		command = estrdup(Z_STRVAL_P(command_zv));
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (other_options) {
 		suppress_errors      = get_option(other_options, "suppress_errors");
 		/* TODO Deprecate in favor of array command? */
@@ -948,7 +948,7 @@ PHP_FUNCTION(proc_open)
 				goto exit_fail;
 			}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 			desc = (HANDLE)_get_osfhandle(fd);
 #else
 			desc = fd;
@@ -967,7 +967,7 @@ PHP_FUNCTION(proc_open)
 		ndesc++;
 	} ZEND_HASH_FOREACH_END();
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (cwd == NULL) {
 		char *getcwd_result = VCWD_GETCWD(cur_cwd, MAXPATHLEN);
 		if (!getcwd_result) {
@@ -1116,7 +1116,7 @@ PHP_FUNCTION(proc_open)
 	proc->pipes = emalloc(sizeof(zend_resource *) * ndesc);
 	proc->npipes = ndesc;
 	proc->child = child;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	proc->childHandle = childHandle;
 #endif
 	proc->env = env;
@@ -1138,7 +1138,7 @@ PHP_FUNCTION(proc_open)
 
 		if (descriptors[i].is_pipe) {
 			switch (descriptors[i].mode_flags) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 				case O_WRONLY|O_BINARY:
 					mode_string = "wb";
 					break;
@@ -1156,7 +1156,7 @@ PHP_FUNCTION(proc_open)
 					mode_string = "r+";
 					break;
 			}
-#ifdef PHP_WIN32
+#ifdef WIN32
 			stream = php_stream_fopen_from_fd(_open_osfhandle((zend_intptr_t)descriptors[i].parentend,
 						descriptors[i].mode_flags), mode_string, NULL);
 			php_stream_set_option(stream, PHP_STREAM_OPTION_PIPE_BLOCKING, blocking_pipes, NULL);
@@ -1184,7 +1184,7 @@ PHP_FUNCTION(proc_open)
 		}
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	free(cwdw);
 	free(cmdw);
 	free(envpw);
@@ -1204,7 +1204,7 @@ exit_fail:
 	if (command) {
 		efree(command);
 	}
-#ifdef PHP_WIN32
+#ifdef WIN32
 	free(cwdw);
 	free(cmdw);
 	free(envpw);

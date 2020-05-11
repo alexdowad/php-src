@@ -38,7 +38,7 @@
 #include <time.h>
 #include <string.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include <process.h>
 #endif
 

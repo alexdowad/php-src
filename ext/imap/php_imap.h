@@ -33,7 +33,7 @@
 #if defined(HAVE_IMAP2000) || defined(HAVE_IMAP2001)
 
  /* For now these appear on Windows, remove this check if it appears outside */
-# ifdef PHP_WIN32
+# ifdef WIN32
  /* Undefine these LOG defines to avoid warnings */
 #  undef LOG_EMERG
 #  undef LOG_CRIT

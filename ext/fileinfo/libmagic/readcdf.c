@@ -31,7 +31,7 @@ FILE_RCSID("@(#)$File: readcdf.c,v 1.73 2019/03/12 20:43:05 christos Exp $")
 
 #include <assert.h>
 #include <stdlib.h>
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/unistd.h"
 #else
 #include <unistd.h>

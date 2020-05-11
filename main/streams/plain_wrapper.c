@@ -35,7 +35,7 @@
 #include "SAPI.h"
 
 #include "php_streams_int.h"
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include "win32/winutil.h"
 # include "win32/time.h"
 # include "win32/ioutil.h"
@@ -47,12 +47,12 @@
 #define php_stream_fopen_from_file_int(file, mode)	_php_stream_fopen_from_file_int((file), (mode) STREAMS_CC)
 #define php_stream_fopen_from_file_int_rel(file, mode)	 _php_stream_fopen_from_file_int((file), (mode) STREAMS_REL_CC)
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 extern int php_get_uid_by_name(const char *name, uid_t *uid);
 extern int php_get_gid_by_name(const char *name, gid_t *gid);
 #endif
 
-#if defined(PHP_WIN32)
+#if defined(WIN32)
 # define PLAIN_WRAP_BUF_SIZE(st) (((st) > UINT_MAX) ? UINT_MAX : (unsigned int)(st))
 #else
 # define PLAIN_WRAP_BUF_SIZE(st) (st)
@@ -141,7 +141,7 @@ typedef struct {
 	char *last_mapped_addr;
 	size_t last_mapped_len;
 #endif
-#ifdef PHP_WIN32
+#ifdef WIN32
 	char *last_mapped_addr;
 	HANDLE file_mapping;
 #endif
@@ -178,7 +178,7 @@ static php_stream *_php_stream_fopen_from_fd_int(int fd, const char *mode, const
 	self->is_process_pipe = 0;
 	self->temp_name = NULL;
 	self->fd = fd;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	self->is_pipe_blocking = 0;
 #endif
 
@@ -198,7 +198,7 @@ static php_stream *_php_stream_fopen_from_file_int(FILE *file, const char *mode 
 	self->is_process_pipe = 0;
 	self->temp_name = NULL;
 	self->fd = fileno(file);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	self->is_pipe_blocking = 0;
 #endif
 
@@ -249,7 +249,7 @@ static void detect_is_seekable(php_stdio_stream_data *self) {
 		self->is_seekable = !(S_ISFIFO(self->sb.st_mode) || S_ISCHR(self->sb.st_mode));
 		self->is_pipe = S_ISFIFO(self->sb.st_mode);
 	}
-#elif defined(PHP_WIN32)
+#elif defined(WIN32)
 	zend_uintptr_t handle = _get_osfhandle(self->fd);
 
 	if (handle != (zend_uintptr_t)INVALID_HANDLE_VALUE) {
@@ -320,7 +320,7 @@ PHPAPI php_stream *_php_stream_fopen_from_pipe(FILE *file, const char *mode STRE
 	self->is_process_pipe = 1;
 	self->fd = fileno(file);
 	self->temp_name = NULL;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	self->is_pipe_blocking = 0;
 #endif
 
@@ -336,7 +336,7 @@ static ssize_t php_stdiop_write(php_stream *stream, const char *buf, size_t coun
 	assert(data != NULL);
 
 	if (data->fd >= 0) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		ssize_t bytes_written;
 		if (ZEND_SIZE_T_UINT_OVFL(count)) {
 			count = UINT_MAX;
@@ -377,7 +377,7 @@ static ssize_t php_stdiop_read(php_stream *stream, char *buf, size_t count)
 	assert(data != NULL);
 
 	if (data->fd >= 0) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		php_stdio_stream_data *self = (php_stdio_stream_data*)stream->abstract;
 
 		if ((self->is_pipe || self->is_process_pipe) && !self->is_pipe_blocking) {
@@ -458,7 +458,7 @@ static int php_stdiop_close(php_stream *stream, int close_handle)
 		munmap(data->last_mapped_addr, data->last_mapped_len);
 		data->last_mapped_addr = NULL;
 	}
-#elif defined(PHP_WIN32)
+#elif defined(WIN32)
 	if (data->last_mapped_addr) {
 		UnmapViewOfFile(data->last_mapped_addr);
 		data->last_mapped_addr = NULL;
@@ -491,7 +491,7 @@ static int php_stdiop_close(php_stream *stream, int close_handle)
 			return 0; /* everything should be closed already -> success */
 		}
 		if (data->temp_name) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 			php_win32_ioutil_unlink(ZSTR_VAL(data->temp_name));
 #else
 			unlink(ZSTR_VAL(data->temp_name));
@@ -764,7 +764,7 @@ static int php_stdiop_set_option(php_stream *stream, int option, int value, void
 						return PHP_STREAM_OPTION_RETURN_ERR;
 				}
 			}
-#elif defined(PHP_WIN32)
+#elif defined(WIN32)
 			{
 				php_stream_mmap_range *range = (php_stream_mmap_range*)ptrparam;
 				HANDLE hfile = (HANDLE)_get_osfhandle(fd);
@@ -869,7 +869,7 @@ static int php_stdiop_set_option(php_stream *stream, int option, int value, void
 					if (new_size < 0) {
 						return PHP_STREAM_OPTION_RETURN_ERR;
 					}
-#ifdef PHP_WIN32
+#ifdef WIN32
 					HANDLE h = (HANDLE) _get_osfhandle(fd);
 					if (INVALID_HANDLE_VALUE == h) {
 						return PHP_STREAM_OPTION_RETURN_ERR;
@@ -904,7 +904,7 @@ static int php_stdiop_set_option(php_stream *stream, int option, int value, void
 				}
 			}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 		case PHP_STREAM_OPTION_PIPE_BLOCKING:
 			data->is_pipe_blocking = value;
 			return PHP_STREAM_OPTION_RETURN_OK;
@@ -997,7 +997,7 @@ static php_stream *php_plain_files_dir_opener(php_stream_wrapper *wrapper, const
 
 	dir = VCWD_OPENDIR(path);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (!dir) {
 		php_win32_docref2_from_error(GetLastError(), path, path);
 	}
@@ -1057,7 +1057,7 @@ PHPAPI php_stream *_php_stream_fopen(const char *filename, const char *mode, zen
 				return ret;
 		}
 	}
-#ifdef PHP_WIN32
+#ifdef WIN32
 	fd = php_win32_ioutil_open(realpath, open_flags, 0666);
 #else
 	fd = open(realpath, open_flags, 0666);
@@ -1079,7 +1079,7 @@ PHPAPI php_stream *_php_stream_fopen(const char *filename, const char *mode, zen
 			}
 
 			/* WIN32 always set ISREG flag */
-#ifndef PHP_WIN32
+#ifndef WIN32
 			/* sanity checks for include/require.
 			 * We check these after opening the stream, so that we save
 			 * on fstat() syscalls */
@@ -1140,7 +1140,7 @@ static int php_plain_files_url_stater(php_stream_wrapper *wrapper, const char *u
 		return -1;
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (flags & PHP_STREAM_URL_STAT_LINK) {
 		return VCWD_LSTAT(url, &ssb->sb);
 	}
@@ -1188,7 +1188,7 @@ static int php_plain_files_rename(php_stream_wrapper *wrapper, const char *url_f
 		return 0;
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (!php_win32_check_trailing_space(url_from, strlen(url_from))) {
 		php_win32_docref2_from_error(ERROR_INVALID_NAME, url_from, url_to);
 		return 0;
@@ -1214,7 +1214,7 @@ static int php_plain_files_rename(php_stream_wrapper *wrapper, const char *url_f
 	ret = VCWD_RENAME(url_from, url_to);
 
 	if (ret == -1) {
-#ifndef PHP_WIN32
+#ifndef WIN32
 # ifdef EXDEV
 		if (errno == EXDEV) {
 			zend_stat_t sb;
@@ -1267,7 +1267,7 @@ static int php_plain_files_rename(php_stream_wrapper *wrapper, const char *url_f
 # endif
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 		php_win32_docref2_from_error(GetLastError(), url_from, url_to);
 #else
 		php_error_docref2(NULL, url_from, url_to, E_WARNING, "%s", strerror(errno));
@@ -1376,7 +1376,7 @@ static int php_plain_files_rmdir(php_stream_wrapper *wrapper, const char *url, i
 		return 0;
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (!php_win32_check_trailing_space(url, strlen(url))) {
 		php_error_docref1(NULL, url, E_WARNING, "%s", strerror(ENOENT));
 		return 0;
@@ -1397,14 +1397,14 @@ static int php_plain_files_rmdir(php_stream_wrapper *wrapper, const char *url, i
 static int php_plain_files_metadata(php_stream_wrapper *wrapper, const char *url, int option, void *value, php_stream_context *context)
 {
 	struct utimbuf *newtime;
-#ifndef PHP_WIN32
+#ifndef WIN32
 	uid_t uid;
 	gid_t gid;
 #endif
 	mode_t mode;
 	int ret = 0;
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (!php_win32_check_trailing_space(url, strlen(url))) {
 		php_error_docref1(NULL, url, E_WARNING, "%s", strerror(ENOENT));
 		return 0;
@@ -1433,7 +1433,7 @@ static int php_plain_files_metadata(php_stream_wrapper *wrapper, const char *url
 
 			ret = VCWD_UTIME(url, newtime);
 			break;
-#ifndef PHP_WIN32
+#ifndef WIN32
 		case PHP_STREAM_META_OWNER_NAME:
 		case PHP_STREAM_META_OWNER:
 			if(option == PHP_STREAM_META_OWNER_NAME) {
@@ -1517,7 +1517,7 @@ PHPAPI php_stream *_php_stream_fopen_with_path(const char *filename, const char 
 	}
 
 	filename_length = strlen(filename);
-#ifndef PHP_WIN32
+#ifndef WIN32
 	(void) filename_length;
 #endif
 
@@ -1552,7 +1552,7 @@ not_relative_path:
 		return php_stream_fopen_rel(filename, mode, opened_path, options);
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (IS_SLASH(filename[0])) {
 		size_t cwd_len;
 		char *cwd;

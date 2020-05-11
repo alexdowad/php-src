@@ -40,7 +40,7 @@ function imagecolorexactalpha(GdImage $im, int $red, int $green, int $blue, int 
 
 function imagecopyresampled(GdImage $dst_im, GdImage $src_im, int $dst_x, int $dst_y, int $src_x, int $src_y, int $dst_w, int $dst_h, int $src_w, int $src_h): bool {}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 
 function imagegrabwindow(int $handle, int $client_area = 0): GdImage|false {}
 

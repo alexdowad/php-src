@@ -67,7 +67,7 @@ FILE_RCSID("@(#)$File: fsmagic.c,v 1.80 2019/04/23 18:59:27 christos Exp $")
 #endif
 #undef HAVE_MAJOR
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 
 # undef S_IFIFO
 #endif
@@ -130,7 +130,7 @@ file_fsmagic(struct magic_set *ms, const char *fn, zend_stat_t *sb)
 	}
 
 	switch (sb->st_mode & S_IFMT) {
-#ifndef PHP_WIN32
+#ifndef WIN32
 # ifdef S_IFCHR
 		case S_IFCHR:
 			/*

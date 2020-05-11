@@ -20,7 +20,7 @@
 
 #include <sys/types.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "config.w32.h"
 #include "win32/readdir.h"
 #else

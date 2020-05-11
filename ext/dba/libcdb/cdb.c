@@ -26,7 +26,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef PHP_WIN32
+#ifndef WIN32
 #include <sys/mman.h>
 #endif
 #ifdef HAVE_UNISTD_H

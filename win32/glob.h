@@ -42,7 +42,7 @@
 #ifndef _GLOB_H_
 #define	_GLOB_H_
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 # include <sys/cdefs.h>
 #endif
 

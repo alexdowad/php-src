@@ -161,7 +161,7 @@ static int phar_file_action(phar_archive_data *phar, phar_entry_info *info, char
 			highlight_file(name, &syntax_highlighter_ini);
 
 			efree(name);
-#ifdef PHP_WIN32
+#ifdef WIN32
 			efree(arch);
 #endif
 			zend_bailout();
@@ -254,7 +254,7 @@ static int phar_file_action(phar_archive_data *phar, phar_entry_info *info, char
 				efree(name);
 				new_op_array = NULL;
 			}
-#ifdef PHP_WIN32
+#ifdef WIN32
 			efree(arch);
 #endif
 			if (new_op_array) {
@@ -435,7 +435,7 @@ PHP_METHOD(Phar, mount)
 	size_t fname_len, arch_len, entry_len;
 	size_t path_len, actual_len;
 	phar_archive_data *pphar;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	char *save_fname;
 	ALLOCA_FLAG(fname_use_heap)
 #endif
@@ -447,7 +447,7 @@ PHP_METHOD(Phar, mount)
 	fname = (char*)zend_get_executed_filename();
 	fname_len = strlen(fname);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	save_fname = fname;
 	if (memchr(fname, '\\', fname_len)) {
 		fname = do_alloca(fname_len + 1, fname_use_heap);
@@ -522,7 +522,7 @@ carry_on:
 	zend_throw_exception_ex(phar_ce_PharException, 0, "Mounting of %s to %s failed", path, actual);
 
 finish: ;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (fname != save_fname) {
 		free_alloca(fname, fname_use_heap);
 		fname = save_fname;
@@ -585,7 +585,7 @@ PHP_METHOD(Phar, webPhar)
 		return;
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (memchr(fname, '\\', fname_len)) {
 		fname = estrndup(fname, fname_len);
 		phar_unixify_path_separators(fname, fname_len);
@@ -813,7 +813,7 @@ PHP_METHOD(Phar, webPhar)
 	if (FAILURE == phar_get_archive(&phar, fname, fname_len, NULL, 0, NULL) ||
 		(info = phar_get_entry_info(phar, entry, entry_len, NULL, 0)) == NULL) {
 		phar_do_404(phar, fname, fname_len, f404, f404_len, entry, entry_len);
-#ifdef PHP_WIN32
+#ifdef WIN32
 		efree(fname);
 #endif
 		zend_bailout();
@@ -839,7 +839,7 @@ PHP_METHOD(Phar, webPhar)
 							}
 							efree(pt);
 							efree(entry);
-#ifdef PHP_WIN32
+#ifdef WIN32
 							efree(fname);
 #endif
 							RETURN_THROWS();
@@ -856,7 +856,7 @@ PHP_METHOD(Phar, webPhar)
 						}
 						efree(pt);
 						efree(entry);
-#ifdef PHP_WIN32
+#ifdef WIN32
 						efree(fname);
 #endif
 						RETURN_THROWS();
@@ -1164,12 +1164,12 @@ PHP_METHOD(Phar, __construct)
 	if (SUCCESS == phar_split_fname(fname, fname_len, &arch, &arch_len, &entry, &entry_len, !is_data, 2)) {
 		/* use arch (the basename for the archive) for fname instead of fname */
 		/* this allows support for RecursiveDirectoryIterator of subdirectories */
-#ifdef PHP_WIN32
+#ifdef WIN32
 		phar_unixify_path_separators(arch, arch_len);
 #endif
 		fname = arch;
 		fname_len = arch_len;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	} else {
 		arch = estrndup(fname, fname_len);
 		arch_len = fname_len;
@@ -3646,7 +3646,7 @@ static void phar_add_file(phar_archive_data **pphar, char *filename, size_t file
 	phar_entry_data *data;
 	php_stream *contents_file = NULL;
 	php_stream_statbuf ssb;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	char *save_filename;
 	ALLOCA_FLAG(filename_use_heap)
 #endif
@@ -3659,7 +3659,7 @@ static void phar_add_file(phar_archive_data **pphar, char *filename, size_t file
 		}
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	save_filename = filename;
 	if (memchr(filename, '\\', filename_len)) {
 		filename = do_alloca(filename_len + 1, filename_use_heap);
@@ -3723,7 +3723,7 @@ static void phar_add_file(phar_archive_data **pphar, char *filename, size_t file
 	}
 
 finish: ;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (filename != save_filename) {
 		free_alloca(filename, filename_use_heap);
 		filename = save_filename;
@@ -4190,7 +4190,7 @@ static int phar_extract_file(zend_bool overwrite, phar_entry_info *entry, char *
 	}
 	filename = new_state.cwd + 1;
 	filename_len = new_state.cwd_length - 1;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	/* unixify the path back, otherwise non zip formats might be broken */
 	{
 		size_t cnt = 0;

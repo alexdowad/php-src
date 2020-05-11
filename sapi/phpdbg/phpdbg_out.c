@@ -1275,7 +1275,7 @@ PHPDBG_API int phpdbg_rlog_internal(int fd, const char *fmt, ...) { /* {{{ */
 		char *format = NULL, *buffer = NULL, *outbuf = NULL;
 		const time_t tt = tp.tv_sec;
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 		strftime(friendly, 100, "%a %b %d %H.%%04d %Y", localtime(&tt));
 #else
 		strftime(friendly, 100, "%a %b %d %T.%%04d %Y", localtime(&tt));

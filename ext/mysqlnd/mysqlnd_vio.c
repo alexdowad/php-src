@@ -23,7 +23,7 @@
 #include "mysqlnd_ext_plugin.h"
 #include "php_network.h"
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 #include <netinet/tcp.h>
 #else
 #include <winsock.h>

@@ -53,11 +53,9 @@
 #define HAVE_FULL_DNS_FUNCS 1
 #endif
 
-#if defined(PHP_WIN32) || HAVE_DNS_SEARCH_FUNC
-# if defined(PHP_WIN32) || HAVE_FULL_DNS_FUNCS
+#if defined(WIN32) || (HAVE_DNS_SEARCH_FUNC && HAVE_FULL_DNS_FUNCS)
 PHP_MINIT_FUNCTION(dns);
-# endif
-#endif /* defined(PHP_WIN32) || HAVE_DNS_SEARCH_FUNC */
+#endif /* defined(WIN32) || (HAVE_DNS_SEARCH_FUNC && HAVE_FULL_DNS_FUNCS) */
 
 #ifndef INT16SZ
 #define INT16SZ		2

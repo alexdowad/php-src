@@ -51,7 +51,7 @@
 #include <ctype.h>
 #include <signal.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include <winsock2.h>
 #include <stdlib.h>
 #include "win32/sendmail.h"
@@ -390,7 +390,7 @@ PHP_MINIT_FUNCTION(imap)
 
 	REGISTER_INI_ENTRIES();
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 	mail_link(&unixdriver);		/* link in the unix driver */
 	mail_link(&mhdriver);		/* link in the mh driver */
 	/* mail_link(&mxdriver); */	/* According to c-client docs (internal.txt) this shouldn't be used. */
@@ -406,7 +406,7 @@ PHP_MINIT_FUNCTION(imap)
 	mail_link(&mtxdriver);		/* link in the mtx driver */
 	mail_link(&dummydriver);	/* link in the dummy driver */
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 	auth_link(&auth_log);		/* link in the log authenticator */
 	auth_link(&auth_md5);		/* link in the cram-md5 authenticator */
 #if HAVE_IMAP_KRB && defined(HAVE_IMAP_AUTH_GSS)
@@ -3483,14 +3483,14 @@ done:
  */
 int _php_imap_mail(char *to, char *subject, char *message, char *headers, char *cc, char *bcc, char* rpath)
 {
-#ifdef PHP_WIN32
+#ifdef WIN32
 	int tsm_err;
 #else
 	FILE *sendmail;
 	int ret;
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	char *tempMailTo;
 	char *tsm_errmsg = NULL;
 	ADDRESS *addr;

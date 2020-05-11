@@ -50,7 +50,7 @@
 #define PHP_IMG_BMP   64
 #define PHP_IMG_TGA  128
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #	define PHP_GD_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
 #	define PHP_GD_API __attribute__ ((visibility("default")))

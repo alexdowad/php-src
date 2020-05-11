@@ -39,7 +39,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include <io.h>
 # define O_RDONLY _O_RDONLY
 # include "win32/param.h"
@@ -66,7 +66,7 @@
 #include "file.h"
 
 #if HAVE_PWD_H
-# ifdef PHP_WIN32
+# ifdef WIN32
 #  include "win32/pwd.h"
 # else
 #  include <pwd.h>
@@ -103,7 +103,7 @@ int file_globals_id;
 php_file_globals file_globals;
 #endif
 
-#if defined(HAVE_FNMATCH) && !defined(PHP_WIN32)
+#if defined(HAVE_FNMATCH) && !defined(WIN32)
 # ifndef _GNU_SOURCE
 #  define _GNU_SOURCE
 # endif
@@ -258,19 +258,19 @@ PHP_MINIT_FUNCTION(file)
 	REGISTER_LONG_CONSTANT("STREAM_IPPROTO_IP", IPPROTO_IP, CONST_CS|CONST_PERSISTENT);
 #endif
 
-#if defined(IPPROTO_TCP) || defined(PHP_WIN32)
+#if defined(IPPROTO_TCP) || defined(WIN32)
 	REGISTER_LONG_CONSTANT("STREAM_IPPROTO_TCP", IPPROTO_TCP, CONST_CS|CONST_PERSISTENT);
 #endif
 
-#if defined(IPPROTO_UDP) || defined(PHP_WIN32)
+#if defined(IPPROTO_UDP) || defined(WIN32)
 	REGISTER_LONG_CONSTANT("STREAM_IPPROTO_UDP", IPPROTO_UDP, CONST_CS|CONST_PERSISTENT);
 #endif
 
-#if defined(IPPROTO_ICMP) || defined(PHP_WIN32)
+#if defined(IPPROTO_ICMP) || defined(WIN32)
 	REGISTER_LONG_CONSTANT("STREAM_IPPROTO_ICMP", IPPROTO_ICMP, CONST_CS|CONST_PERSISTENT);
 #endif
 
-#if defined(IPPROTO_RAW) || defined(PHP_WIN32)
+#if defined(IPPROTO_RAW) || defined(WIN32)
 	REGISTER_LONG_CONSTANT("STREAM_IPPROTO_RAW", IPPROTO_RAW, CONST_CS|CONST_PERSISTENT);
 #endif
 
@@ -936,7 +936,7 @@ PHP_FUNCTION(popen)
 	ZEND_PARSE_PARAMETERS_END();
 
 	posix_mode = estrndup(mode, mode_len);
-#ifndef PHP_WIN32
+#ifndef WIN32
 	{
 		char *z = memchr(posix_mode, 'b', mode_len);
 		if (z) {
@@ -1695,7 +1695,7 @@ no_stat:
 		}
 
 		res =
-#ifndef PHP_WIN32
+#ifndef WIN32
 			!strcmp(sp, dp);
 #else
 			!strcasecmp(sp, dp);

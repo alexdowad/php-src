@@ -267,7 +267,7 @@ int phar_parse_zipfile(php_stream *fp, char *fname, size_t fname_len, char *alia
 	return FAILURE;
 foundit:
 	mydata->fname = pestrndup(fname, fname_len, mydata->is_persistent);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	phar_unixify_path_separators(mydata->fname, fname_len);
 #endif
 	mydata->is_zip = 1;

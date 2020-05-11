@@ -42,7 +42,7 @@
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif
-#ifdef PHP_WIN32
+#ifdef WIN32
 # include <io.h>
 # include <fcntl.h>
 # include <windows.h>
@@ -285,7 +285,7 @@ static void php_free_gd_font(zend_resource *rsrc)
 void php_gd_error_method(int type, const char *format, va_list args)
 {
 	switch (type) {
-#ifndef PHP_WIN32
+#ifndef WIN32
 		case GD_DEBUG:
 		case GD_INFO:
 #endif
@@ -1161,7 +1161,7 @@ PHP_FUNCTION(imagecopyresampled)
 }
 /* }}} */
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 /* {{{ proto resource imagegrabwindow(int window_handle [, int client_area])
    Grab a window or its client area using a windows handle (HWND property in COM instance) */
 PHP_FUNCTION(imagegrabwindow)
@@ -1288,7 +1288,7 @@ PHP_FUNCTION(imagegrabscreen)
 	php_gd_assign_libgdimageptr_as_extgdimage(return_value, im);
 }
 /* }}} */
-#endif /* PHP_WIN32 */
+#endif /* WIN32 */
 
 /* {{{ proto resource imagerotate(resource src_im, float angle, int bgdcolor [, int ignoretransparent])
    Rotate an image using a custom angle */

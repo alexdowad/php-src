@@ -34,7 +34,7 @@ FILE_RCSID("@(#)$File: magic.c,v 1.111 2019/05/07 02:27:11 christos Exp $")
 #include "magic.h"
 
 #include <stdlib.h>
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/unistd.h"
 #else
 #include <unistd.h>
@@ -42,7 +42,7 @@ FILE_RCSID("@(#)$File: magic.c,v 1.111 2019/05/07 02:27:11 christos Exp $")
 #include <string.h>
 #include "config.h"
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include <shlwapi.h>
 #endif
 #include <limits.h>	/* for PIPE_BUF */
@@ -70,7 +70,7 @@ FILE_RCSID("@(#)$File: magic.c,v 1.111 2019/05/07 02:27:11 christos Exp $")
 #endif
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # undef S_IFLNK
 # undef S_IFIFO
 #endif

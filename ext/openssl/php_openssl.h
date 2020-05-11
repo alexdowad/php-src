@@ -64,7 +64,7 @@ extern zend_module_entry openssl_module_entry;
 
 #include <openssl/err.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #	define PHP_OPENSSL_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
 #	define PHP_OPENSSL_API __attribute__((visibility("default")))
@@ -109,7 +109,7 @@ PHP_MINFO_FUNCTION(openssl);
 PHP_GINIT_FUNCTION(openssl);
 PHP_GSHUTDOWN_FUNCTION(openssl);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #define PHP_OPENSSL_BIO_MODE_R(flags) (((flags) & PKCS7_BINARY) ? "rb" : "r")
 #define PHP_OPENSSL_BIO_MODE_W(flags) (((flags) & PKCS7_BINARY) ? "wb" : "w")
 #else

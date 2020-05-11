@@ -19,7 +19,7 @@
 #include "streams/php_streams_int.h"
 #include "php_network.h"
 
-#if defined(PHP_WIN32) || defined(__riscos__)
+#if defined(WIN32) || defined(__riscos__)
 # undef AF_UNIX
 #endif
 
@@ -35,7 +35,7 @@
 # define MSG_PEEK 0
 #endif
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 /* send/recv family on windows expects int */
 # define XP_SOCK_BUF_SIZE(sz) (((sz) > INT_MAX) ? INT_MAX : (int)(sz))
 #else
@@ -186,7 +186,7 @@ static ssize_t php_sockop_read(php_stream *stream, char *buf, size_t count)
 static int php_sockop_close(php_stream *stream, int close_handle)
 {
 	php_netstream_data_t *sock = (php_netstream_data_t*)stream->abstract;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	int n;
 #endif
 
@@ -196,12 +196,12 @@ static int php_sockop_close(php_stream *stream, int close_handle)
 
 	if (close_handle) {
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if (sock->socket == -1)
 			sock->socket = SOCK_ERR;
 #endif
 		if (sock->socket != SOCK_ERR) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 			/* prevent more data from coming in */
 			shutdown(sock->socket, SHUT_RD);
 
@@ -256,7 +256,7 @@ static inline int sock_sendto(php_netstream_data_t *sock, const char *buf, size_
 
 		return (ret == SOCK_CONN_ERR) ? -1 : ret;
 	}
-#ifdef PHP_WIN32
+#ifdef WIN32
 	return ((ret = send(sock->socket, buf, buflen > INT_MAX ? INT_MAX : (int)buflen, flags)) == SOCK_CONN_ERR) ? -1 : ret;
 #else
 	return ((ret = send(sock->socket, buf, buflen, flags)) == SOCK_CONN_ERR) ? -1 : ret;
@@ -276,7 +276,7 @@ static inline int sock_recvfrom(php_netstream_data_t *sock, char *buf, size_t bu
 		socklen_t sl = sizeof(sa);
 		ret = recvfrom(sock->socket, buf, XP_SOCK_BUF_SIZE(buflen), flags, (struct sockaddr*)&sa, &sl);
 		ret = (ret == SOCK_CONN_ERR) ? -1 : ret;
-#ifdef PHP_WIN32
+#ifdef WIN32
 		/* POSIX discards excess bytes without signalling failure; emulate this on Windows */
 		if (ret == -1 && WSAGetLastError() == WSAEMSGSIZE) {
 			ret = buflen;
@@ -334,7 +334,7 @@ static int php_sockop_set_option(php_stream *stream, int option, int value, void
 				if (sock->socket == -1) {
 					alive = 0;
 				} else if (php_pollfd_for(sock->socket, PHP_POLLREADABLE|POLLPRI, &tv) > 0) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 					int ret;
 #else
 					ssize_t ret;

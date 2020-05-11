@@ -44,7 +44,7 @@ FILE_RCSID("@(#)$File: cdf.c,v 1.114 2019/02/20 02:35:27 christos Exp $")
 #endif
 #include <stdlib.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/unistd.h"
 #else
 #include <unistd.h>

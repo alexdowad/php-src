@@ -27,7 +27,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/unistd.h"
 #endif
 #include "zend_globals.h"

@@ -49,7 +49,7 @@ FILE_RCSID("@(#)$File: compress.c,v 1.121 2019/05/07 02:27:11 christos Exp $")
 #ifndef HAVE_SIG_T
 typedef void (*sig_t)(int);
 #endif /* HAVE_SIG_T */
-#ifndef PHP_WIN32
+#ifndef WIN32
 #include <sys/ioctl.h>
 #endif
 #ifdef HAVE_SYS_WAIT_H

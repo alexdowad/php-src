@@ -58,7 +58,7 @@
  * gl_matchc:
  *	Number of matches in the current invocation of glob.
  */
-#ifdef PHP_WIN32
+#ifdef WIN32
 #if _MSC_VER < 1800
 # define _POSIX_
 # include <limits.h>
@@ -75,7 +75,7 @@
 #include <sys/stat.h>
 
 #include <ctype.h>
-#ifndef PHP_WIN32
+#ifndef WIN32
 #include <sys/param.h>
 #include <dirent.h>
 #include <pwd.h>
@@ -167,7 +167,7 @@ glob(pattern, flags, errfunc, pglob)
 	int c;
 	Char *bufnext, *bufend, patbuf[MAXPATHLEN];
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	/* Force skipping escape sequences on windows
 	 * due to the ambiguity with path backslashes
 	 */
@@ -357,7 +357,7 @@ globtilde(pattern, patbuf, patbuf_len, pglob)
 	size_t patbuf_len;
 	glob_t *pglob;
 {
-#ifndef PHP_WIN32
+#ifndef WIN32
 	struct passwd *pwd;
 #endif
 	char *h;
@@ -386,7 +386,7 @@ globtilde(pattern, patbuf, patbuf_len, pglob)
 		 * first and then trying the password file
 		 */
 		if ((h = getenv("HOME")) == NULL) {
-#ifndef PHP_WIN32
+#ifndef WIN32
 			if ((pwd = getpwuid(getuid())) == NULL)
 				return pattern;
 			else
@@ -399,7 +399,7 @@ globtilde(pattern, patbuf, patbuf_len, pglob)
 		/*
 		 * Expand a ~user
 		 */
-#ifndef PHP_WIN32
+#ifndef WIN32
 		if ((pwd = getpwnam((char*) patbuf)) == NULL)
 			return pattern;
 		else

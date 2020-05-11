@@ -31,13 +31,13 @@
 
 #include <errno.h>
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/readdir.h"
 #endif
 
 
 #ifdef HAVE_GLOB
-#ifndef PHP_WIN32
+#ifndef WIN32
 #include <glob.h>
 #else
 #include "win32/glob.h"
@@ -439,7 +439,7 @@ PHP_FUNCTION(glob)
 		if (!result) {
 			cwd[0] = '\0';
 		}
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if (IS_SLASH(*pattern)) {
 			cwd[2] = '\0';
 		}
@@ -476,7 +476,7 @@ PHP_FUNCTION(glob)
 #ifdef GLOB_NOMATCH
 no_results:
 #endif
-#ifndef PHP_WIN32
+#ifndef WIN32
 		/* Paths containing '*', '?' and some other chars are
 		illegal on Windows but legit on other platforms. For
 		this reason the direct basedir check against the glob

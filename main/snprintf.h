@@ -132,7 +132,7 @@ typedef enum {
 	LM_PHP_INT_T
 } length_modifier_e;
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 # define WIDE_INT		__int64
 #elif SIZEOF_LONG_LONG
 # define WIDE_INT		long long

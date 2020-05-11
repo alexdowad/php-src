@@ -22,7 +22,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#ifdef PHP_WIN32
+#ifdef WIN32
 #define O_RDONLY _O_RDONLY
 #include "win32/param.h"
 #else
@@ -32,7 +32,7 @@
 #include "php_string.h"
 #include "pack.h"
 #if HAVE_PWD_H
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/pwd.h"
 #else
 #include <pwd.h>

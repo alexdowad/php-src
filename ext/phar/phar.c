@@ -528,7 +528,7 @@ void phar_entry_remove(phar_entry_data *idata, char **error) /* {{{ */
 int phar_open_parsed_phar(char *fname, size_t fname_len, char *alias, size_t alias_len, zend_bool is_data, uint32_t options, phar_archive_data** pphar, char **error) /* {{{ */
 {
 	phar_archive_data *phar;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	char *save_fname;
 	ALLOCA_FLAG(fname_use_heap)
 #endif
@@ -536,7 +536,7 @@ int phar_open_parsed_phar(char *fname, size_t fname_len, char *alias, size_t ali
 	if (error) {
 		*error = NULL;
 	}
-#ifdef PHP_WIN32
+#ifdef WIN32
 	save_fname = fname;
 	if (memchr(fname, '\\', fname_len)) {
 		fname = do_alloca(fname_len + 1, fname_use_heap);
@@ -550,7 +550,7 @@ int phar_open_parsed_phar(char *fname, size_t fname_len, char *alias, size_t ali
 		&& !strncmp(fname, phar->fname, fname_len)) || !alias)
 	) {
 		phar_entry_info *stub;
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if (fname != save_fname) {
 			free_alloca(fname, fname_use_heap);
 			fname = save_fname;
@@ -580,7 +580,7 @@ int phar_open_parsed_phar(char *fname, size_t fname_len, char *alias, size_t ali
 
 		return SUCCESS;
 	} else {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if (fname != save_fname) {
 			free_alloca(fname, fname_use_heap);
 			fname = save_fname;
@@ -1050,7 +1050,7 @@ static int phar_parse_pharfile(php_stream *fp, char *fname, size_t fname_len, ch
 	zend_hash_init(&mydata->virtual_dirs, manifest_count * 2,
 		zend_get_hash_value, NULL, (zend_bool)mydata->is_persistent);
 	mydata->fname = pestrndup(fname, fname_len, mydata->is_persistent);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	phar_unixify_path_separators(mydata->fname, fname_len);
 #endif
 	mydata->fname_len = fname_len;
@@ -1399,7 +1399,7 @@ int phar_create_or_parse_filename(char *fname, size_t fname_len, char *alias, si
 		return FAILURE;
 	}
 	fname_len = strlen(mydata->fname);
-#ifdef PHP_WIN32
+#ifdef WIN32
 	phar_unixify_path_separators(mydata->fname, fname_len);
 #endif
 	p = strrchr(mydata->fname, '/');
@@ -1757,7 +1757,7 @@ static int phar_analyze_path(const char *fname, const char *ext, size_t ext_len,
 	char *filename = estrndup(fname, (ext - fname) + ext_len);
 
 	if ((realpath = expand_filepath(filename, NULL))) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		phar_unixify_path_separators(realpath, strlen(realpath));
 #endif
 		if (zend_hash_str_exists(&(PHAR_G(phar_fname_map)), realpath, strlen(realpath))) {
@@ -1807,7 +1807,7 @@ static int phar_analyze_path(const char *fname, const char *ext, size_t ext_len,
 					efree(filename);
 					return FAILURE;
 				}
-#ifdef PHP_WIN32
+#ifdef WIN32
 				phar_unixify_path_separators(realpath, strlen(realpath));
 #endif
 				slash = strstr(realpath, filename);
@@ -2191,7 +2191,7 @@ last_time:
 int phar_split_fname(const char *filename, size_t filename_len, char **arch, size_t *arch_len, char **entry, size_t *entry_len, int executable, int for_create) /* {{{ */
 {
 	const char *ext_str;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	char *save;
 #endif
 	size_t ext_len;
@@ -2206,7 +2206,7 @@ int phar_split_fname(const char *filename, size_t filename_len, char **arch, siz
 	}
 
 	ext_len = 0;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	save = (char *)filename;
 	if (memchr(filename, '\\', filename_len)) {
 		filename = estrndup(filename, filename_len);
@@ -2217,14 +2217,14 @@ int phar_split_fname(const char *filename, size_t filename_len, char **arch, siz
 		if (ext_len != -1) {
 			if (!ext_str) {
 				/* no / detected, restore arch for error message */
-#ifdef PHP_WIN32
+#ifdef WIN32
 				*arch = save;
 #else
 				*arch = (char*)filename;
 #endif
 			}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 			if (filename != save) {
 				efree((char *)filename);
 			}
@@ -2242,7 +2242,7 @@ int phar_split_fname(const char *filename, size_t filename_len, char **arch, siz
 	if (ext_str[ext_len]) {
 		*entry_len = filename_len - *arch_len;
 		*entry = estrndup(ext_str+ext_len, *entry_len);
-#ifdef PHP_WIN32
+#ifdef WIN32
 		phar_unixify_path_separators(*entry, *entry_len);
 #endif
 		*entry = phar_fix_filepath(*entry, entry_len, 0);
@@ -2251,7 +2251,7 @@ int phar_split_fname(const char *filename, size_t filename_len, char **arch, siz
 		*entry = estrndup("/", 1);
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (filename != save) {
 		efree((char *)filename);
 	}

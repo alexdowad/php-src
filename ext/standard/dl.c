@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/param.h"
 #include "win32/winutil.h"
 #define GET_DL_ERROR()	php_win_err()
@@ -78,7 +78,7 @@ PHPAPI void *php_load_shlib(char *path, char **errp)
 	handle = DL_LOAD(path);
 	if (!handle) {
 		err = GET_DL_ERROR();
-#ifdef PHP_WIN32
+#ifdef WIN32
 		if (err && (*err)) {
 			size_t i = strlen(err);
 			(*errp)=estrdup(err);
@@ -165,7 +165,7 @@ PHPAPI int php_load_extension(char *filename, int type, int start_now)
 		efree(err1);
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (!php_win32_image_compatible(libpath, &err1)) {
 			php_error_docref(NULL, error_type, err1);
 			efree(err1);

@@ -25,7 +25,7 @@ extern zend_module_entry libxml_module_entry;
 #include "php_version.h"
 #define PHP_LIBXML_VERSION PHP_VERSION
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #	define PHP_LIBXML_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
 #	define PHP_LIBXML_API __attribute__ ((visibility("default")))

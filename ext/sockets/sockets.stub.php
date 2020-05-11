@@ -130,7 +130,7 @@ function socket_addrinfo_bind($addr) {}
 /** @param resource $addr */
 function socket_addrinfo_explain($addr): array {}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 /** @param resource $socket */
 function socket_wsaprotocol_info_export($socket, int $target_pid): string|false {}
 

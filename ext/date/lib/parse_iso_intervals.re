@@ -161,7 +161,7 @@ static timelib_ull timelib_get_unsigned_nr(char **ptr, int max_length)
 
 /* date parser's scan function too large for VC6 - VC7.x
    drop the optimization solves the problem */
-#ifdef PHP_WIN32
+#ifdef WIN32
 #pragma optimize( "", off )
 #endif
 static int scan(Scanner *s)
@@ -318,7 +318,7 @@ isoweek          = year4 "-"? "W" weekofyear;
 	}
 */
 }
-#ifdef PHP_WIN32
+#ifdef WIN32
 #pragma optimize( "", on )
 #endif
 

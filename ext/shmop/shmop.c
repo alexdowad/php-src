@@ -26,7 +26,7 @@
 #include "php_shmop.h"
 #include "shmop_arginfo.h"
 
-# ifndef PHP_WIN32
+# ifndef WIN32
 # include <sys/ipc.h>
 # include <sys/shm.h>
 #else

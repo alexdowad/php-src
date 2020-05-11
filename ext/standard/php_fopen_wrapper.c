@@ -182,7 +182,7 @@ php_stream * php_stream_url_wrap_php(php_stream_wrapper *wrapper, const char *pa
 	char *p, *token = NULL, *pathdup;
 	zend_long max_memory;
 	FILE *file = NULL;
-#ifdef PHP_WIN32
+#ifdef WIN32
 	int pipe_requested = 0;
 #endif
 
@@ -254,7 +254,7 @@ php_stream * php_stream_url_wrap_php(php_stream_wrapper *wrapper, const char *pa
 		} else {
 			fd = dup(STDIN_FILENO);
 		}
-#ifdef PHP_WIN32
+#ifdef WIN32
 		pipe_requested = 1;
 #endif
 	} else if (!strcasecmp(path, "stdout")) {
@@ -270,7 +270,7 @@ php_stream * php_stream_url_wrap_php(php_stream_wrapper *wrapper, const char *pa
 		} else {
 			fd = dup(STDOUT_FILENO);
 		}
-#ifdef PHP_WIN32
+#ifdef WIN32
 		pipe_requested = 1;
 #endif
 	} else if (!strcasecmp(path, "stderr")) {
@@ -286,7 +286,7 @@ php_stream * php_stream_url_wrap_php(php_stream_wrapper *wrapper, const char *pa
 		} else {
 			fd = dup(STDERR_FILENO);
 		}
-#ifdef PHP_WIN32
+#ifdef WIN32
 		pipe_requested = 1;
 #endif
 	} else if (!strncasecmp(path, "fd/", 3)) {
@@ -390,7 +390,7 @@ php_stream * php_stream_url_wrap_php(php_stream_wrapper *wrapper, const char *pa
 		return NULL;
 	}
 
-#if defined(S_IFSOCK) && !defined(PHP_WIN32)
+#if defined(S_IFSOCK) && !defined(WIN32)
 	do {
 		zend_stat_t st;
 		memset(&st, 0, sizeof(st));
@@ -413,7 +413,7 @@ php_stream * php_stream_url_wrap_php(php_stream_wrapper *wrapper, const char *pa
 		}
 	}
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 	if (pipe_requested && stream && context) {
 		zval *blocking_pipes = php_stream_context_get_option(context, "pipe", "blocking");
 		if (blocking_pipes) {

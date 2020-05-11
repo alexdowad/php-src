@@ -28,7 +28,7 @@
 #	define PDO_MYSQL_PARAM_BIND MYSQL_BIND
 #endif
 
-#if defined(PDO_USE_MYSQLND) && PHP_DEBUG && !defined(PHP_WIN32)
+#if defined(PDO_USE_MYSQLND) && PHP_DEBUG && !defined(WIN32)
 #define PDO_DBG_ENABLED 1
 
 #define PDO_DBG_INF(msg) do { if (dbg_skip_trace == FALSE) PDO_MYSQL_G(dbg)->m->log(PDO_MYSQL_G(dbg), __LINE__, __FILE__, -1, "info : ", (msg)); } while (0)
@@ -62,14 +62,14 @@ static inline void PDO_DBG_ENTER(char *func_name) {}
 #endif
 
 ZEND_BEGIN_MODULE_GLOBALS(pdo_mysql)
-#ifndef PHP_WIN32
+#ifndef WIN32
 	char          *default_socket;
 #endif
 #if PDO_DBG_ENABLED
 	char          *debug; /* The actual string */
 	MYSQLND_DEBUG *dbg;	/* The DBG object */
 #endif
-#if defined(PHP_WIN32) && !PDO_DBG_ENABLED
+#if defined(WIN32) && !PDO_DBG_ENABLED
 	/* dummy member so we get at least one member in the struct
 	 * and avoids build errors.
 	 */

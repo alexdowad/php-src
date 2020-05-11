@@ -52,7 +52,7 @@ ZEND_EXTERN_MODULE_GLOBALS(phpdbg)
 extern int phpdbg_startup_run;
 
 #ifdef HAVE_LIBDL
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/param.h"
 #include "win32/winutil.h"
 #define GET_DL_ERROR()  php_win_err()
@@ -1261,7 +1261,7 @@ PHPDBG_API const char *phpdbg_load_module_or_extension(char **path, char **name)
 	handle = DL_LOAD(*path);
 
 	if (!handle) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		char *err = GET_DL_ERROR();
 		if (err && err[0]) {
 			phpdbg_error("dl", "type=\"unknown\"", "%s", err);
@@ -1576,7 +1576,7 @@ int phpdbg_interactive(zend_bool allow_async_unsafe, char *input) /* {{{ */
 		if (phpdbg_do_parse(&stack, input) <= 0) {
 			phpdbg_activate_err_buf(1);
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #define PARA ((phpdbg_param_t *)stack.next)->type
 			if (PHPDBG_G(flags) & PHPDBG_IS_REMOTE && (RUN_PARAM == PARA || EVAL_PARAM == PARA)) {
 				sigio_watcher_start();
@@ -1613,7 +1613,7 @@ int phpdbg_interactive(zend_bool allow_async_unsafe, char *input) /* {{{ */
 
 			phpdbg_activate_err_buf(0);
 			phpdbg_free_err_buf();
-#ifdef PHP_WIN32
+#ifdef WIN32
 			if (PHPDBG_G(flags) & PHPDBG_IS_REMOTE && (RUN_PARAM == PARA || EVAL_PARAM == PARA)) {
 				sigio_watcher_stop();
 			}

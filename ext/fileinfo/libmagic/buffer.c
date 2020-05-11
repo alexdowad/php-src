@@ -31,7 +31,7 @@ FILE_RCSID("@(#)$File: buffer.c,v 1.6 2019/05/07 02:27:11 christos Exp $")
 #endif	/* lint */
 
 #include "magic.h"
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/unistd.h"
 #else
 #include <unistd.h>

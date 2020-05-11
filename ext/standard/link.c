@@ -18,9 +18,9 @@
 #include "php_filestat.h"
 #include "php_globals.h"
 
-#if defined(HAVE_SYMLINK) || defined(PHP_WIN32)
+#if defined(HAVE_SYMLINK) || defined(WIN32)
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include <WinBase.h>
 #endif
 
@@ -28,19 +28,19 @@
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifndef PHP_WIN32
+#ifndef WIN32
 #include <sys/stat.h>
 #endif
 #include <string.h>
 #if HAVE_PWD_H
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/pwd.h"
 #else
 #include <pwd.h>
 #endif
 #endif
 #if HAVE_GRP_H
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/grp.h"
 #else
 #include <grp.h>
@@ -79,7 +79,7 @@ PHP_FUNCTION(readlink)
 	ret = php_sys_readlink(link, buff, MAXPATHLEN-1);
 
 	if (ret == -1) {
-#ifdef PHP_WIN32
+#ifdef WIN32
 		php_error_docref(NULL, E_WARNING, "readlink failed to read the symbolic link (%s), error %d)", link, GetLastError());
 #else
 		php_error_docref(NULL, E_WARNING, "%s", strerror(errno));

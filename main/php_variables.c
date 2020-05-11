@@ -349,7 +349,7 @@ static inline int add_post_vars(zval *arr, post_var_data_t *vars, zend_bool eof)
 	return SUCCESS;
 }
 
-#ifdef PHP_WIN32
+#ifdef WIN32
 #define SAPI_POST_HANDLER_BUFSIZ 16384
 #else
 # define SAPI_POST_HANDLER_BUFSIZ BUFSIZ
@@ -570,7 +570,7 @@ void _php_import_environment_variables(zval *array_ptr)
 {
 	tsrm_env_lock();
 
-#ifndef PHP_WIN32
+#ifndef WIN32
 	for (char **env = environ; env != NULL && *env != NULL; env++) {
 		import_environment_variable(Z_ARRVAL_P(array_ptr), *env);
 	}

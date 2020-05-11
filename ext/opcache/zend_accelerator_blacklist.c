@@ -31,7 +31,7 @@
 #endif
 
 #ifdef HAVE_GLOB
-#ifdef PHP_WIN32
+#ifdef WIN32
 #include "win32/glob.h"
 #else
 #include <glob.h>
