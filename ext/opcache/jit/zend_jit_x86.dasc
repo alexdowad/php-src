@@ -2540,7 +2540,7 @@ static const zend_jit_stub zend_jit_stubs[] = {
 #endif
 };
 
-#if ZTS && defined(ZEND_WIN32)
+#if ZTS && defined(WIN32)
 extern uint32_t _tls_index;
 extern char *_tls_start;
 extern char *_tls_end;
@@ -2583,7 +2583,7 @@ static int zend_jit_setup(void)
 			return FAILURE;
 		}
 	} while(0);
-# elif ZEND_WIN32
+# elif defined(WIN32)
 	tsrm_tls_index  = _tls_index * sizeof(void*);
 
 	/* To find offset of "_tsrm_ls_cache" in TLS segment we perform a linear scan of local TLS memory */
@@ -7772,7 +7772,7 @@ static int zend_jit_init_fcall_guard(dasm_State **Dst, const zend_op *opline, co
 	const void *exit_addr;
 
 	if (func->type == ZEND_INTERNAL_FUNCTION) {
-#ifdef ZEND_WIN32
+#ifdef WIN32
 		// TODO: ASLR may cause different addresses in different workers ???
 		return 0;
 #endif
@@ -8061,7 +8061,7 @@ static int zend_jit_do_fcall(dasm_State **Dst, const zend_op *opline, const zend
 	if (trace && !func) {
 		if (trace->op == ZEND_JIT_TRACE_DO_ICALL) {
 			ZEND_ASSERT(trace->func->type == ZEND_INTERNAL_FUNCTION);
-#ifndef ZEND_WIN32
+#ifndef WIN32
 			// TODO: ASLR may cause different addresses in different workers ???
 			func = trace->func;
 			if (JIT_G(current_frame) &&

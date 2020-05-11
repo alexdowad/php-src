@@ -33,7 +33,7 @@
  * general definitions
  */
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 # include "zend_config.w32.h"
 # define ZEND_PATHS_SEPARATOR		';'
 #elif defined(__riscos__)
@@ -67,7 +67,7 @@
 # include <alloca.h>
 #endif
 
-#if defined(ZEND_WIN32) && !defined(__clang__)
+#if defined(WIN32) && !defined(__clang__)
 #include <intrin.h>
 #endif
 
@@ -91,7 +91,7 @@
 # define __has_feature(x) 0
 #endif
 
-#if defined(ZEND_WIN32) && !defined(__clang__)
+#if defined(WIN32) && !defined(__clang__)
 # define ZEND_ASSUME(c)	__assume(c)
 #elif ((defined(__GNUC__) && ZEND_GCC_VERSION >= 4005) || __has_builtin(__builtin_unreachable)) && PHP_HAVE_BUILTIN_EXPECT
 # define ZEND_ASSUME(c)	do { \
@@ -125,7 +125,7 @@
 
 /* all HAVE_XXX test have to be after the include of zend_config above */
 
-#if defined(HAVE_LIBDL) && !defined(ZEND_WIN32)
+#if defined(HAVE_LIBDL) && !defined(WIN32)
 
 # if __has_feature(address_sanitizer)
 #  define __SANITIZE_ADDRESS__
@@ -161,7 +161,7 @@
 # define DL_ERROR					dlerror
 # define DL_HANDLE					void *
 # define ZEND_EXTENSIONS_SUPPORT	1
-#elif defined(ZEND_WIN32)
+#elif defined(WIN32)
 # define DL_LOAD(libname)			LoadLibrary(libname)
 # define DL_FETCH_SYMBOL			GetProcAddress
 # define DL_UNLOAD					FreeLibrary
@@ -213,7 +213,7 @@ char *alloca();
 
 #if ZEND_GCC_VERSION >= 3001 || __has_attribute(deprecated)
 # define ZEND_ATTRIBUTE_DEPRECATED  __attribute__((deprecated))
-#elif defined(ZEND_WIN32)
+#elif defined(WIN32)
 # define ZEND_ATTRIBUTE_DEPRECATED  __declspec(deprecated)
 #else
 # define ZEND_ATTRIBUTE_DEPRECATED
@@ -265,7 +265,7 @@ char *alloca();
 #if (defined(__GNUC__) && __GNUC__ >= 3 && !defined(__INTEL_COMPILER) && !defined(DARWIN) && !defined(__hpux) && !defined(_AIX) && !defined(__osf__)) || __has_attribute(noreturn)
 # define HAVE_NORETURN
 # define ZEND_NORETURN __attribute__((noreturn))
-#elif defined(ZEND_WIN32)
+#elif defined(WIN32)
 # define HAVE_NORETURN
 # define ZEND_NORETURN __declspec(noreturn)
 #else
@@ -468,14 +468,14 @@ extern "C++" {
 /* excpt.h on Digital Unix 4.0 defines function_table */
 #undef function_table
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 #define ZEND_SECURE_ZERO(var, size) RtlSecureZeroMemory((var), (size))
 #else
 #define ZEND_SECURE_ZERO(var, size) explicit_bzero((var), (size))
 #endif
 
 /* This check should only be used on network socket, not file descriptors */
-#ifdef ZEND_WIN32
+#ifdef WIN32
 #define ZEND_VALID_SOCKET(sock) (INVALID_SOCKET != (sock))
 #else
 #define ZEND_VALID_SOCKET(sock) ((sock) >= 0)
@@ -518,7 +518,7 @@ extern "C++" {
 #ifdef __SSSE3__
 /* Instructions compiled directly. */
 # define ZEND_INTRIN_SSSE3_NATIVE 1
-#elif (defined(HAVE_FUNC_ATTRIBUTE_TARGET) && defined(PHP_HAVE_SSSE3)) || defined(ZEND_WIN32)
+#elif (defined(HAVE_FUNC_ATTRIBUTE_TARGET) && defined(PHP_HAVE_SSSE3)) || defined(WIN32)
 /* Function resolved by ifunc or MINIT. */
 # define ZEND_INTRIN_SSSE3_RESOLVER 1
 #endif
@@ -543,7 +543,7 @@ extern "C++" {
 #ifdef __SSE4_2__
 /* Instructions compiled directly. */
 # define ZEND_INTRIN_SSE4_2_NATIVE 1
-#elif (defined(HAVE_FUNC_ATTRIBUTE_TARGET) && defined(PHP_HAVE_SSE4_2)) || defined(ZEND_WIN32)
+#elif (defined(HAVE_FUNC_ATTRIBUTE_TARGET) && defined(PHP_HAVE_SSE4_2)) || defined(WIN32)
 /* Function resolved by ifunc or MINIT. */
 # define ZEND_INTRIN_SSE4_2_RESOLVER 1
 #endif
@@ -567,7 +567,7 @@ extern "C++" {
 
 #ifdef __AVX2__
 # define ZEND_INTRIN_AVX2_NATIVE 1
-#elif (defined(HAVE_FUNC_ATTRIBUTE_TARGET) && defined(PHP_HAVE_AVX2)) || defined(ZEND_WIN32)
+#elif (defined(HAVE_FUNC_ATTRIBUTE_TARGET) && defined(PHP_HAVE_AVX2)) || defined(WIN32)
 # define ZEND_INTRIN_AVX2_RESOLVER 1
 #endif
 
@@ -590,7 +590,7 @@ extern "C++" {
 
 /* Intrinsics macros end. */
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 # define ZEND_SET_ALIGNED(alignment, decl) __declspec(align(alignment)) decl
 #elif HAVE_ATTRIBUTE_ALIGNED
 # define ZEND_SET_ALIGNED(alignment, decl) decl __attribute__ ((__aligned__ (alignment)))
@@ -601,7 +601,7 @@ extern "C++" {
 #define ZEND_SLIDE_TO_ALIGNED(alignment, ptr) (((zend_uintptr_t)(ptr) + ((alignment)-1)) & ~((alignment)-1))
 #define ZEND_SLIDE_TO_ALIGNED16(ptr) ZEND_SLIDE_TO_ALIGNED(Z_UL(16), ptr)
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 # define _ZEND_EXPAND_VA(a) a
 # define ZEND_EXPAND_VA(code) _ZEND_EXPAND_VA(code)
 #else

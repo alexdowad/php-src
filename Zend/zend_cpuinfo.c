@@ -55,7 +55,7 @@ static void __zend_cpuid(uint32_t func, uint32_t subfunc, zend_cpu_info *cpuinfo
 #endif
 }
 # endif
-#elif defined(ZEND_WIN32) && !defined(__clang__)
+#elif defined(WIN32) && !defined(__clang__)
 # include <intrin.h>
 static void __zend_cpuid(uint32_t func, uint32_t subfunc, zend_cpu_info *cpuinfo) {
 	int regs[4];

@@ -26,7 +26,7 @@
 # include <unistd.h>
 #endif
 #include <fcntl.h>
-#ifndef ZEND_WIN32
+#ifndef WIN32
 # include <sys/types.h>
 # include <signal.h>
 # include <sys/stat.h>
@@ -48,7 +48,7 @@ static const char *g_shared_model;
 /* pointer to globals allocated in SHM and shared across processes */
 zend_smm_shared_globals *smm_shared_globals;
 
-#ifndef ZEND_WIN32
+#ifndef WIN32
 #ifdef ZTS
 static MUTEX_T zts_lock;
 #endif
@@ -66,13 +66,13 @@ static const zend_shared_memory_handler_entry handler_table[] = {
 #ifdef USE_SHM_OPEN
 	{ "posix", &zend_alloc_posix_handlers },
 #endif
-#ifdef ZEND_WIN32
+#ifdef WIN32
 	{ "win32", &zend_alloc_win32_handlers },
 #endif
 	{ NULL, NULL}
 };
 
-#ifndef ZEND_WIN32
+#ifndef WIN32
 void zend_shared_alloc_create_lock(char *lockfile_path)
 {
 	int val;
@@ -161,7 +161,7 @@ int zend_shared_alloc_startup(size_t requested_size, size_t reserved_size)
 	smm_shared_globals = &tmp_shared_globals;
 	ZSMMG(shared_free) = requested_size - reserved_size; /* goes to tmp_shared_globals.shared_free */
 
-#ifndef ZEND_WIN32
+#ifndef WIN32
 	zend_shared_alloc_create_lock(ZCG(accel_directives).lockfile_path);
 #else
 	zend_shared_alloc_create_lock();
@@ -300,7 +300,7 @@ void zend_shared_alloc_shutdown(void)
 	}
 	ZSMMG(shared_segments) = NULL;
 	g_shared_alloc_handler = NULL;
-#ifndef ZEND_WIN32
+#ifndef WIN32
 	close(lock_file);
 
 # ifdef ZTS
@@ -458,7 +458,7 @@ void zend_shared_alloc_safe_unlock(void)
 
 void zend_shared_alloc_lock(void)
 {
-#ifndef ZEND_WIN32
+#ifndef WIN32
 	struct flock mem_write_lock;
 
 	mem_write_lock.l_type = F_WRLCK;
@@ -495,7 +495,7 @@ void zend_shared_alloc_lock(void)
 
 void zend_shared_alloc_unlock(void)
 {
-#ifndef ZEND_WIN32
+#ifndef WIN32
 	struct flock mem_write_unlock;
 
 	mem_write_unlock.l_type = F_UNLCK;
@@ -506,7 +506,7 @@ void zend_shared_alloc_unlock(void)
 
 	ZCG(locked) = 0;
 
-#ifndef ZEND_WIN32
+#ifndef WIN32
 	if (fcntl(lock_file, F_SETLK, &mem_write_unlock) == -1) {
 		zend_accel_error(ACCEL_LOG_ERROR, "Cannot remove lock - %s (%d)", strerror(errno), errno);
 	}
@@ -615,7 +615,7 @@ void zend_accel_shared_protect(int mode)
 	for (i = 0; i < ZSMMG(shared_segments_count); i++) {
 		mprotect(ZSMMG(shared_segments)[i]->p, ZSMMG(shared_segments)[i]->end, mode);
 	}
-#elif defined(ZEND_WIN32)
+#elif defined(WIN32)
 	int i;
 
 	if (!smm_shared_globals) {

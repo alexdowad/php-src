@@ -1705,7 +1705,7 @@ void phpdbg_execute_ex(zend_execute_data *execute_data) /* {{{ */
 			phpdbg_resolve_op_array_breaks(&execute_data->func->op_array);
 		}
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 		if (EG(timed_out)) {
 			zend_timeout(0);
 		}

@@ -3207,8 +3207,7 @@ function toolset_setup_common_cflags()
 
 	// General CFLAGS for building objects
 	DEFINE("CFLAGS", "/nologo $(BASE_INCLUDES) /D _WINDOWS /D WINDOWS=1 \
-		/D ZEND_WIN32=1 /D WIN32 /D _MBCS /W3 \
-		/D _USE_MATH_DEFINES");
+		/D WIN32 /D _MBCS /W3 /D _USE_MATH_DEFINES");
 
 	if (envCFLAGS) {
 		ADD_FLAG("CFLAGS", envCFLAGS);

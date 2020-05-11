@@ -31,7 +31,7 @@
 
 #include <errno.h>
 #include "zend.h"
-#ifdef ZEND_WIN32
+#ifdef WIN32
 # include <Winuser.h>
 #endif
 #include "zend_alloc.h"
@@ -993,7 +993,7 @@ static int zend_scan_escape_string(zval *zendlval, char *str, int len, char quot
 					*t++ = '\v';
 					break;
 				case 'e':
-#ifdef ZEND_WIN32
+#ifdef WIN32
 					*t++ = VK_ESCAPE;
 #else
 					*t++ = '\e';

@@ -72,7 +72,7 @@ ZEND_API void zend_file_handle_dtor(zend_file_handle *fh);
 ZEND_API int zend_compare_file_handles(zend_file_handle *fh1, zend_file_handle *fh2);
 END_EXTERN_C()
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 # include "win32/ioutil.h"
 typedef php_win32_ioutil_stat_t zend_stat_t;
 #ifdef _WIN64

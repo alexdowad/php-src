@@ -49,7 +49,7 @@ ZEND_API void (*zend_execute_internal)(zend_execute_data *execute_data, zval *re
 ZEND_API const zend_fcall_info empty_fcall_info = {0};
 ZEND_API const zend_fcall_info_cache empty_fcall_info_cache = { NULL, NULL, NULL, NULL };
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 ZEND_TLS HANDLE tq_timer = NULL;
 #endif
 
@@ -73,7 +73,7 @@ static void zend_handle_sigsegv(int dummy) /* {{{ */
 				zend_get_executed_filename(),
 				zend_get_executed_lineno());
 /* See http://support.microsoft.com/kb/190351 */
-#ifdef ZEND_WIN32
+#ifdef WIN32
 		fflush(stderr);
 #endif
 	}
@@ -1128,7 +1128,7 @@ ZEND_API ZEND_NORETURN void ZEND_FASTCALL zend_timeout(int dummy) /* {{{ */
 }
 /* }}} */
 
-#ifndef ZEND_WIN32
+#ifndef WIN32
 static void zend_timeout_handler(int dummy) /* {{{ */
 {
 #ifndef ZTS
@@ -1180,7 +1180,7 @@ static void zend_timeout_handler(int dummy) /* {{{ */
 /* }}} */
 #endif
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 VOID CALLBACK tq_timer_cb(PVOID arg, BOOLEAN timed_out)
 {
 	zend_executor_globals *eg;
@@ -1204,7 +1204,7 @@ VOID CALLBACK tq_timer_cb(PVOID arg, BOOLEAN timed_out)
 
 static void zend_set_timeout_ex(zend_long seconds, int reset_signals) /* {{{ */
 {
-#ifdef ZEND_WIN32
+#ifdef WIN32
 	zend_executor_globals *eg;
 
 	if (!seconds) {
@@ -1285,7 +1285,7 @@ void zend_set_timeout(zend_long seconds, int reset_signals) /* {{{ */
 
 void zend_unset_timeout(void) /* {{{ */
 {
-#ifdef ZEND_WIN32
+#ifdef WIN32
 	if (NULL != tq_timer) {
 		if (!DeleteTimerQueueTimer(NULL, tq_timer, INVALID_HANDLE_VALUE)) {
 			EG(timed_out) = 0;

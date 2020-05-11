@@ -784,7 +784,7 @@ again:
 }
 /* }}} */
 
-#if defined(ZEND_WIN32) && (defined(HAVE_FFI_FASTCALL) || defined(HAVE_FFI_STDCALL) || defined(HAVE_FFI_VECTORCALL_PARTIAL))
+#if defined(WIN32) && (defined(HAVE_FFI_FASTCALL) || defined(HAVE_FFI_STDCALL) || defined(HAVE_FFI_VECTORCALL_PARTIAL))
 static size_t zend_ffi_arg_size(zend_ffi_type *type) /* {{{ */
 {
 	zend_ffi_type *arg_type;
@@ -800,7 +800,7 @@ static size_t zend_ffi_arg_size(zend_ffi_type *type) /* {{{ */
 
 static zend_always_inline zend_string *zend_ffi_mangled_func_name(zend_string *name, zend_ffi_type *type) /* {{{ */
 {
-#ifdef ZEND_WIN32
+#ifdef WIN32
 	switch (type->func.abi) {
 # ifdef HAVE_FFI_FASTCALL
 		case FFI_FASTCALL:

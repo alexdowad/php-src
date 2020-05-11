@@ -2240,7 +2240,7 @@ int php_module_startup(sapi_module_struct *sf, zend_module_entry *additional_mod
 	/* Register Zend ini entries */
 	zend_register_standard_ini_entries();
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 	/* Until the current ini values was setup, the current cp is 65001.
 		If the actual ini values are different, some stuff needs to be updated.
 		It concerns at least main_cwd_state and there might be more. As we're

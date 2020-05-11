@@ -53,7 +53,7 @@
 #define VIRTUAL_DIR
 #endif
 
-#ifndef ZEND_WIN32
+#ifndef WIN32
 #include <unistd.h>
 #else
 #include <direct.h>
@@ -63,7 +63,7 @@
 #include <errno.h>
 #endif
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 #include "win32/readdir.h"
 #include <sys/utime.h>
 #include "win32/ioutil.h"
@@ -116,7 +116,7 @@ typedef unsigned short mode_t;
 #define CWD_EXPORTS
 #endif
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 #	ifdef CWD_EXPORTS
 #		define CWD_API __declspec(dllexport)
 #	else
@@ -128,7 +128,7 @@ typedef unsigned short mode_t;
 #	define CWD_API
 #endif
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 # define php_sys_stat_ex php_win32_ioutil_stat_ex
 # define php_sys_stat php_win32_ioutil_stat
 # define php_sys_lstat php_win32_ioutil_lstat
@@ -182,7 +182,7 @@ CWD_API int virtual_access(const char *pathname, int mode);
 CWD_API int virtual_utime(const char *filename, struct utimbuf *buf);
 #endif
 CWD_API int virtual_chmod(const char *filename, mode_t mode);
-#if !defined(ZEND_WIN32)
+#ifndef WIN32
 CWD_API int virtual_chown(const char *filename, uid_t owner, gid_t group, int link);
 #endif
 
@@ -209,7 +209,7 @@ typedef struct _realpath_cache_bucket {
 	uint16_t                       path_len;
 	uint16_t                       realpath_len;
 	uint8_t                        is_dir:1;
-#ifdef ZEND_WIN32
+#ifdef WIN32
 	uint8_t                        is_rvalid:1;
 	uint8_t                        is_readable:1;
 	uint8_t                        is_wvalid:1;
@@ -275,7 +275,7 @@ extern void virtual_cwd_main_cwd_init(uint8_t);
 #define VCWD_UTIME(path, time) virtual_utime(path, time)
 #endif
 #define VCWD_CHMOD(path, mode) virtual_chmod(path, mode)
-#if !defined(ZEND_WIN32)
+#ifndef WIN32
 #define VCWD_CHOWN(path, owner, group) virtual_chown(path, owner, group, 0)
 #if HAVE_LCHOWN
 #define VCWD_LCHOWN(path, owner, group) virtual_chown(path, owner, group, 1)
@@ -287,7 +287,7 @@ extern void virtual_cwd_main_cwd_init(uint8_t);
 #define VCWD_CREAT(path, mode) creat(path, mode)
 /* rename on windows will fail if newname already exists.
    MoveFileEx has to be used */
-#if defined(ZEND_WIN32)
+#ifdef WIN32
 #define VCWD_FOPEN(path, mode)  php_win32_ioutil_fopen(path, mode)
 #define VCWD_OPEN(path, flags) php_win32_ioutil_open(path, flags)
 #define VCWD_OPEN_MODE(path, flags, mode) php_win32_ioutil_open(path, flags, mode)
@@ -323,14 +323,14 @@ extern void virtual_cwd_main_cwd_init(uint8_t);
 #define VCWD_REALPATH(path, real_path) tsrm_realpath(path, real_path)
 
 #if HAVE_UTIME
-# ifdef ZEND_WIN32
+# ifdef WIN32
 #  define VCWD_UTIME(path, time) win32_utime(path, time)
 # else
 #  define VCWD_UTIME(path, time) utime(path, time)
 # endif
 #endif
 
-#if !defined(ZEND_WIN32)
+#ifndef WIN32
 #define VCWD_CHOWN(path, owner, group) chown(path, owner, group)
 #if HAVE_LCHOWN
 #define VCWD_LCHOWN(path, owner, group) lchown(path, owner, group)

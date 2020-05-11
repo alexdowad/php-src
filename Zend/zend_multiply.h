@@ -79,7 +79,7 @@
 	else (lval) = __tmpvar;											\
 } while (0)
 
-#elif defined(ZEND_WIN32)
+#elif defined(WIN32)
 
 # ifdef _M_X64
 #  pragma intrinsic(_mul128)

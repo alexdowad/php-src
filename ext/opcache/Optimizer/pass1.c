@@ -393,7 +393,7 @@ constant_binary_op:
 					if ((func = zend_hash_find_ptr(EG(function_table), lc_name)) != NULL
 						 && func->type == ZEND_INTERNAL_FUNCTION
 						 && func->module->type == MODULE_PERSISTENT
-#ifdef ZEND_WIN32
+#ifdef WIN32
 						 && func->module->handle == NULL
 #endif
 						) {
@@ -432,7 +432,7 @@ constant_binary_op:
 						}
 					} else {
 						if (m->type == MODULE_PERSISTENT
-#ifdef ZEND_WIN32
+#ifdef WIN32
 						 && m->handle == NULL
 #endif
 						) {

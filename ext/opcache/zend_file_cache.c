@@ -23,7 +23,7 @@
 #include "zend_interfaces.h"
 
 #include "php.h"
-#ifdef ZEND_WIN32
+#ifdef WIN32
 #include "ext/standard/md5.h"
 #endif
 
@@ -53,7 +53,7 @@
 # include <sanitizer/msan_interface.h>
 #endif
 
-#ifndef ZEND_WIN32
+#ifndef WIN32
 #define zend_file_cache_unlink unlink
 #define zend_file_cache_open open
 #else
@@ -61,7 +61,7 @@
 #define zend_file_cache_open php_win32_ioutil_open
 #endif
 
-#ifdef ZEND_WIN32
+#ifdef WIN32
 # define LOCK_SH 0
 # define LOCK_EX 1
 # define LOCK_UN 2
@@ -179,7 +179,7 @@ static int zend_file_cache_mkdir(char *filename, size_t start)
 		if (IS_SLASH(*s)) {
 			char old = *s;
 			*s = '\000';
-#ifndef ZEND_WIN32
+#ifndef WIN32
 			if (mkdir(filename, S_IRWXU) < 0 && errno != EEXIST) {
 #else
 			if (php_win32_ioutil_mkdir(filename, 0700) < 0 && errno != EEXIST) {
@@ -830,7 +830,7 @@ static char *zend_file_cache_get_bin_file_path(zend_string *script_path)
 	size_t len;
 	char *filename;
 
-#ifndef ZEND_WIN32
+#ifndef WIN32
 	len = strlen(ZCG(accel_directives).file_cache);
 	filename = emalloc(len + 33 + ZSTR_LEN(script_path) + sizeof(SUFFIX));
 	memcpy(filename, ZCG(accel_directives).file_cache, len);

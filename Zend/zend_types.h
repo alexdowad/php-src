@@ -55,13 +55,13 @@ typedef enum {
 } ZEND_RESULT_CODE;
 
 #ifdef ZEND_ENABLE_ZVAL_LONG64
-# ifdef ZEND_WIN32
+# ifdef WIN32
 #  define ZEND_SIZE_MAX  _UI64_MAX
 # else
 #  define ZEND_SIZE_MAX  SIZE_MAX
 # endif
 #else
-# if defined(ZEND_WIN32)
+# if defined(WIN32)
 #  define ZEND_SIZE_MAX  _UI32_MAX
 # else
 #  define ZEND_SIZE_MAX SIZE_MAX
