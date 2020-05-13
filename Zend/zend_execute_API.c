@@ -1292,7 +1292,6 @@ void zend_set_timeout(zend_long seconds) /* {{{ */
 {
 	EG(timeout_seconds) = seconds;
 	zend_set_timeout_ex(seconds, zend_timeout_handler);
-	EG(timed_out) = 0;
 }
 /* }}} */
 
@@ -1301,7 +1300,6 @@ void zend_unset_timeout(void) /* {{{ */
 #ifdef ZEND_WIN32
 	if (NULL != tq_timer) {
 		if (!DeleteTimerQueueTimer(NULL, tq_timer, INVALID_HANDLE_VALUE)) {
-			EG(timed_out) = 0;
 			tq_timer = NULL;
 			zend_error_noreturn(E_ERROR, "Could not delete queued timer");
 			return;
@@ -1321,7 +1319,6 @@ void zend_unset_timeout(void) /* {{{ */
 # endif
 	}
 #endif
-	EG(timed_out) = 0;
 }
 /* }}} */
 
