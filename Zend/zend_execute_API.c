@@ -1111,102 +1111,17 @@ ZEND_API int zend_eval_string_ex(const char *str, zval *retval_ptr, const char *
 }
 /* }}} */
 
-static void zend_set_timeout_ex(zend_long seconds);
-
 ZEND_API ZEND_NORETURN void ZEND_FASTCALL zend_timeout(void) /* {{{ */
 {
-#if defined(PHP_WIN32)
-# ifndef ZTS
-	/* No action is needed if we're timed out because zero seconds are
-	   just ignored. Also, the hard timeout needs to be respected. If the
-	   timer is not restarted properly, it could hang in the shutdown
-	   function. */
-	if (EG(hard_timeout) > 0) {
-		EG(timed_out) = 0;
-		zend_set_timeout_ex(EG(hard_timeout));
-		/* XXX Abused, introduce an additional flag if the value needs to be kept. */
-		EG(hard_timeout) = 0;
-	}
-# endif
-#else
 	EG(timed_out) = 0;
-#endif
-
 	zend_error_noreturn(E_ERROR, "Maximum execution time of " ZEND_LONG_FMT " second%s exceeded", EG(timeout_seconds), EG(timeout_seconds) == 1 ? "" : "s");
 }
 /* }}} */
 
-static void die_on_hard_timeout()
-{
-	const char *error_filename = NULL;
-	uint32_t error_lineno = 0;
-	char log_buffer[2048];
-	int output_len = 0;
-
-	if (zend_is_compiling()) {
-		error_filename = ZSTR_VAL(zend_get_compiled_filename());
-		error_lineno = zend_get_compiled_lineno();
-	} else if (zend_is_executing()) {
-		error_filename = zend_get_executed_filename();
-		if (error_filename[0] == '[') { /* [no active file] */
-			error_filename = NULL;
-			error_lineno = 0;
-		} else {
-			error_lineno = zend_get_executed_lineno();
-		}
-	}
-	if (!error_filename) {
-		error_filename = "Unknown";
-	}
-
-	output_len = snprintf(log_buffer, sizeof(log_buffer), "\nFatal error: Maximum execution time of " ZEND_LONG_FMT "+" ZEND_LONG_FMT " seconds exceeded (terminated) in %s on line %d\n", EG(timeout_seconds), EG(hard_timeout), error_filename, error_lineno);
-	if (output_len > 0) {
-		zend_quiet_write(2, log_buffer, MIN(output_len, sizeof(log_buffer)));
-	}
-	_exit(124);
-}
-
-#ifndef ZEND_WIN32
-static void zend_timeout_handler(int dummy) /* {{{ */
-{
-#ifndef ZTS
-    if (EG(timed_out)) {
-			die_on_hard_timeout();
-    }
-#endif
-
-	if (zend_on_timeout) {
-		zend_on_timeout(EG(timeout_seconds));
-	}
-
-	EG(timed_out) = 1;
-	EG(vm_interrupt) = 1;
-
-#ifndef ZTS
-	if (EG(hard_timeout) > 0) {
-		/* Set hard timeout */
-		zend_set_timeout_ex(EG(hard_timeout));
-	}
-#endif
-}
-/* }}} */
-#endif
-
 #ifdef ZEND_WIN32
-VOID CALLBACK tq_timer_cb(PVOID arg, BOOLEAN timed_out)
-{
-	zend_executor_globals *eg;
-
-	/* The doc states it'll be always true, however it theoretically
-		could be FALSE when the thread was signaled. */
-	if (!timed_out) {
-		return;
-	}
-
-	eg = (zend_executor_globals *)arg;
-	eg->timed_out = 1;
-	eg->vm_interrupt = 1;
-}
+typedef VOID (*TIMEOUT_HANDLER)(PVOID, BOOLEAN);
+#else /* POSIX */
+typedef void (*TIMEOUT_HANDLER)(int);
 #endif
 
 /* This one doesn't exists on QNX */
@@ -1214,7 +1129,7 @@ VOID CALLBACK tq_timer_cb(PVOID arg, BOOLEAN timed_out)
 #define SIGPROF 27
 #endif
 
-static void zend_set_timeout_ex(zend_long seconds) /* {{{ */
+static void zend_set_timeout_ex(zend_long seconds, TIMEOUT_HANDLER callback_func) /* {{{ */
 {
 	if (!seconds) {
 		return;
@@ -1226,7 +1141,7 @@ static void zend_set_timeout_ex(zend_long seconds) /* {{{ */
 	/* Don't use ChangeTimerQueueTimer() as it will not restart an expired
 	 * timer, so we could end up with just an ignored timeout. Instead
 	 * delete and recreate. */
-	if (NULL != tq_timer) {
+	if (tq_timer != NULL) {
 		if (!DeleteTimerQueueTimer(NULL, tq_timer, INVALID_HANDLE_VALUE)) {
 			tq_timer = NULL;
 			zend_error_noreturn(E_ERROR, "Could not delete queued timer");
@@ -1237,7 +1152,7 @@ static void zend_set_timeout_ex(zend_long seconds) /* {{{ */
 
 	/* XXX passing NULL means the default timer queue provided by the system is used */
 	eg = ZEND_MODULE_GLOBALS_BULK(executor);
-	if (!CreateTimerQueueTimer(&tq_timer, NULL, (WAITORTIMERCALLBACK)tq_timer_cb, (VOID*)eg, seconds*1000, 0, WT_EXECUTEONLYONCE)) {
+	if (!CreateTimerQueueTimer(&tq_timer, NULL, callback_func, (VOID*)eg, seconds*1000, 0, WT_EXECUTEONLYONCE)) {
 		tq_timer = NULL;
 		zend_error_noreturn(E_ERROR, "Could not queue new timer");
 		return;
@@ -1259,7 +1174,7 @@ static void zend_set_timeout_ex(zend_long seconds) /* {{{ */
 # endif
 
 # ifdef ZEND_SIGNALS
-		zend_signal(signo, zend_timeout_handler);
+		zend_signal(signo, callback_func);
 
 # else
 		sigset_t sigset;
@@ -1267,12 +1182,12 @@ static void zend_set_timeout_ex(zend_long seconds) /* {{{ */
 #  ifdef HAVE_SIGACTION
 		struct sigaction act;
 
-		act.sa_handler = zend_timeout_handler;
+		act.sa_handler = callback_func;
 		sigemptyset(&act.sa_mask);
 		act.sa_flags = SA_RESETHAND | SA_NODEFER;
 		sigaction(signo, &act, NULL);
 #  else
-		signal(signo, zend_timeout_handler);
+		signal(signo, callback_func);
 #  endif /* HAVE_SIGACTION */
 
 		sigemptyset(&sigset);
@@ -1284,10 +1199,99 @@ static void zend_set_timeout_ex(zend_long seconds) /* {{{ */
 }
 /* }}} */
 
+#ifndef ZTS
+# ifdef ZEND_WIN32
+static VOID CALLBACK zend_hard_timeout_handler(PVOID arg, BOOLEAN timed_out)
+# else /* POSIX */
+static void zend_hard_timeout_handler(int dummy)
+# endif
+{
+	const char *error_filename = NULL;
+	uint32_t error_lineno = 0;
+	char log_buffer[2048];
+	int output_len = 0;
+
+#ifdef ZEND_WIN32
+	zend_long timeout_seconds = ((zend_executor_globals*)arg)->timeout_seconds;
+	zend_long hard_timeout    = ((zend_executor_globals*)arg)->hard_timeout;
+#else
+	zend_long timeout_seconds = EG(timeout_seconds);
+	zend_long hard_timeout    = EG(hard_timeout);
+#endif
+
+	if (zend_is_compiling()) {
+		error_filename = ZSTR_VAL(zend_get_compiled_filename());
+		error_lineno = zend_get_compiled_lineno();
+	} else if (zend_is_executing()) {
+		error_filename = zend_get_executed_filename();
+		if (error_filename[0] == '[') { /* [no active file] */
+			error_filename = NULL;
+			error_lineno = 0;
+		} else {
+			error_lineno = zend_get_executed_lineno();
+		}
+	}
+	if (!error_filename) {
+		error_filename = "Unknown";
+	}
+
+	output_len = snprintf(log_buffer, sizeof(log_buffer), "\nFatal error: Maximum execution time of "
+		ZEND_LONG_FMT "+" ZEND_LONG_FMT " seconds exceeded (terminated) in %s on line %d\n",
+		timeout_seconds, hard_timeout, error_filename, error_lineno);
+	if (output_len > 0) {
+		zend_quiet_write(2, log_buffer, MIN(output_len, sizeof(log_buffer)));
+	}
+	_exit(124);
+}
+#endif /* ZTS */
+
+#ifdef ZEND_WIN32
+
+static VOID CALLBACK zend_timeout_handler(PVOID arg, BOOLEAN timed_out)
+{
+	zend_executor_globals *eg = (zend_executor_globals*)arg;
+
+	/* The doc states it'll be always true, however it theoretically
+		could be FALSE when the thread was signaled. */
+	if (!timed_out) {
+		return;
+	}
+
+# ifndef ZTS
+	/* Don't call DeleteTimerQueueTimer from inside the timer callback.
+	 * It blocks until the outstanding timer callback finishes... which means
+	 * if you call it inside the timer callback, it blocks forever. */
+	tq_timer = NULL;
+	/* No-op if `hard_timeout` is set to zero */
+	zend_set_timeout_ex(eg->hard_timeout, zend_hard_timeout_handler);
+# endif
+
+	eg->timed_out = 1;
+	eg->vm_interrupt = 1;
+}
+
+#else /* POSIX */
+
+static void zend_timeout_handler(int dummy) /* {{{ */
+{
+	if (zend_on_timeout) { /* Hook which can be defined by extensions */
+		zend_on_timeout(EG(timeout_seconds));
+	}
+
+# ifndef ZTS
+	/* No-op if `hard_timeout` is set to zero */
+	zend_set_timeout_ex(EG(hard_timeout), zend_hard_timeout_handler);
+# endif
+
+	EG(timed_out) = 1;
+	EG(vm_interrupt) = 1;
+}
+#endif
+
 void zend_set_timeout(zend_long seconds) /* {{{ */
 {
 	EG(timeout_seconds) = seconds;
-	zend_set_timeout_ex(seconds);
+	zend_set_timeout_ex(seconds, zend_timeout_handler);
 	EG(timed_out) = 0;
 }
 /* }}} */
