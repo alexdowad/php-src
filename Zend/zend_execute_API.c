@@ -1257,6 +1257,10 @@ static VOID CALLBACK zend_timeout_handler(PVOID arg, BOOLEAN timed_out)
 		return;
 	}
 
+	if (zend_on_timeout) { /* Hook which can be defined by extensions */
+		zend_on_timeout(eg->timeout_seconds);
+	}
+
 # ifndef ZTS
 	/* Don't call DeleteTimerQueueTimer from inside the timer callback.
 	 * It blocks until the outstanding timer callback finishes... which means
