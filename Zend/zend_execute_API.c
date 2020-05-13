@@ -1111,7 +1111,7 @@ ZEND_API int zend_eval_string_ex(const char *str, zval *retval_ptr, const char *
 }
 /* }}} */
 
-static void zend_set_timeout_ex(zend_long seconds, int reset_signals);
+static void zend_set_timeout_ex(zend_long seconds);
 
 ZEND_API ZEND_NORETURN void ZEND_FASTCALL zend_timeout(void) /* {{{ */
 {
@@ -1123,14 +1123,14 @@ ZEND_API ZEND_NORETURN void ZEND_FASTCALL zend_timeout(void) /* {{{ */
 	   function. */
 	if (EG(hard_timeout) > 0) {
 		EG(timed_out) = 0;
-		zend_set_timeout_ex(EG(hard_timeout), 1);
+		zend_set_timeout_ex(EG(hard_timeout));
 		/* XXX Abused, introduce an additional flag if the value needs to be kept. */
 		EG(hard_timeout) = 0;
 	}
 # endif
 #else
 	EG(timed_out) = 0;
-	zend_set_timeout_ex(0, 1);
+	zend_set_timeout_ex(0);
 #endif
 
 	zend_error_noreturn(E_ERROR, "Maximum execution time of " ZEND_LONG_FMT " second%s exceeded", EG(timeout_seconds), EG(timeout_seconds) == 1 ? "" : "s");
@@ -1182,7 +1182,7 @@ static void zend_timeout_handler(int dummy) /* {{{ */
 #ifndef ZTS
 	if (EG(hard_timeout) > 0) {
 		/* Set hard timeout */
-		zend_set_timeout_ex(EG(hard_timeout), 1);
+		zend_set_timeout_ex(EG(hard_timeout));
 	}
 #endif
 }
@@ -1211,7 +1211,7 @@ VOID CALLBACK tq_timer_cb(PVOID arg, BOOLEAN timed_out)
 #define SIGPROF 27
 #endif
 
-static void zend_set_timeout_ex(zend_long seconds, int reset_signals) /* {{{ */
+static void zend_set_timeout_ex(zend_long seconds) /* {{{ */
 {
 #ifdef ZEND_WIN32
 	zend_executor_globals *eg;
@@ -1258,36 +1258,36 @@ static void zend_set_timeout_ex(zend_long seconds, int reset_signals) /* {{{ */
 		signo = SIGPROF;
 # endif
 
-		if (reset_signals) {
 # ifdef ZEND_SIGNALS
-			zend_signal(signo, zend_timeout_handler);
-# else
-			sigset_t sigset;
-#  ifdef HAVE_SIGACTION
-			struct sigaction act;
+		zend_signal(signo, zend_timeout_handler);
 
-			act.sa_handler = zend_timeout_handler;
-			sigemptyset(&act.sa_mask);
-			act.sa_flags = SA_RESETHAND | SA_NODEFER;
-			sigaction(signo, &act, NULL);
+# else
+		sigset_t sigset;
+
+#  ifdef HAVE_SIGACTION
+		struct sigaction act;
+
+		act.sa_handler = zend_timeout_handler;
+		sigemptyset(&act.sa_mask);
+		act.sa_flags = SA_RESETHAND | SA_NODEFER;
+		sigaction(signo, &act, NULL);
 #  else
-			signal(signo, zend_timeout_handler);
+		signal(signo, zend_timeout_handler);
 #  endif /* HAVE_SIGACTION */
-			sigemptyset(&sigset);
-			sigaddset(&sigset, signo);
-			sigprocmask(SIG_UNBLOCK, &sigset, NULL);
+
+		sigemptyset(&sigset);
+		sigaddset(&sigset, signo);
+		sigprocmask(SIG_UNBLOCK, &sigset, NULL);
 # endif /* ZEND_SIGNALS */
-		}
 	}
 #endif /* HAVE_SETITIMER */
 }
 /* }}} */
 
-void zend_set_timeout(zend_long seconds, int reset_signals) /* {{{ */
+void zend_set_timeout(zend_long seconds) /* {{{ */
 {
-
 	EG(timeout_seconds) = seconds;
-	zend_set_timeout_ex(seconds, reset_signals);
+	zend_set_timeout_ex(seconds);
 	EG(timed_out) = 0;
 }
 /* }}} */
