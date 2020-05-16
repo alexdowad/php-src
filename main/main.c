@@ -1707,7 +1707,9 @@ static ZEND_COLD void php_message_handler_for_zend(zend_long message, const void
 
 void php_on_timeout(int seconds)
 {
-	PG(connection_status) |= PHP_CONNECTION_TIMEOUT;
+	// Does trying to write to any 'PG' global fail on Windows ZTS?
+	PG(report_memleaks) = 1;
+	// PG(connection_status) |= PHP_CONNECTION_TIMEOUT;
 }
 
 #if PHP_SIGCHILD
