@@ -1199,6 +1199,7 @@ static void _InvokeCallbackFunc_invoke(struct _Block *block)
 {
 	block->callback_func(block->eg);
 }
+ZEND_TLS struct _Block *_InvokeCallbackFunc = NULL;
 
 #elif HAVE_SETITIMER && !defined(ZTS)
 #undef  TIMEOUT_SETITIMER
@@ -1334,15 +1335,14 @@ static void zend_set_timeout_ex(zend_long seconds, TIMEOUT_HANDLER callback_func
 #elif TIMEOUT_LIBDISPATCH
 	zend_executor_globals *eg = ZEND_MODULE_GLOBALS_BULK(executor);
 
-	struct _Block _InvokeCallbackFunc = {
-		.isa   = &_NSConcreteGlobalBlock,
-		.flags = (1 << 28) | (1 << 30), /* global block, has 'signature' string */
-		.reserved = 0,
-		.invoke = _InvokeCallbackFunc_invoke,
-		.descriptor = &_InvokeCallbackFunc_descriptor,
-		.callback_func = callback_func,
-		.eg = eg
-	};
+	_InvokeCallbackFunc = emalloc(sizeof(struct _Block));
+	_InvokeCallbackFunc->isa   = &_NSConcreteGlobalBlock;
+	_InvokeCallbackFunc->flags = (1 << 28) | (1 << 30); /* global block, has 'signature' string */
+	_InvokeCallbackFunc->reserved = 0;
+	_InvokeCallbackFunc->invoke = _InvokeCallbackFunc_invoke;
+	_InvokeCallbackFunc->descriptor = &_InvokeCallbackFunc_descriptor;
+	_InvokeCallbackFunc->callback_func = callback_func;
+	_InvokeCallbackFunc->eg = eg;
 
 	timer_queue = dispatch_queue_create("PHP Script Execution Timeout", NULL);
 	if (timer_queue == NULL) {
@@ -1355,7 +1355,7 @@ static void zend_set_timeout_ex(zend_long seconds, TIMEOUT_HANDLER callback_func
 		return;
 	}
 	dispatch_source_set_timer(timer_src, DISPATCH_TIME_NOW, seconds * 1000000000, 0);
-	dispatch_source_set_event_handler(timer_src, (dispatch_block_t)(&_InvokeCallbackFunc));
+	dispatch_source_set_event_handler(timer_src, (dispatch_block_t)_InvokeCallbackFunc);
 	dispatch_resume(timer_src);
 
 #elif TIMEOUT_SETITIMER
@@ -1471,12 +1471,17 @@ void zend_unset_timeout(void)
 
 #elif TIMEOUT_LIBDISPATCH
 	if (timer_src != NULL) {
+		/* Will this block if the callback is already running?? */
 		dispatch_release(timer_src);
 		timer_src = NULL;
 	}
 	if (timer_queue != NULL) {
 		dispatch_release(timer_queue);
 		timer_queue = NULL;
+	}
+	if (_InvokeCallbackFunc != NULL) {
+		efree(_InvokeCallbackFunc);
+		_InvokeCallbackFunc = NULL;
 	}
 
 #elif TIMEOUT_SETITIMER
