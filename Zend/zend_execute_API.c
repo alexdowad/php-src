@@ -1354,7 +1354,9 @@ static void zend_set_timeout_ex(zend_long seconds, TIMEOUT_HANDLER callback_func
 		zend_error_noreturn(E_ERROR, "Could not set script execution timeout: dispatch_source_create failed");
 		return;
 	}
-	dispatch_source_set_timer(timer_src, DISPATCH_TIME_NOW, seconds * 1000000000, 0);
+	/* DISPATCH_TIME_FOREVER for interval means this is a "one-shot" timer */
+	dispatch_source_set_timer(timer_src, dispatch_time(DISPATCH_TIME_NOW, seconds * 1000000000),
+		DISPATCH_TIME_FOREVER, 0);
 	dispatch_source_set_event_handler(timer_src, (dispatch_block_t)_InvokeCallbackFunc);
 	dispatch_resume(timer_src);
 
