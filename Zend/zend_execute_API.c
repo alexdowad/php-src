@@ -1176,6 +1176,7 @@ ZEND_TLS dispatch_source_t timer_src = NULL;
  * ^{ callback_func(eg); }
  *
  * Ref: http://clang.llvm.org/docs/Block-ABI-Apple.html */
+extern void *_NSConcreteGlobalBlock;
 struct _Block {
 	void *isa;
 	int flags;
