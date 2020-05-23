@@ -1122,16 +1122,18 @@ ZEND_API int zend_eval_string_ex(const char *str, zval *retval_ptr, const char *
  * There are 3 timer implementations, selected via preprocessor directives:
  *
  * - Win32
- *   - based on timer queues from Windows thread pool API
- *   - uses real-time clock (actual, "wall clock" time and not CPU time used by script)
+ *   - Based on timer queues from Windows thread pool API
+ *   - Uses real-time clock (actual, "wall clock" time and not CPU time used by script)
  * - POSIX timers
- *   - prefers to use thread CPU time, but falls back to process CPU time or real time
- * - libdispatch
+ *   - Prefers to use thread CPU time, but falls back to process CPU time or real time
+ * - libdispatch (AKA Grand Central Dispatch)
  *   - For Mac OS
+ *   - Uses "default clock" "based on Mach absolute time unit"... whatever that means
+ *   - Callback done via Objective-C block
  * - setitimer
- *   - fallback for Unix-like systems which do not support POSIX timers
- *   - disabled on ZTS builds, since on timeout, we would have no way to tell which thread timed out
- *   - uses process CPU time (except Cygwin, which uses real time)
+ *   - Fallback for Unix-like systems which do not support POSIX timers
+ *   - Disabled on ZTS builds, since on timeout, we would have no way to tell which thread timed out
+ *   - Uses process CPU time (except Cygwin, which uses real time)
  */
 
 #define TIMEOUT_WINDOWS_THREAD_POOL 0
@@ -1335,6 +1337,7 @@ static void zend_set_timeout_ex(zend_long seconds, TIMEOUT_HANDLER callback_func
 #elif TIMEOUT_LIBDISPATCH
 	zend_executor_globals *eg = ZEND_MODULE_GLOBALS_BULK(executor);
 
+	/* Equivalent to Objective-C block ^{ callback_func(eg); } */
 	_InvokeCallbackFunc = emalloc(sizeof(struct _Block));
 	_InvokeCallbackFunc->isa   = &_NSConcreteGlobalBlock;
 	_InvokeCallbackFunc->flags = (1 << 28) | (1 << 30); /* global block, has 'signature' string */
