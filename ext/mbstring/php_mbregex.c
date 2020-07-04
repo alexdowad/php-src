@@ -14,14 +14,12 @@
    +----------------------------------------------------------------------+
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include "libmbfl/config.h"
+
+#ifdef HAVE_MBREGEX
 
 #include "php.h"
 #include "php_ini.h"
-
-#ifdef HAVE_MBREGEX
 
 #include "zend_smart_str.h"
 #include "ext/standard/info.h"
