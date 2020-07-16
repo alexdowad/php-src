@@ -166,81 +166,60 @@ static const struct mbfl_identify_vtbl *mbfl_identify_filter_list[] = {
 /*
  * identify filter
  */
-const struct mbfl_identify_vtbl * mbfl_identify_filter_get_vtbl(enum mbfl_no_encoding encoding)
+const struct mbfl_identify_vtbl* mbfl_identify_filter_get_vtbl(enum mbfl_no_encoding encoding)
 {
-	const struct mbfl_identify_vtbl * vtbl;
-	int i;
+	const struct mbfl_identify_vtbl** vtbl;
 
-	i = 0;
-	while ((vtbl = mbfl_identify_filter_list[i++]) != NULL) {
-		if (vtbl->encoding == encoding) {
-			break;
+	for (vtbl = mbfl_identify_filter_list; *vtbl; vtbl++) {
+		if ((*vtbl)->encoding == encoding) {
+			return *vtbl;
 		}
 	}
 
-	return vtbl;
+	return NULL;
 }
 
 mbfl_identify_filter *mbfl_identify_filter_new(enum mbfl_no_encoding encoding)
 {
 	mbfl_identify_filter *filter = emalloc(sizeof(mbfl_identify_filter));
-	if (mbfl_identify_filter_init(filter, encoding)) {
-		efree(filter);
-		return NULL;
-	}
-
+	mbfl_identify_filter_init(filter, encoding);
 	return filter;
 }
 
 mbfl_identify_filter *mbfl_identify_filter_new2(const mbfl_encoding *encoding)
 {
 	mbfl_identify_filter *filter = emalloc(sizeof(mbfl_identify_filter));
-	if (mbfl_identify_filter_init2(filter, encoding)) {
-		efree(filter);
-		return NULL;
-	}
-
+	mbfl_identify_filter_init2(filter, encoding);
 	return filter;
 }
 
-
-int mbfl_identify_filter_init(mbfl_identify_filter *filter, enum mbfl_no_encoding encoding)
+void mbfl_identify_filter_init(mbfl_identify_filter *filter, enum mbfl_no_encoding encoding)
 {
 	const mbfl_encoding *enc = mbfl_no2encoding(encoding);
-	return mbfl_identify_filter_init2(filter, enc ? enc: &mbfl_encoding_pass);
+	mbfl_identify_filter_init2(filter, enc ? enc: &mbfl_encoding_pass);
 }
 
-int mbfl_identify_filter_init2(mbfl_identify_filter *filter, const mbfl_encoding *encoding)
+void mbfl_identify_filter_init2(mbfl_identify_filter *filter, const mbfl_encoding *encoding)
 {
-	const struct mbfl_identify_vtbl *vtbl;
-
 	/* encoding structure */
 	filter->encoding = encoding;
-
 	filter->status = 0;
 	filter->flag = 0;
 	filter->score = 0;
 
 	/* setup the function table */
-	vtbl = mbfl_identify_filter_get_vtbl(filter->encoding->no_encoding);
+	const struct mbfl_identify_vtbl *vtbl = mbfl_identify_filter_get_vtbl(filter->encoding->no_encoding);
 	if (vtbl == NULL) {
 		vtbl = &vtbl_identify_false;
 	}
 	filter->filter_ctor = vtbl->filter_ctor;
 	filter->filter_function = vtbl->filter_function;
 
-	/* constructor */
 	(*filter->filter_ctor)(filter);
-
-	return 0;
 }
 
 void mbfl_identify_filter_delete(mbfl_identify_filter *filter)
 {
-	if (filter == NULL) {
-		return;
-	}
-
 	efree((void*)filter);
 }
 
