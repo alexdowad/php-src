@@ -2829,8 +2829,7 @@ PHP_FUNCTION(mb_encoding_aliases)
 
 	array_init(return_value);
 	if (encoding->aliases != NULL) {
-		const char **alias;
-		for (alias = *encoding->aliases; *alias; ++alias) {
+		for (const char **alias = encoding->aliases; *alias; ++alias) {
 			add_next_index_string(return_value, (char *)*alias);
 		}
 	}
