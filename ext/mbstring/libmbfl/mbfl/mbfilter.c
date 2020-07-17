@@ -926,7 +926,7 @@ mbfl_string* mbfl_strimwidth(mbfl_string *string, mbfl_string *marker, mbfl_stri
  * to converting halfwidth to fullwidth.
  * However, this function can also convert in the opposite direction, or convert
  * hiragana to katakana and so on... all depending on the value of the `mode` argument */
-mbfl_string* mbfl_ja_jp_hantozen(mbfl_string *string, mbfl_string *result, int mode)
+mbfl_string* mbfl_ja_jp_hantozen(mbfl_string *string, mbfl_string *result, intptr_t mode)
 {
 	mbfl_memory_device device;
 
@@ -936,13 +936,9 @@ mbfl_string* mbfl_ja_jp_hantozen(mbfl_string *string, mbfl_string *result, int m
 	mbfl_convert_filter *decoder = mbfl_convert_filter_new(&mbfl_encoding_wchar,
 		string->encoding, mbfl_memory_device_output, 0, &device);
 
-	/* TODO: should this not be part of the filter ctor?? */
-	mbfl_filt_tl_jisx0201_jisx0208_param *param = emalloc(sizeof(mbfl_filt_tl_jisx0201_jisx0208_param));
-	param->mode = mode;
-
 	mbfl_convert_filter *tl_filter = mbfl_convert_filter_new2(&vtbl_tl_jisx0201_jisx0208,
 		(filter_output_func)decoder->filter_function, decoder->filter_flush, decoder);
-	tl_filter->opaque = param;
+	tl_filter->opaque = (void*)mode;
 
 	mbfl_convert_filter *encoder = mbfl_convert_filter_new(string->encoding, &mbfl_encoding_wchar,
 		(filter_output_func)tl_filter->filter_function, tl_filter->filter_flush, tl_filter);
@@ -951,9 +947,6 @@ mbfl_string* mbfl_ja_jp_hantozen(mbfl_string *string, mbfl_string *result, int m
 	mbfl_convert_filter_flush(encoder);
 	mbfl_memory_device_result(&device, result);
 
-	if (tl_filter->opaque != NULL) {
-		efree(tl_filter->opaque);
-	}
 	mbfl_convert_filter_delete(tl_filter);
 	mbfl_convert_filter_delete(decoder);
 	mbfl_convert_filter_delete(encoder);
