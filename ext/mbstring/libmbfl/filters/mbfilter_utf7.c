@@ -70,8 +70,7 @@ const struct mbfl_convert_vtbl vtbl_utf7_wchar = {
 	mbfl_filt_conv_common_ctor,
 	NULL,
 	mbfl_filt_conv_utf7_wchar,
-	mbfl_filt_conv_common_flush,
-	NULL,
+	mbfl_filt_conv_common_flush
 };
 
 const struct mbfl_convert_vtbl vtbl_wchar_utf7 = {
@@ -80,8 +79,7 @@ const struct mbfl_convert_vtbl vtbl_wchar_utf7 = {
 	mbfl_filt_conv_common_ctor,
 	NULL,
 	mbfl_filt_conv_wchar_utf7,
-	mbfl_filt_conv_wchar_utf7_flush,
-	NULL,
+	mbfl_filt_conv_wchar_utf7_flush
 };
 
 

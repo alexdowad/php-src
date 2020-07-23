@@ -137,7 +137,6 @@ static void mbfl_convert_filter_common_init(mbfl_convert_filter *filter, const m
 	filter->filter_dtor = vtbl->filter_dtor;
 	filter->filter_function = vtbl->filter_function;
 	filter->filter_flush = vtbl->filter_flush;
-	filter->filter_copy = vtbl->filter_copy;
 
 	(*filter->filter_ctor)(filter);
 }
@@ -206,16 +205,6 @@ void mbfl_convert_filter_reset(mbfl_convert_filter *filter, const mbfl_encoding 
 
 	mbfl_convert_filter_common_init(filter, from, to, vtbl,
 			filter->output_function, filter->flush_function, filter->data);
-}
-
-void mbfl_convert_filter_copy(mbfl_convert_filter *src, mbfl_convert_filter *dest)
-{
-	if (src->filter_copy != NULL) {
-		src->filter_copy(src, dest);
-		return;
-	}
-
-	*dest = *src;
 }
 
 void mbfl_convert_filter_devcat(mbfl_convert_filter *filter, mbfl_memory_device *src)
