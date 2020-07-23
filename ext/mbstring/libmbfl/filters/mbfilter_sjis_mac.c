@@ -65,8 +65,7 @@ const struct mbfl_convert_vtbl vtbl_sjis_mac_wchar = {
 	mbfl_filt_conv_common_ctor,
 	NULL,
 	mbfl_filt_conv_sjis_mac_wchar,
-	mbfl_filt_conv_common_flush,
-	NULL,
+	mbfl_filt_conv_common_flush
 };
 
 const struct mbfl_convert_vtbl vtbl_wchar_sjis_mac = {
@@ -75,8 +74,7 @@ const struct mbfl_convert_vtbl vtbl_wchar_sjis_mac = {
 	mbfl_filt_conv_common_ctor,
 	NULL,
 	mbfl_filt_conv_wchar_sjis_mac,
-	mbfl_filt_conv_sjis_mac_flush,
-	NULL,
+	mbfl_filt_conv_sjis_mac_flush
 };
 
 #define CK(statement)	do { if ((statement) < 0) return (-1); } while (0)

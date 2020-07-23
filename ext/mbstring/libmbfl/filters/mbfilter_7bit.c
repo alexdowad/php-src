@@ -48,8 +48,7 @@ const struct mbfl_convert_vtbl vtbl_8bit_7bit = {
 	mbfl_filt_conv_common_ctor,
 	NULL,
 	mbfl_filt_conv_any_7bit,
-	mbfl_filt_conv_common_flush,
-	NULL,
+	mbfl_filt_conv_common_flush
 };
 
 const struct mbfl_convert_vtbl vtbl_7bit_8bit = {
@@ -58,8 +57,7 @@ const struct mbfl_convert_vtbl vtbl_7bit_8bit = {
 	mbfl_filt_conv_common_ctor,
 	NULL,
 	mbfl_filt_conv_7bit_any,
-	mbfl_filt_conv_common_flush,
-	NULL,
+	mbfl_filt_conv_common_flush
 };
 
 
