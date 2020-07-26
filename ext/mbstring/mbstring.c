@@ -466,7 +466,6 @@ static size_t php_mb_zend_encoding_converter(unsigned char **to, size_t *to_leng
 	/* do it */
 	size_t loc = mbfl_buffer_converter_feed(convd, &string);
 
-	mbfl_buffer_converter_flush(convd);
 	mbfl_string_init(&result);
 	if (!mbfl_buffer_converter_result(convd, &result)) {
 		mbfl_buffer_converter_delete(convd);
@@ -3276,7 +3275,7 @@ PHP_FUNCTION(mb_encode_numericentity)
 		RETURN_THROWS();
 	}
 
-	ret = mbfl_html_numeric_entity(&string, &result, convmap, mapsize, is_hex ? 2 : 0);
+	ret = mbfl_html_numeric_entity_encode(&string, &result, convmap, mapsize, is_hex);
 	ZEND_ASSERT(ret != NULL);
 	// TODO: avoid reallocation ???
 	RETVAL_STRINGL((char *)ret->val, ret->len);
@@ -3312,7 +3311,7 @@ PHP_FUNCTION(mb_decode_numericentity)
 		RETURN_THROWS();
 	}
 
-	ret = mbfl_html_numeric_entity(&string, &result, convmap, mapsize, 1);
+	ret = mbfl_html_numeric_entity_decode(&string, &result, convmap, mapsize);
 	ZEND_ASSERT(ret != NULL);
 	// TODO: avoid reallocation ???
 	RETVAL_STRINGL((char *)ret->val, ret->len);
