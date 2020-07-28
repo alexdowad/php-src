@@ -129,6 +129,8 @@
 #define MIN(a,b) ((a)<(b)?(a):(b))
 #endif
 
+MBFLAPI extern size_t char_offset_to_byte_offset(const mbfl_encoding *encoding, unsigned char *start, size_t length, long char_offset);
+
 /*
  * buffering converter
  */
@@ -237,7 +239,7 @@ mbfl_strwidth(mbfl_string *string);
  *  strimwidth
  */
 MBFLAPI extern mbfl_string *
-mbfl_strimwidth(mbfl_string *string, mbfl_string *marker, mbfl_string *result, size_t from, size_t width);
+mbfl_strimwidth(mbfl_string *string, mbfl_string *marker, mbfl_string *result, size_t width);
 
 /*
  * MIME header encode
