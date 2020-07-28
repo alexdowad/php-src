@@ -301,7 +301,6 @@ static unsigned int* convert_string_to_wchar(mbfl_string *string, size_t *len)
 mbfl_buffer_converter* mbfl_buffer_converter_new(const mbfl_encoding *from, const mbfl_encoding *to, size_t buf_initsz)
 {
 	mbfl_buffer_converter *convd = emalloc(sizeof(mbfl_buffer_converter));
-	convd->from = from;
 	convd->to = to;
 
 	create_encoding_conversion_filters(from, to, &convd->device, &convd->filter1, &convd->filter2);
