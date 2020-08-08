@@ -37,8 +37,8 @@
 
 typedef struct _mbfl_convert_filter mbfl_convert_filter;
 
-typedef int (*filter_output_func)(int, void*);
-typedef int (*filter_flush_func)(mbfl_convert_filter*);
+typedef int  (*filter_output_func)(int, void*);
+typedef void (*filter_flush_func)(mbfl_convert_filter*);
 
 struct _mbfl_convert_filter {
 	void (*filter_ctor)(mbfl_convert_filter *filter);
@@ -64,13 +64,13 @@ MBFLAPI extern mbfl_convert_filter *mbfl_convert_filter_new2(const struct mbfl_c
 	filter_flush_func flush_function, void *data);
 MBFLAPI extern void mbfl_convert_filter_delete(mbfl_convert_filter *filter);
 MBFLAPI extern unsigned char* mbfl_convert_filter_feed_string(mbfl_convert_filter *filter, unsigned char *p, size_t len);
-MBFLAPI extern int mbfl_convert_filter_flush(mbfl_convert_filter *filter);
+MBFLAPI extern void mbfl_convert_filter_flush(mbfl_convert_filter *filter);
 MBFLAPI extern void mbfl_convert_filter_reset(mbfl_convert_filter *filter, const mbfl_encoding *from, const mbfl_encoding *to);
 MBFLAPI extern int mbfl_filt_conv_illegal_output(int c, mbfl_convert_filter *filter);
 MBFLAPI extern const struct mbfl_convert_vtbl * mbfl_convert_filter_get_vtbl(const mbfl_encoding *from, const mbfl_encoding *to);
 
 MBFLAPI extern void mbfl_filt_conv_common_ctor(mbfl_convert_filter *filter);
-MBFLAPI extern int mbfl_filt_conv_common_flush(mbfl_convert_filter *filter);
+MBFLAPI extern void mbfl_filt_conv_common_flush(mbfl_convert_filter *filter);
 
 MBFLAPI extern void mbfl_convert_filter_devcat(mbfl_convert_filter *filter, mbfl_memory_device *src);
 MBFLAPI extern int mbfl_convert_filter_strcat(mbfl_convert_filter *filter, const unsigned char *p);
