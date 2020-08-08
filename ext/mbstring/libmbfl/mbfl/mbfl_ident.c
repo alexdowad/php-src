@@ -197,7 +197,6 @@ void mbfl_identify_filter_init(mbfl_identify_filter *filter, const mbfl_encoding
 	filter->encoding = encoding;
 	filter->status = 0;
 	filter->flag = 0;
-	filter->score = 0;
 
 	/* setup the function table */
 	const struct mbfl_identify_vtbl *vtbl = mbfl_identify_filter_get_vtbl(filter->encoding->no_encoding);
