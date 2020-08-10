@@ -250,39 +250,59 @@ int mbfl_filt_conv_wchar_utf16be(int c, mbfl_convert_filter *filter)
 /*
  * UTF-16LE => wchar
  */
+int mbfl_filt_conv_utf16le_wchar_byte2(int c, mbfl_convert_filter *filter);
+int mbfl_filt_conv_utf16le_wchar_byte3(int c, mbfl_convert_filter *filter);
+int mbfl_filt_conv_utf16le_wchar_byte4(int c, mbfl_convert_filter *filter);
+
 int mbfl_filt_conv_utf16le_wchar(int c, mbfl_convert_filter *filter)
 {
-	int n;
+	filter->cache = c & 0xff;
+	filter->status = 1;
+	filter->filter_function = mbfl_filt_conv_utf16le_wchar_byte2;
+	return c;
+}
 
-	switch (filter->status) {
-	case 0:
-		filter->status = 1;
-		n = c & 0xff;
-		filter->cache |= n;
-		break;
-	default:
+int mbfl_filt_conv_utf16le_wchar_byte2(int c, mbfl_convert_filter *filter)
+{
+	if ((c & 0xfc) == 0xd8) {
+		/* Looks like we have a surrogate pair here */
+		filter->cache += ((c & 0x3) << 8);
+		filter->filter_function = mbfl_filt_conv_utf16le_wchar_byte3;
+	} else if ((c & 0xfc) == 0xdc) {
+		/* This is wrong; the second part of the surrogate pair has come first
+		 *
+		 * Imitating legacy behavior of mbfilter for now; but I am not at all convinced
+		 * that passing character through is the right thing to do. It might be better
+		 * just to return an error status. */
+		int n = ((filter->cache + ((c & 0xff) << 8)) & MBFL_WCSGROUP_MASK) | MBFL_WCSGROUP_THROUGH;
+		filter->filter_function = mbfl_filt_conv_utf16le_wchar;
 		filter->status = 0;
-		n = (filter->cache & 0xff) | ((c & 0xff) << 8);
-		if (n >= 0xd800 && n < 0xdc00) {
-			filter->cache = ((n & 0x3ff) << 16) + 0x400000;
-		} else if (n >= 0xdc00 && n < 0xe000) {
-			n &= 0x3ff;
-			n |= (filter->cache & 0xfff0000) >> 6;
-			filter->cache = 0;
-			if (n >= MBFL_WCSPLANE_SUPMIN && n < MBFL_WCSPLANE_SUPMAX) {
-				CK((*filter->output_function)(n, filter->data));
-			} else {		/* illegal character */
-				n &= MBFL_WCSGROUP_MASK;
-				n |= MBFL_WCSGROUP_THROUGH;
-				CK((*filter->output_function)(n, filter->data));
-			}
-		} else {
-			filter->cache = 0;
-			CK((*filter->output_function)(n, filter->data));
-		}
-		break;
+		CK((*filter->output_function)(n, filter->data));
+	} else {
+		filter->filter_function = mbfl_filt_conv_utf16le_wchar;
+		filter->status = 0;
+		CK((*filter->output_function)(filter->cache + ((c & 0xff) << 8), filter->data));
 	}
+	return c;
+}
 
+int mbfl_filt_conv_utf16le_wchar_byte3(int c, mbfl_convert_filter *filter)
+{
+	filter->cache = (filter->cache << 10) + (c & 0xff);
+	filter->filter_function = mbfl_filt_conv_utf16le_wchar_byte4;
+	return c;
+}
+
+int mbfl_filt_conv_utf16le_wchar_byte4(int c, mbfl_convert_filter *filter)
+{
+	filter->filter_function = mbfl_filt_conv_utf16le_wchar;
+	filter->status = 0;
+	int n = filter->cache + ((c & 0x3) << 8) + 0x10000;
+	if (n >= MBFL_WCSPLANE_SUPMIN && n < MBFL_WCSPLANE_SUPMAX) {
+		CK((*filter->output_function)(n, filter->data));
+	} else { /* illegal character */
+		CK((*filter->output_function)((n & MBFL_WCSGROUP_MASK) | MBFL_WCSGROUP_THROUGH, filter->data));
+	}
 	return c;
 }
 
