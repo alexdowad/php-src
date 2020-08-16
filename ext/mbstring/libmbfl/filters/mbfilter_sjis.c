@@ -178,11 +178,9 @@ mbfl_filt_conv_sjis_wchar(int c, mbfl_convert_filter *filter)
 			if (w <= 0) {
 				if (s1 < 0x7f && s2 < 0x7f) {
 					w = (s1 << 8) | s2;
-					w &= MBFL_WCSPLANE_MASK;
 					w |= MBFL_WCSPLANE_JIS0208;
 				} else {
 					w = (c1 << 8) | c;
-					w &= MBFL_WCSGROUP_MASK;
 					w |= MBFL_WCSGROUP_THROUGH;
 				}
 			}
@@ -191,7 +189,6 @@ mbfl_filt_conv_sjis_wchar(int c, mbfl_convert_filter *filter)
 			CK((*filter->output_function)(c, filter->data));
 		} else {
 			w = (c1 << 8) | c;
-			w &= MBFL_WCSGROUP_MASK;
 			w |= MBFL_WCSGROUP_THROUGH;
 			CK((*filter->output_function)(w, filter->data));
 		}
