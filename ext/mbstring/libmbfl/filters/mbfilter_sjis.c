@@ -242,27 +242,25 @@ mbfl_filt_conv_wchar_sjis(int c, mbfl_convert_filter *filter)
 			s1 = 0x2172;
 		} else if (c == 0xffe2) {	/* FULLWIDTH NOT SIGN */
 			s1 = 0x224c;
-		}
-		if (c == 0) {
+		} else if (c == 0) {
 			s1 = 0;
 		} else if (s1 <= 0) {
-			s1 = -1;
+			CK(mbfl_filt_conv_illegal_output(c, filter));
+			return c;
 		}
 	} else if (s1 >= 0x8080) {
-		s1 = -1;
-	}
-	if (s1 >= 0) {
-		if (s1 < 0x100) { /* latin or kana */
-			CK((*filter->output_function)(s1, filter->data));
-		} else { /* kanji */
-			c1 = (s1 >> 8) & 0xff;
-			c2 = s1 & 0xff;
-			SJIS_ENCODE(c1, c2, s1, s2);
-			CK((*filter->output_function)(s1, filter->data));
-			CK((*filter->output_function)(s2, filter->data));
-		}
-	} else {
 		CK(mbfl_filt_conv_illegal_output(c, filter));
+		return c;
+	}
+
+	if (s1 < 0x100) { /* latin or kana */
+		CK((*filter->output_function)(s1, filter->data));
+	} else { /* kanji */
+		c1 = (s1 >> 8) & 0xff;
+		c2 = s1 & 0xff;
+		SJIS_ENCODE(c1, c2, s1, s2);
+		CK((*filter->output_function)(s1, filter->data));
+		CK((*filter->output_function)(s2, filter->data));
 	}
 
 	return c;
