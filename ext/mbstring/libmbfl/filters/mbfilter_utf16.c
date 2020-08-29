@@ -274,7 +274,7 @@ int mbfl_filt_conv_utf16le_wchar_byte2(int c, mbfl_convert_filter *filter)
 		 * Imitating legacy behavior of mbfilter for now; but I am not at all convinced
 		 * that passing character through is the right thing to do. It might be better
 		 * just to return an error status. */
-		int n = ((filter->cache + ((c & 0xff) << 8)) & MBFL_WCSGROUP_MASK) | MBFL_WCSGROUP_THROUGH;
+		int n = (filter->cache + ((c & 0xff) << 8)) | MBFL_WCSGROUP_THROUGH;
 		filter->filter_function = mbfl_filt_conv_utf16le_wchar;
 		filter->status = 0;
 		CK((*filter->output_function)(n, filter->data));
