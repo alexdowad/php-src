@@ -1,6 +1,4 @@
 #include <stddef.h>
-
-#include "mbfilter.h"
 #include "nls_ja.h"
 
 const mbfl_language mbfl_language_japanese = {

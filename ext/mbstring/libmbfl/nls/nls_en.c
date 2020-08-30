@@ -1,6 +1,4 @@
 #include <stddef.h>
-
-#include "mbfilter.h"
 #include "nls_en.h"
 
 const mbfl_language mbfl_language_english = {

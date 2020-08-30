@@ -1,6 +1,3 @@
-#include <stddef.h>
-
-#include "mbfilter.h"
 #include "nls_de.h"
 
 static const char *mbfl_language_german_aliases[] = {"Deutsch", NULL};
