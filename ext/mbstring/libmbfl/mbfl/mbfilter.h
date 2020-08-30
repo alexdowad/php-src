@@ -129,7 +129,7 @@
 #define MIN(a,b) ((a)<(b)?(a):(b))
 #endif
 
-MBFLAPI extern size_t char_offset_to_byte_offset(const mbfl_encoding *encoding, unsigned char *start, size_t length, long char_offset);
+MBFLAPI extern size_t char_offset_to_byte_offset(const mbfl_encoding *encoding, unsigned char *start, size_t length, ssize_t char_offset);
 
 /*
  * buffering converter

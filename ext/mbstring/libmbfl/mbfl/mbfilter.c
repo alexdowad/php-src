@@ -166,7 +166,7 @@ static long byte_offset_to_char_offset(const mbfl_encoding *encoding, unsigned c
 /* Character offset into multi-byte encoded string -> number of bytes up to that position
  * If requested offset is greater than character length of string, returns byte length of string
  * Negative offsets count back from the end of the string, but cannot count past the beginning */
-MBFLAPI size_t char_offset_to_byte_offset(const mbfl_encoding *encoding, unsigned char *start, size_t length, long char_offset)
+MBFLAPI size_t char_offset_to_byte_offset(const mbfl_encoding *encoding, unsigned char *start, size_t length, ssize_t char_offset)
 {
 	if (char_offset == 0) {
 		return 0;
